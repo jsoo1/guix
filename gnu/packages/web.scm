@@ -3542,6 +3542,7 @@ and IPv6 sockets, intended as a replacement for IO::Socket::INET.")
      `(("perl-net-ssleay" ,perl-net-ssleay)
        ;; for IDN support
        ("perl-uri" ,perl-uri)))
+    (arguments `(#:tests? #f))
     (synopsis "Nearly transparent SSL encapsulation for IO::Socket::INET")
     (description
      "IO::Socket::SSL makes using SSL/TLS much easier by wrapping the

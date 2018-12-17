@@ -2167,6 +2167,30 @@ This service is not part of @var{%base-services}."
                            (default '("-p")))
   (auto-login              kmscon-configuration-auto-login
                            (default #f))
+  (term                    kmscon-configuration-term
+                           (default "xterm-256color"))
+  (scrollback              kmscon-configuration-scrollback
+                           (default "1000"))
+  (xkb-model               kmscon-configuration-xkb-model
+                           (default "''"))
+  (xkb-layout              kmscon-configuration-xkb-layout
+                           (default "''"))
+  (xkb-variant             kmscon-configuration-xkb-variant
+                           (default "''"))
+  (xkb-options             kmscon-configuration-xkb-options
+                           (default "''"))
+  (xkb-repeat-delay        kmscon-configuration-xkb-repeat-delay
+                           (default "250"))
+  (xkb-repeat-rate         kmscon-configuration-xkb-repeat-rate
+                           (default "50"))
+  (font-engine             kmscon-configuration-font-engine
+                           (default "pango"))
+  (font-size               kmscon-configuration-font-size
+                           (default "15"))
+  (font-name               kmscon-configuration-font-name
+                           (default "''"))
+  (font-dpi                kmscon-configuration-font-dpi
+                           (default "96"))
   (hardware-acceleration?  kmscon-configuration-hardware-acceleration?
                            (default #f))) ; #t causes failure
 
@@ -2179,6 +2203,18 @@ This service is not part of @var{%base-services}."
            (login-program (kmscon-configuration-login-program config))
            (login-arguments (kmscon-configuration-login-arguments config))
            (auto-login (kmscon-configuration-auto-login config))
+           (term (kmscon-configuration-term config))
+           (scrollback (kmscon-configuration-term config))
+           (xkb-model (kmscon-configuration-xkb-model config))
+           (xkb-layout (kmscon-configuration-xkb-layout config))
+           (xkb-variant (kmscon-configuration-xkb-variant config))
+           (xkb-options (kmscon-configuration-xkb-options config))
+           (xkb-repeat-delay (kmscon-configuration-xkb-repeat-delay config))
+           (xkb-repeat-rate (kmscon-configuration-xkb-repeat-rate config))
+           (font-engine (kmscon-configuration-font-engine config))
+           (font-size (kmscon-configuration-font-size config))
+           (font-name (kmscon-configuration-font-name config))
+           (font-dpi (kmscon-configuration-font-dpi config))
            (hardware-acceleration? (kmscon-configuration-hardware-acceleration? config)))
 
        (define kmscon-command
@@ -2187,7 +2223,19 @@ This service is not part of @var{%base-services}."
             "--vt" #$virtual-terminal
             "--no-switchvt" ;Prevent a switch to the virtual terminal.
             #$@(if hardware-acceleration? '("--hwaccel") '())
-            "--login" "--"
+            "--term" #$term
+            "--sb-size" #$scrollback
+            "--xkb-model" #$xkb-model
+            "--xkb-layout" #$xkb-layout
+            "--xkb-variant" #$xkb-variant
+            "--xkb-options" #$xkb-options
+            "--xkb-repeat-delay" #$xkb-repeat-delay
+            "--xkb-repeat-rate" #$xkb-repeat-rate
+            "--font-engine" #$font-engine
+            "--font-size" #$font-size
+            "--font-name" #$font-name
+            "--font-dpi" #$font-dpi
+            "--"
             #$login-program #$@login-arguments
             #$@(if auto-login
                    #~(#$auto-login)
@@ -2197,7 +2245,7 @@ This service is not part of @var{%base-services}."
         (documentation "kmscon virtual terminal")
         (requirement '(user-processes udev dbus-system))
         (provision (list (symbol-append 'term- (string->symbol virtual-terminal))))
-        (start #~(make-forkexec-constructor #$kmscon-command))
+        (start #~(make-forkexec-constructor #$kmscon-command #:log-file "/var/log/kmscon.log"))
         (stop #~(make-kill-destructor)))))))
 
 (define-record-type* <static-networking>

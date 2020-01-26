@@ -5877,6 +5877,47 @@ feature, allowing applications to subscribe to notifications when a file is
 accessed or modified.")
     (license license:bsd-3)))
 
+(define-public ghc-hi-file-parser
+  (package
+    (name "ghc-hi-file-parser")
+    (version "0.1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/hi-file-parser/hi-file-parser-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "09gs26z0jvkkhb1r43gj27pq0k5fc4i6fpr59g397vz4sm86gb2l"))))
+    (build-system haskell-build-system)
+    (inputs
+     `(("hspec-discover" ,hspec-discover)
+       ("ghc-rio" ,ghc-rio)
+       ("ghc-vector" ,ghc-vector)))
+    (native-inputs `(("ghc-hspec" ,ghc-hspec)))
+    (arguments
+      `(#:cabal-revision
+        ("2"
+         "1bm98h0v4wf9vmdng15c2r48yz06118jxlprsnk0z3jw0d95ij9z")))
+    (home-page
+      "https://github.com/commercialhaskell/stack#readme")
+    (synopsis "Parser for GHC's hi files")
+    (description
+     "Provide data types and functions for parsing the binary .hi files produced by
+GHC.  Intended to support multiple versions of GHC, so that tooling can:
+
+@itemize
+@item Support multiple versions of GHC
+@item Avoid linking against the ghc library
+@item Not need to use ghc's textual dump file format.
+@end itemize
+
+Note that this code was written for Stack's usage initially, though it is
+intended to be general purpose.")
+    (license license:bsd-3)))
+
 (define-public ghc-hmatrix
   (package
     (name "ghc-hmatrix")

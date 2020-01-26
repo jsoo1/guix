@@ -10946,6 +10946,46 @@ expose it from another module in the hierarchy.
 @end itemize")
     (license license:expat)))
 
+(define-public ghc-rio-orphans
+  (package
+    (name "ghc-rio-orphans")
+    (version "0.1.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/rio-orphans/rio-orphans-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "0klbshdsv3gq3l7g1d6gq2wxdqjlqxbnwk1lbg5dpbz7yrnjr3by"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-exceptions" ,ghc-exceptions)
+        ("ghc-fast-logger" ,ghc-fast-logger)
+        ("hspec-discover" ,hspec-discover)
+        ("ghc-monad-control" ,ghc-monad-control)
+        ("ghc-monad-logger" ,ghc-monad-logger)
+        ("ghc-resourcet" ,ghc-resourcet)
+        ("ghc-rio" ,ghc-rio)
+        ("ghc-transformers-base" ,ghc-transformers-base)))
+    (native-inputs `(("ghc-hspec" ,ghc-hspec)))
+    (home-page
+      "https://github.com/commercialhaskell/rio#readme")
+    (synopsis
+      "Orphan instances for the RIO type in the rio package")
+    (description
+     "Provides orphan instances for the RIO data type.  Currently supports:
+
+@itemize
+@item MonadCatch and MonadMask from exceptions
+@item MonadBase from transformers-base
+@item MonadBaseControl from monad-control
+@item MonadResource from resourcet
+@end itemize")
+    (license license:expat)))
+
 (define-public ghc-safe
   (package
     (name "ghc-safe")

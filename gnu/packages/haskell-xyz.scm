@@ -8360,6 +8360,52 @@ implementation is pure Haskell, so it might be a bit slower than a C FFI
 binding.")
     (license license:bsd-3)))
 
+(define-public ghc-mustache
+  (package
+    (name "ghc-mustache")
+    (version "2.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/mustache/mustache-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1q3vadcvv2pxg6rpp92jq5zy784jxphdfpf6xn9y6wg9g3jn7201"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-aeson" ,ghc-aeson)
+        ("ghc-either" ,ghc-either)
+        ("ghc-unordered-containers" ,ghc-unordered-containers)
+        ("ghc-vector" ,ghc-vector)
+        ("ghc-scientific" ,ghc-scientific)
+        ("ghc-th-lift" ,ghc-th-lift)
+        ("ghc-yaml" ,ghc-yaml)
+        ("ghc-cmdargs" ,ghc-cmdargs)))
+    (native-inputs
+      `(("ghc-hspec" ,ghc-hspec)
+        ("ghc-base-unicode-symbols" ,ghc-base-unicode-symbols)
+        ("ghc-wreq" ,ghc-wreq)
+        ("ghc-zlib" ,ghc-zlib)
+        ("ghc-tar" ,ghc-tar)
+        ("ghc-lens" ,ghc-lens)
+        ("ghc-hspec" ,ghc-hspec)
+        ("ghc-temporary" ,ghc-temporary)))
+    (arguments
+     ;; Tests do network IO
+     `(#:tests? #f))
+    (home-page
+      "https://github.com/JustusAdam/mustache")
+    (synopsis "Mustache template parser library")
+    (description
+      "Allows parsing and rendering template files with mustache markup.  See
+the mustache language reference http://mustache.github.io/mustache.5.html.
+
+Implements the mustache spec version 1.1.3.")
+    (license license:bsd-3)))
+
 (define-public ghc-mwc-random
   (package
     (name "ghc-mwc-random")

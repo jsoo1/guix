@@ -11695,6 +11695,43 @@ them.")
 are the bottleneck of web servers.")
     (license license:bsd-3)))
 
+(define-public ghc-singletons
+  (package
+    (name "ghc-singletons")
+    (version "2.5.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/singletons/singletons-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "0izi487dpn5dx5yzm0bqrrjj2fcy6y6jyk81848yq4i8fcx0mc10"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-th-desugar" ,ghc-th-desugar)
+        ("ghc-syb" ,ghc-syb)))
+    (native-inputs
+      `(("ghc-tasty" ,ghc-tasty)
+        ("ghc-tasty-golden" ,ghc-tasty-golden)))
+    (home-page
+      "https://www.github.com/goldfirere/singletons")
+    (synopsis
+      "Framework for generating singleton types")
+    (description
+      "This library generates singleton types, promoted functions, and
+singleton functions using Template Haskell.  It is useful for programmers who
+wish to use dependently typed programming techniques.  The library was
+originally presented in /Dependently Typed Programming with Singletons/,
+published at the Haskell Symposium,
+2012.  (https://cs.brynmawr.edu/~rae/papers/2012/singletons/paper.pdf) Version
+1.0 and onwards works a lot harder to promote functions.  See the paper
+published at Haskell Symposium, 2014:
+https://cs.brynmawr.edu/~rae/papers/2014/promotion/promotion.pdf.")
+    (license license:bsd-3)))
+
 (define-public ghc-size-based
   (package
     (name "ghc-size-based")

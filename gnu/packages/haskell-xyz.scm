@@ -6354,6 +6354,53 @@ query parameters")
 Haskell data types to and from HTTP API data.")
     (license license:bsd-3)))
 
+(define-public ghc-http-download
+  (package
+    (name "ghc-http-download")
+    (version "0.1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/http-download/http-download-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "0wip7l6cls734ag306s5l0683qqh273b3lk5ibig66racmysjqyb"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-base64-bytestring" ,ghc-base64-bytestring)
+        ("ghc-conduit" ,ghc-conduit)
+        ("ghc-conduit-extra" ,ghc-conduit-extra)
+        ("ghc-cryptonite" ,ghc-cryptonite)
+        ("ghc-cryptonite-conduit" ,ghc-cryptonite-conduit)
+        ("ghc-exceptions" ,ghc-exceptions)
+        ("ghc-http-client" ,ghc-http-client)
+        ("ghc-http-conduit" ,ghc-http-conduit)
+        ("ghc-http-types" ,ghc-http-types)
+        ("ghc-memory" ,ghc-memory)
+        ("ghc-path" ,ghc-path)
+        ("ghc-path-io" ,ghc-path-io)
+        ("ghc-retry" ,ghc-retry)
+        ("ghc-rio" ,ghc-rio)
+        ("ghc-rio-prettyprint" ,ghc-rio-prettyprint)))
+    (native-inputs
+      `(("ghc-hspec" ,ghc-hspec)
+        ("hspec-discover" ,hspec-discover)))
+    (arguments
+     `(#:tests? #f ; Tests do network IO
+       #:cabal-revision
+        ("4"
+         "1s20zjh52whs6hfhr90zyyy7g78zv1pw9hry1nwlzdv4hg97cbdh")))
+    (home-page
+      "https://github.com/commercialhaskell/stack#readme")
+    (synopsis "Verified downloads with retries")
+    (description
+     "Higher level HTTP download APIs include verification of content and
+retries.")
+    (license license:bsd-3)))
+
 (define-public ghc-ieee754
   (package
     (name "ghc-ieee754")

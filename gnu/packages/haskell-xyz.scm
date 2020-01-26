@@ -8797,6 +8797,29 @@ old @code{time} library.  For new projects, the newer
 Haskell for attaching typeclass instances.")
     (license license:bsd-3)))
 
+(define-public ghc-open-browser
+  (package
+    (name "ghc-open-browser")
+    (version "0.2.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/open-browser/open-browser-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "0rna8ir2cfp8gk0rd2q60an51jxc08lx4gl0liw8wwqgh1ijxv8b"))))
+    (build-system haskell-build-system)
+    (home-page
+      "https://github.com/rightfold/open-browser")
+    (synopsis "Open a web browser from Haskell")
+    (description
+      "Open a web browser from Haskell.  Currently BSD, Linux, OS X and Windows
+are supported.")
+    (license license:bsd-3)))
+
 (define-public ghc-opengl
   (package
     (name "ghc-opengl")

@@ -13107,6 +13107,59 @@ and @code{Eq} instances.  These instances used to live in the haskell-src-meta
 package, and that's where the version number started.")
     (license license:bsd-3)))
 
+(define-public ghc-th-utilities
+  (package
+    (name "ghc-th-utilities")
+    (version "0.2.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/th-utilities/th-utilities-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1sy3bgwc85zw999cya92xsp9jllclwbzw9fmjmhqi4r5kj2gyk96"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("hspec-discover" ,hspec-discover)
+        ("ghc-primitive" ,ghc-primitive)
+        ("ghc-syb" ,ghc-syb)
+        ("ghc-th-orphans" ,ghc-th-orphans)))
+    (native-inputs
+      `(("ghc-hspec" ,ghc-hspec)
+        ("ghc-vector" ,ghc-vector)))
+    (home-page
+      "https://github.com/fpco/th-utilities#readme")
+    (synopsis
+      "Collection of useful functions for use with Template Haskell")
+    (description
+     "The th-utilities package provides a number of useful utilities for
+Template Haskell.  In particular:
+
+@itemize
+
+@item @code{TH.Derive} provides a convenient system for using TH to derive
+typeclass instances.  It allows for open registration of TH derivers, and
+reuses instance syntax for invoking them.  TH.Derive.Storable defines
+derivation of Storable for ADTs.
+
+@item @code{TH.ReifyDataType} provides utilities for reifying simplified
+datatype info.  It omits details that you don't usually want to handle, making
+it much more straightforward to generate code based on datatype structure.
+
+@item @code{TH.RelativePaths} provides utilities for loading files based on
+paths relative to the cabal file.  This is particularly handy for loading code
+into ghci even when its current dir isn't the package dir.  Ideally, this
+module would be used by everyone who currently uses qAddDependentFile.
+
+@item @code{TH.Utilities} provides a miscellaneous set of utilities that are
+useful within this package and elsewhere.
+
+@end itemize")
+    (license license:expat)))
+
 (define-public ghc-these
   (package
     (name "ghc-these")

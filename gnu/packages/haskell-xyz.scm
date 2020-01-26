@@ -2700,6 +2700,33 @@ include: a plain-text mode; an option to unlit literate code files; and an
 option to turn off macro-expansion.")
     (license license:lgpl2.1)))
 
+(define-public ghc-cryptohash-cryptoapi
+  (package
+    (name "ghc-cryptohash-cryptoapi")
+    (version "0.1.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+              "https://hackage.haskell.org/package/cryptohash-cryptoapi"
+              "/cryptohash-cryptoapi-" version ".tar.gz"))
+        (sha256
+          (base32
+            "13h5f9pmcd0swa4asl7wzpf5lskpgjdqrmy1mqdc78gsxdj8cyki"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-memory" ,ghc-memory)
+        ("ghc-cryptonite" ,ghc-cryptonite)
+        ("ghc-crypto-api" ,ghc-crypto-api)
+        ("ghc-tagged" ,ghc-tagged)
+        ("ghc-cereal" ,ghc-cereal)))
+    (home-page
+      "https://github.com/vincenthz/hs-cryptohash-cryptoapi")
+    (synopsis "Crypto-api interfaces for cryptohash")
+    (description
+      "Crypto-api interfaces for cryptohash.")
+    (license license:bsd-3)))
+
 (define-public ghc-data-accessor
   (package
     (name "ghc-data-accessor")

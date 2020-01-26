@@ -8468,6 +8468,35 @@ with pseudo-graphical interfaces.  This package is a nice, modern binding to GNU
 ncurses.")
     (license license:gpl3)))
 
+(define-public ghc-neat-interpolation
+  (package
+    (name "ghc-neat-interpolation")
+    (version "0.3.2.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+              "https://hackage.haskell.org/package/neat-interpolation"
+              "/neat-interpolation-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0lhpjckwhzlvx4cdhrwprwb85vc7hc44ybvk5nswgn7z73cp0wyy"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-megaparsec" ,ghc-megaparsec)
+        ("ghc-base-prelude" ,ghc-base-prelude)))
+    (native-inputs `(("ghc-htf" ,ghc-htf)))
+    (home-page
+      "https://github.com/nikita-volkov/neat-interpolation")
+    (synopsis
+      "Quasiquoter for neat and simple multiline text interpolation")
+    (description
+      "A quasiquoter for producing Text values with support for a simple
+interpolation of input values.  It removes the excessive indentation from the
+input and accurately manages the indentation of all lines of the interpolated
+variables.")
+    (license license:expat)))
+
 (define-public ghc-network
   (package
     (name "ghc-network")

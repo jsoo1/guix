@@ -1,0 +1,27 @@
+This version of stack uses some language features that changed from 8.6 to
+8.8.
+
+diff --git a/src/Stack/Storage/User.hs.old b/src/Stack/Storage/User.hs
+index 3845b09..cfc17d5 100644
+--- a/src/Stack/Storage/User.hs
++++ b/src/Stack/Storage/User.hs
+@@ -10,6 +10,8 @@
+ {-# LANGUAGE TupleSections #-}
+ {-# LANGUAGE TypeFamilies #-}
+ {-# LANGUAGE UndecidableInstances #-}
++{-# LANGUAGE DerivingStrategies #-}
++{-# LANGUAGE StandaloneDeriving #-}
+ {-# OPTIONS_GHC -Wno-unused-top-binds -Wno-identities #-}
+
+ -- | Work with SQLite database used for caches across an entire user account.
+--- a/src/Stack/Storage/Project.hs.old
++++ b/src/Stack/Storage/Project.hs
+@@ -10,4 +10,6 @@
+ {-# LANGUAGE TupleSections #-}
+ {-# LANGUAGE TypeFamilies #-}
+ {-# LANGUAGE UndecidableInstances #-}
++{-# LANGUAGE DerivingStrategies #-}
++{-# LANGUAGE StandaloneDeriving #-}
+ {-# OPTIONS_GHC -Wno-unused-top-binds -Wno-identities #-}
+
+ -- | Work with SQLite database used for caches across a single project.

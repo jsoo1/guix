@@ -4382,6 +4382,31 @@ the files in a directory, and turn them into @code{(path, bytestring)} pairs
 embedded in your Haskell code.")
     (license license:bsd-3)))
 
+(define-public ghc-filelock
+  (package
+    (name "ghc-filelock")
+    (version "0.1.1.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/filelock/filelock-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "04qimhz78jjndk686dblkx06l9jscq2q9gyr014a4pbfj4iljgi5"))))
+    (build-system haskell-build-system)
+    (native-inputs `(("ghc-async" ,ghc-async)))
+    (home-page
+      "http://github.com/takano-akio/filelock")
+    (synopsis
+      "Portable interface to file locking (flock / LockFileEx)")
+    (description
+      "This package provides an interface to Windows and Unix file locking
+functionalities.")
+    (license license:public-domain)))
+
 (define-public ghc-filemanip
   (package
     (name "ghc-filemanip")

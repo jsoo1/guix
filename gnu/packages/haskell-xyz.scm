@@ -12906,6 +12906,46 @@ single, easier to use informational datatype while supporting many versions of
 Template Haskell.")
     (license license:isc)))
 
+(define-public ghc-th-desugar
+  (package
+    (name "ghc-th-desugar")
+    (version "1.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/th-desugar/th-desugar-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1vxg0jvc239ngmv53yx564b7wkgd0b10xvx5phxvnnpm9n2pljpi"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-syb" ,ghc-syb)
+        ("ghc-th-lift" ,ghc-th-lift)
+        ("ghc-th-orphans" ,ghc-th-orphans)
+        ("ghc-th-expand-syns" ,ghc-th-expand-syns)))
+    (native-inputs
+      `(("ghc-hunit" ,ghc-hunit)
+        ("ghc-hspec" ,ghc-hspec)))
+    (home-page
+      "https://github.com/goldfirere/th-desugar")
+    (synopsis
+      "Functions to desugar Template Haskell")
+    (description
+      "This package provides the Language.Haskell.TH.Desugar module, which
+desugars Template Haskell's rich encoding of Haskell syntax into a simpler
+encoding.  This desugaring discards surface syntax information (such as the
+use of infix operators) but retains the original meaning of the TH code.  The
+intended use of this package is as a preprocessor for more advanced code
+manipulation tools.  Note that the input to any of the @code{ds...} functions
+should be produced from a TH quote, using the syntax @code{[| ... |]}.  If the
+input to these functions is a hand-coded TH syntax tree, the results may be
+unpredictable.  In particular, it is likely that promoted datatypes will not
+work as expected.")
+    (license license:bsd-3)))
+
 (define-public ghc-th-expand-syns
   (package
     (name "ghc-th-expand-syns")

@@ -64,6 +64,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -4891,6 +4892,52 @@ properties for functions operating on them.")
     (synopsis "Create command line interfaces with ease")
     (description "This library provides tools to create command line
 interfaces with ease.")
+    (license license:bsd-3)))
+
+(define-public ghc-githash
+  (package
+    (name "ghc-githash")
+    (version "0.1.3.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/githash/githash-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "19xhs2nzm1myyjx3nkc3invy15c19cfx790vbcrl050n9sb330jr"))))
+    (build-system haskell-build-system)
+    (native-inputs
+      `(("git" ,git)
+        ("ghc-hspec" ,ghc-hspec)
+        ("hspec-discover" ,hspec-discover)
+        ("ghc-temporary" ,ghc-temporary)
+        ("ghc-unliftio" ,ghc-unliftio)))
+    (home-page
+      "https://github.com/snoyberg/githash#readme")
+    (synopsis
+      "Compile git revision info into Haskell projects")
+    (description
+     "Some handy Template Haskell splices for including the current git hash and
+branch in the code of your project.  Useful for including in panic messages,
+--version output, or diagnostic info for more informative bug reports.
+
+Most of the complication in the GitHash module is due to the various places
+the current git hash might be stored:
+
+@itemize
+
+@item Detached HEAD: the hash is in .git/HEAD
+
+@item On a branch or tag: the hash is in a file pointed to by .git/HEAD in a
+location like .git/refs/heads
+
+@item On a branch or tag but in a repository with packed refs: the hash is in
+.git/packed-refs
+
+@end itemize")
     (license license:bsd-3)))
 
 (define-public ghc-gitrev

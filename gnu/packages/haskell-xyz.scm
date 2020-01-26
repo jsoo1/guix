@@ -9094,6 +9094,33 @@ with several features not present in pretty-printing libraries designed for
 code.  It was designed for use in @code{Pandoc}.")
     (license license:bsd-3)))
 
+(define-public ghc-optparse-simple
+  (package
+    (name "ghc-optparse-simple")
+    (version "0.1.1.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/optparse-simple/optparse-simple-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1r00hkri42vyx552l8hcd1779fxiyl9w4k0pql915zsprirn8w82"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-githash" ,ghc-githash)
+        ("ghc-optparse-applicative" ,ghc-optparse-applicative)
+        ("ghc-semigroups" ,ghc-semigroups)))
+    (home-page
+      "https://github.com/fpco/optparse-simple#readme")
+    (synopsis
+      "Simple interface to optparse-applicative")
+    (description
+     "Simple interface to optparse-applicative.")
+    (license license:bsd-3)))
+
 (define-public ghc-pandoc
   (package
     (name "ghc-pandoc")

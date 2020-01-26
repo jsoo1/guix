@@ -1970,6 +1970,39 @@ representations for Haskell")
 classy-prelude.")
     (license license:expat)))
 
+(define-public ghc-cipher-aes128
+  (package
+    (name "ghc-cipher-aes128")
+    (version "0.7.0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/cipher-aes128/cipher-aes128-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1bafr5aa9mjfzdgc6gwapvb9g04pyh4lwhv2x2m1v3ljjglg9d1w"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-crypto-api" ,ghc-crypto-api)
+        ("ghc-tagged" ,ghc-tagged)
+        ("ghc-cereal" ,ghc-cereal)))
+    (home-page
+      "https://github.com/TomMD/cipher-aes128")
+    (synopsis
+      "AES and common modes using AES-NI when available")
+    (description
+      "An implementation of AES and common modes of operation.  It borrows
+Hanquez's C AES code (see cipher-aes) but is unique due to including
+compile-time detection of NI compiler support, a slightly more functional
+interface for GCM operations, exposure of @code{Ptr} based operations via the
+@code{.Internal} module, and build-in crypto-api support.  Cipher-aes128 was
+originally developed as \"cipher-aes plus trampolines\", which has since been
+adopted into cipher-aes.")
+    (license license:bsd-3)))
+
 (define-public ghc-clock
   (package
     (name "ghc-clock")

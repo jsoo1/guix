@@ -663,6 +663,39 @@ complicated text/binary file formats.")
 from aeson.")
     (license license:bsd-3)))
 
+(define-public ghc-authenticate-oauth
+  (package
+    (name "ghc-authenticate-oauth")
+    (version "1.6.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/authenticate-oauth"
+               "/authenticate-oauth-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1hry1zbi7gbyfi94w9cyg6m7ii7xm68jnsph63zxdj2s4ns0ylp0"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-http-client" ,ghc-http-client)
+        ("ghc-crypto-pubkey-types" ,ghc-crypto-pubkey-types)
+        ("ghc-rsa" ,ghc-rsa)
+        ("ghc-data-default" ,ghc-data-default)
+        ("ghc-base64-bytestring" ,ghc-base64-bytestring)
+        ("ghc-sha" ,ghc-sha)
+        ("ghc-random" ,ghc-random)
+        ("ghc-http-types" ,ghc-http-types)
+        ("ghc-blaze-builder" ,ghc-blaze-builder)
+        ("ghc-transformers-compat" ,ghc-transformers-compat)))
+    (home-page
+      "https://github.com/yesodweb/authenticate")
+    (synopsis
+      "Authenticate with OAuth for Haskell web applications")
+    (description
+     "A library to authenticate with OAuth for Haskell web applications.")
+    (license license:bsd-3)))
+
 (define-public ghc-auto-update
   (package
     (name "ghc-auto-update")

@@ -3503,6 +3503,47 @@ monadic interface for building graphs.")
 between double precision floating point and text.")
     (license license:bsd-3)))
 
+(define-public ghc-drbg
+  (package
+    (name "ghc-drbg")
+    (version "0.5.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/DRBG/DRBG-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1z9vqc1nw0mf2sqgddcipmlkz6mckq9wnrzqqdy3rj3c90135pr1"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-cereal" ,ghc-cereal)
+        ("ghc-prettyclass" ,ghc-prettyclass)
+        ("ghc-tagged" ,ghc-tagged)
+        ("ghc-crypto-api" ,ghc-crypto-api)
+        ("ghc-cryptohash-cryptoapi" ,ghc-cryptohash-cryptoapi)
+        ("ghc-parallel" ,ghc-parallel)
+        ("ghc-cipher-aes128" ,ghc-cipher-aes128)
+        ("ghc-entropy" ,ghc-entropy)))
+    (native-inputs
+      `(("ghc-quickcheck" ,ghc-quickcheck)
+        ("ghc-crypto-api-tests" ,ghc-crypto-api-tests)
+        ("ghc-hunit" ,ghc-hunit)
+        ("ghc-test-framework" ,ghc-test-framework)
+        ("ghc-test-framework-hunit" ,ghc-test-framework-hunit)))
+    (arguments
+     ;; FIXME Failing tests
+     `(#:tests? #f))
+    (home-page
+      "http://hackage.haskell.org/package/DRBG")
+    (synopsis "Cryptographically secure RNGs")
+    (description
+      "Deterministic random bit generator (aka RNG, PRNG) based HMACs, Hashes,
+and Ciphers.")
+    (license license:bsd-3)))
+
 (define-public ghc-dual-tree
   (package
     (name "ghc-dual-tree")

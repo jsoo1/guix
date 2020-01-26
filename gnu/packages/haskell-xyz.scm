@@ -8921,6 +8921,42 @@ easily work with command-line options.")
 easily work with command-line options.")
     (license license:expat)))
 
+(define-public ghc-optparse-generic
+  (package
+    (name "ghc-optparse-generic")
+    (version "1.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/optparse-generic/optparse-generic-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "13rr3hq26dpmbami8vb6d1ig9ywk6jia22sp5dkp6jkfc1c9k4l0"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-system-filepath" ,ghc-system-filepath)
+        ("ghc-only" ,ghc-only)
+        ("ghc-optparse-applicative" ,ghc-optparse-applicative)
+        ("ghc-void" ,ghc-void)
+        ("ghc-semigroups" ,ghc-semigroups)
+        ("ghc-singletons" ,ghc-singletons)
+        ("ghc-tagged" ,ghc-tagged)
+        ("ghc-th-desugar" ,ghc-th-desugar)))
+    (arguments
+      `(#:cabal-revision
+        ("3"
+         "0vszcjmxywblx5z9yvrz8c6yc104jgr1nv0sbv58ansd3rkjlzfn")))
+    (home-page
+      "http://hackage.haskell.org/package/optparse-generic")
+    (synopsis
+      "Auto-generate a command-line parser for your datatype")
+    (description
+      "This library auto-generates an optparse-applicative-compatible
+@code{Parser} from any data type that derives the @code{Generic} interface.")
+    (license license:bsd-3)))
 
 (define-public ghc-optparse-applicative
   (package

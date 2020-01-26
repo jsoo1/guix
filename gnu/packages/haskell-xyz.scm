@@ -6058,6 +6058,58 @@ for user-defined custom schemas).
 @end itemize")
     (license license:gpl2+)))
 
+(define-public ghc-htf
+  (package
+    (name "ghc-htf")
+    (version "0.13.2.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/HTF/HTF-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1kmf95y4vijdiih27xa35acl02dsxqnd9qa56z1waki5qqiz6nin"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-diff" ,ghc-diff)
+        ("ghc-hunit" ,ghc-hunit)
+        ("ghc-quickcheck" ,ghc-quickcheck)
+        ("ghc-aeson" ,ghc-aeson)
+        ("ghc-base64-bytestring" ,ghc-base64-bytestring)
+        ("ghc-cpphs" ,ghc-cpphs)
+        ("ghc-haskell-src" ,ghc-haskell-src)
+        ("ghc-lifted-base" ,ghc-lifted-base)
+        ("ghc-monad-control" ,ghc-monad-control)
+        ("ghc-old-time" ,ghc-old-time)
+        ("ghc-random" ,ghc-random)
+        ("ghc-regex-compat" ,ghc-regex-compat)
+        ("ghc-vector" ,ghc-vector)
+        ("ghc-xmlgen" ,ghc-xmlgen)))
+    (native-inputs
+      `(("ghc-aeson-pretty" ,ghc-aeson-pretty)
+        ("ghc-temporary" ,ghc-temporary)
+        ("ghc-unordered-containers" ,ghc-unordered-containers)))
+    (arguments
+     `(#:tests? #f ; Tests use stack, causing cyclical dependencies
+       #:cabal-revision
+        ("1"
+         "0l18mp06jjwpjbnvj548naas1xhnc46c8l0pbgzi3bm6siq5hhv6")))
+    (home-page "https://github.com/skogsbaer/HTF/")
+    (synopsis "Haskell Test Framework")
+    (description
+      "The Haskell Test Framework (HTF for short) lets you define unit tests
+with hunit, QuickCheck properties , and black box tests in an easy and
+convenient way.  HTF uses a custom preprocessor that collects test definitions
+automatically.  Furthermore, the preprocessor allows HTF to report failing
+test cases with exact file name and line number information.  Additionally,
+HTF tries to produce highly readable output for failing tests: for example, it
+colors and pretty prints expected and actual results and provides a diff
+between the two values.")
+    (license license:lgpl2.1)))
+
 (define-public ghc-http-api-data
   (package
     (name "ghc-http-api-data")

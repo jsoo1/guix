@@ -2727,6 +2727,31 @@ option to turn off macro-expansion.")
       "Crypto-api interfaces for cryptohash.")
     (license license:bsd-3)))
 
+(define-public ghc-crypto-pubkey-types
+  (package
+    (name "ghc-crypto-pubkey-types")
+    (version "0.4.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/crypto-pubkey-types/"
+               "crypto-pubkey-types-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0q0wlzjmpx536h1zcdzrpxjkvqw8abj8z0ci38138kpch4igbnby"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-asn1-types" ,ghc-asn1-types)
+        ("ghc-asn1-encoding" ,ghc-asn1-encoding)))
+    (home-page
+      "https://github.com/vincenthz/hs-crypto-pubkey-types")
+    (synopsis
+      "Generic cryptography Public keys algorithm types")
+    (description
+      "Generic cryptography public keys algorithm types")
+    (license license:bsd-3)))
+
 (define-public ghc-data-accessor
   (package
     (name "ghc-data-accessor")

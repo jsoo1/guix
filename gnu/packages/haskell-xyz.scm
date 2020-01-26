@@ -11172,6 +11172,43 @@ expose it from another module in the hierarchy.
 @end itemize")
     (license license:expat)))
 
+(define-public ghc-rsa
+  (package
+    (name "ghc-rsa")
+    (version "2.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/RSA/RSA-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "06k7nd7b1rdfb7891gw9bihrd9ripffbgqa14q1ryyj6vqa9r4jw"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-crypto-api" ,ghc-crypto-api)
+        ("ghc-crypto-pubkey-types" ,ghc-crypto-pubkey-types)
+        ("ghc-sha" ,ghc-sha)))
+    (native-inputs
+      `(("ghc-drbg" ,ghc-drbg)
+        ("ghc-quickcheck" ,ghc-quickcheck)
+        ("ghc-tagged" ,ghc-tagged)
+        ("ghc-test-framework" ,ghc-test-framework)
+        ("ghc-test-framework-quickcheck2" ,ghc-test-framework-quickcheck2)))
+    (home-page
+      "http://hackage.haskell.org/package/RSA")
+    (synopsis
+      "Implementation of RSA")
+    (description
+      "This library implements the RSA encryption and signature algorithms for
+arbitrarily-sized ByteStrings.  While the implementations work, they are not
+necessarily the fastest ones on the planet.  Particularly key generation.  The
+algorithms included are based of RFC 3447, or the Public-Key Cryptography
+Standard for RSA, version 2.1 (a.k.a, PKCS#1 v2.1).")
+    (license license:bsd-3)))
+
 (define-public ghc-safe
   (package
     (name "ghc-safe")

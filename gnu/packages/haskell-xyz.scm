@@ -9579,6 +9579,113 @@ pandoc to represent structured documents.  It also provides functions for
 building up, manipulating and serialising @code{Pandoc} structures.")
     (license license:bsd-3)))
 
+(define-public ghc-pantry
+  (package
+    (name "ghc-pantry")
+    (version "0.1.1.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/pantry/pantry-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1m1sps9kc7y8zpba486lv5z8an3z8493zxb1qhghql6pybsprsgi"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-aeson" ,ghc-aeson)
+        ("ghc-ansi-terminal" ,ghc-ansi-terminal)
+        ("ghc-base-orphans" ,ghc-base-orphans)
+        ("ghc-base64-bytestring" ,ghc-base64-bytestring)
+        ("ghc-conduit" ,ghc-conduit)
+        ("ghc-conduit-extra" ,ghc-conduit-extra)
+        ("ghc-contravariant" ,ghc-contravariant)
+        ("ghc-cryptonite" ,ghc-cryptonite)
+        ("ghc-cryptonite-conduit" ,ghc-cryptonite-conduit)
+        ("ghc-digest" ,ghc-digest)
+        ("ghc-filelock" ,ghc-filelock)
+        ("ghc-generic-deriving" ,ghc-generic-deriving)
+        ("ghc-hackage-security" ,ghc-hackage-security)
+        ("ghc-hashable" ,ghc-hashable)
+        ("ghc-hpack" ,ghc-hpack)
+        ("hspec-discover" ,hspec-discover)
+        ("ghc-http-client" ,ghc-http-client)
+        ("ghc-http-client-tls" ,ghc-http-client-tls)
+        ("ghc-http-conduit" ,ghc-http-conduit)
+        ("ghc-http-download" ,ghc-http-download)
+        ("ghc-http-types" ,ghc-http-types)
+        ("ghc-memory" ,ghc-memory)
+        ("ghc-mono-traversable" ,ghc-mono-traversable)
+        ("ghc-network" ,ghc-network)
+        ("ghc-network-uri" ,ghc-network-uri)
+        ("ghc-path" ,ghc-path)
+        ("ghc-path-io" ,ghc-path-io)
+        ("ghc-persistent" ,ghc-persistent)
+        ("ghc-persistent-sqlite" ,ghc-persistent-sqlite)
+        ("ghc-persistent-template" ,ghc-persistent-template)
+        ("ghc-primitive" ,ghc-primitive)
+        ("ghc-resourcet" ,ghc-resourcet)
+        ("ghc-rio" ,ghc-rio)
+        ("ghc-rio-orphans" ,ghc-rio-orphans)
+        ("ghc-rio-prettyprint" ,ghc-rio-prettyprint)
+        ("ghc-safe" ,ghc-safe)
+        ("ghc-syb" ,ghc-syb)
+        ("ghc-tar-conduit" ,ghc-tar-conduit)
+        ("ghc-text-metrics" ,ghc-text-metrics)
+        ("ghc-th-lift" ,ghc-th-lift)
+        ("ghc-th-lift-instances" ,ghc-th-lift-instances)
+        ("ghc-th-orphans" ,ghc-th-orphans)
+        ("ghc-th-reify-many" ,ghc-th-reify-many)
+        ("ghc-th-utilities" ,ghc-th-utilities)
+        ("ghc-unix-compat" ,ghc-unix-compat)
+        ("ghc-unliftio" ,ghc-unliftio)
+        ("ghc-unordered-containers" ,ghc-unordered-containers)
+        ("ghc-vector" ,ghc-vector)
+        ("ghc-yaml" ,ghc-yaml)
+        ("ghc-zip-archive" ,ghc-zip-archive)))
+    (native-inputs
+      `(("ghc-quickcheck" ,ghc-quickcheck)
+        ("ghc-exceptions" ,ghc-exceptions)
+        ("ghc-hedgehog" ,ghc-hedgehog)
+        ("ghc-hspec" ,ghc-hspec)
+        ("ghc-raw-strings-qq" ,ghc-raw-strings-qq)))
+    (arguments
+     `(; Tests do network IO
+       #:tests? #f))
+    (home-page
+      "https://github.com/commercialhaskell/pantry#readme")
+    (synopsis
+      "Content addressable Haskell package management")
+    (description
+     "Content addressable Haskell package management, providing for secure,
+reproducible acquisition of Haskell package contents and metadata.
+
+What is Pantry
+
+@itemize
+
+@item A Haskell library, command line executable, storage specification, and
+network protocol
+
+@item Intended for content-addressable storage of Haskell packages
+@item Allows non-centralized package storage
+@item Primarily for use by Stackage and Stack, hopefully other tools as well
+@end itemize
+
+Goals
+
+@itemize
+@item Efficient, distributed package storage for Haskell
+@item Superset of existing storage mechanisms
+@item Security via content addressable storage
+@item Allow more Stackage-style snapshots to exist
+@item Allow authors to bypass Hackage for uploads
+@item Allow Stackage to create forks of packages on Hackage
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public ghc-parallel
   (package
     (name "ghc-parallel")

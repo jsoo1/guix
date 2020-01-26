@@ -37,6 +37,7 @@
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system haskell)
+  #:use-module (guix utils)
   #:use-module (gnu packages base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gl)
@@ -858,6 +859,134 @@ for testing command-line programs, or general shell commands.  It reads simple
 test specifications defining a command to run, some input, and the expected
 output, stderr, and exit status.")
     (license license:gpl3+)))
+
+(define-public stack
+  (package
+    (name "stack")
+    (version "2.1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://hackage.haskell.org/package/stack/stack-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "1q2nagnc24fvyj3hwnpgyp3rqhxswhscyw4pw2dazqx34ad3d0zr"))))
+    (build-system haskell-build-system)
+    (arguments
+     ;; Substitute ghc's bundled version of hsc2hs to a version that uses
+     ;; response files.
+     ;; See https://github.com/haskell/hsc2hs/issues/22
+     `(#:haskell
+       ,(package
+          (inherit ghc-8.6)
+          (native-inputs
+           (cons `("ghc-hsc2hs" ,(package-source ghc-hsc2hs))
+                 (package-native-inputs ghc-8.6)))
+           (arguments
+            (substitute-keyword-arguments (package-arguments ghc-8.6)
+              ((#:phases ghc-8.6-phases)
+               `(modify-phases ,ghc-8.6-phases
+                  (add-after 'unpack 'de-vendor-hsc2hs
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (invoke
+                       "tar" "-xvf" (assoc-ref inputs "ghc-hsc2hs")
+                       "-C" "utils/hsc2hs" "--overwrite"))))))))))
+    (inputs
+     `(("ghc-aeson" ,ghc-aeson)
+       ("ghc-annotated-wl-pprint" ,ghc-annotated-wl-pprint)
+       ("ghc-ansi-terminal" ,ghc-ansi-terminal)
+       ("ghc-async" ,ghc-async)
+       ("ghc-attoparsec" ,ghc-attoparsec)
+       ("ghc-base64-bytestring" ,ghc-base64-bytestring)
+       ("ghc-colour" ,ghc-colour)
+       ("ghc-conduit" ,ghc-conduit)
+       ("ghc-conduit-extra" ,ghc-conduit-extra)
+       ("ghc-cryptonite" ,ghc-cryptonite)
+       ("ghc-cryptonite-conduit" ,ghc-cryptonite-conduit)
+       ("ghc-echo" ,ghc-echo)
+       ("ghc-exceptions" ,ghc-exceptions)
+       ("ghc-extra" ,ghc-extra)
+       ("ghc-file-embed" ,ghc-file-embed)
+       ("ghc-filelock" ,ghc-filelock)
+       ("ghc-fsnotify" ,ghc-fsnotify)
+       ("ghc-generic-deriving" ,ghc-generic-deriving)
+       ("ghc-hackage-security" ,ghc-hackage-security)
+       ("ghc-hashable" ,ghc-hashable)
+       ("ghc-hi-file-parser" ,ghc-hi-file-parser)
+       ("ghc-hpack" ,ghc-hpack)
+       ("ghc-http-client" ,ghc-http-client)
+       ("ghc-http-client-tls" ,ghc-http-client-tls)
+       ("ghc-http-conduit" ,ghc-http-conduit)
+       ("ghc-http-download" ,ghc-http-download)
+       ("ghc-http-types" ,ghc-http-types)
+       ("ghc-memory" ,ghc-memory)
+       ("ghc-microlens" ,ghc-microlens)
+       ("ghc-mintty" ,ghc-mintty)
+       ("ghc-mono-traversable" ,ghc-mono-traversable)
+       ("ghc-mustache" ,ghc-mustache)
+       ("ghc-neat-interpolation" ,ghc-neat-interpolation)
+       ("ghc-network-uri" ,ghc-network-uri)
+       ("ghc-open-browser" ,ghc-open-browser)
+       ("ghc-optparse-applicative" ,ghc-optparse-applicative)
+       ("ghc-pantry" ,ghc-pantry)
+       ("ghc-path" ,ghc-path)
+       ("ghc-path-io" ,ghc-path-io)
+       ("ghc-persistent" ,ghc-persistent)
+       ("ghc-persistent-sqlite" ,ghc-persistent-sqlite)
+       ("ghc-persistent-template" ,ghc-persistent-template)
+       ("ghc-primitive" ,ghc-primitive)
+       ("ghc-project-template" ,ghc-project-template)
+       ("ghc-regex-applicative-text" ,ghc-regex-applicative-text)
+       ("ghc-resource-pool" ,ghc-resource-pool)
+       ("ghc-resourcet" ,ghc-resourcet)
+       ("ghc-retry" ,ghc-retry)
+       ("ghc-rio" ,ghc-rio)
+       ("ghc-rio-prettyprint" ,ghc-rio-prettyprint)
+       ("ghc-semigroups" ,ghc-semigroups)
+       ("ghc-split" ,ghc-split)
+       ("ghc-streaming-commons" ,ghc-streaming-commons)
+       ("ghc-tar" ,ghc-tar)
+       ("ghc-temporary" ,ghc-temporary)
+       ("ghc-terminal-size" ,ghc-terminal-size)
+       ("ghc-text-metrics" ,ghc-text-metrics)
+       ("ghc-th-reify-many" ,ghc-th-reify-many)
+       ("ghc-tls" ,ghc-tls)
+       ("ghc-typed-process" ,ghc-typed-process)
+       ("ghc-unicode-transforms" ,ghc-unicode-transforms)
+       ("ghc-unix-compat" ,ghc-unix-compat)
+       ("ghc-unliftio" ,ghc-unliftio)
+       ("ghc-unordered-containers" ,ghc-unordered-containers)
+       ("ghc-vector" ,ghc-vector)
+       ("ghc-yaml" ,ghc-yaml)
+       ("ghc-zip-archive" ,ghc-zip-archive)
+       ("ghc-zlib" ,ghc-zlib)
+       ("ghc-githash" ,ghc-githash)
+       ("ghc-optparse-simple" ,ghc-optparse-simple)
+       ("ghc-hspec" ,ghc-hspec)
+       ("ghc-optparse-generic" ,ghc-optparse-generic)))
+    (native-inputs
+     `(("ghc-quickcheck" ,ghc-quickcheck)
+       ("ghc-raw-strings-qq" ,ghc-raw-strings-qq)
+       ("ghc-smallcheck" ,ghc-smallcheck)))
+    (home-page "http://haskellstack.org")
+    (synopsis "Haskell Tool Stack")
+    (description
+     "Stack is a cross-platform program for developing Haskell projects.  It
+is aimed at Haskellers both new and experienced.
+
+It features:
+
+@itemize
+@item Installing GHC automatically, in an isolated location.
+@item Installing packages needed for your project.
+@item Building your project.
+@item Testing your project.
+@item Benchmarking your project.
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public stylish-haskell
   (package

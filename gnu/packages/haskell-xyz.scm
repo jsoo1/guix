@@ -8441,6 +8441,34 @@ old @code{time} library.  For new projects, the newer
 @uref{https://hackage.haskell.org/package/time, time library} is recommended.")
     (license license:bsd-3)))
 
+(define-public ghc-only
+  (package
+    (name "ghc-only")
+    (version "0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/Only/Only-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "0rdj3a629fk2vp121jq8mf2smkblrz5w3cxhlsyx6my2x29s2ymb"))))
+    (build-system haskell-build-system)
+    (arguments
+      `(#:cabal-revision
+        ("1"
+         "1ahk7p34kmh041mz7lyc10nhcxgv2i4z8nvzxvqm2x34gslmsbzr")))
+    (home-page
+      "http://hackage.haskell.org/package/Only")
+    (synopsis
+      "The 1-tuple type or single-value \"collection\"")
+    (description
+      "This package provides a canonical anonymous 1-tuple type missing from
+Haskell for attaching typeclass instances.")
+    (license license:bsd-3)))
+
 (define-public ghc-opengl
   (package
     (name "ghc-opengl")

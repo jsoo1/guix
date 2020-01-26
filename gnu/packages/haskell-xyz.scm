@@ -6949,6 +6949,43 @@ of getters, folds, isomorphisms, traversals, setters and lenses and their
 indexed variants.")
     (license license:bsd-3)))
 
+(define-public ghc-lens-aeson
+  (package
+    (name "ghc-lens-aeson")
+    (version "1.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/lens-aeson/lens-aeson-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1k028ycmhz7mnjlrap88fqix4nmmpyy6b88m16kv77d3r8sz04a3"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-lens" ,ghc-lens)
+        ("ghc-vector" ,ghc-vector)
+        ("ghc-unordered-containers" ,ghc-unordered-containers)
+        ("ghc-attoparsec" ,ghc-attoparsec)
+        ("ghc-aeson" ,ghc-aeson)
+        ("ghc-scientific" ,ghc-scientific)))
+    (native-inputs
+      `(("ghc-doctest" ,ghc-doctest)
+        ("ghc-generic-deriving" ,ghc-generic-deriving)
+        ("ghc-semigroups" ,ghc-semigroups)
+        ("ghc-simple-reflect" ,ghc-simple-reflect)
+        ("cabal-doctest" ,cabal-doctest)))
+    (arguments
+      `(#:cabal-revision
+        ("6"
+         "1pg5v8fnlqw1krgi3d2a03a0zkjjdv5yp5f5z6q4mlb5jldz99a8")))
+    (home-page "https://github.com/lens/lens-aeson/")
+    (synopsis "Law-abiding lenses for aeson")
+    (description "Law-abiding lenses for aeson.")
+    (license license:expat)))
+
 (define-public ghc-lens-family-core
   (package
     (name "ghc-lens-family-core")

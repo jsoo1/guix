@@ -11377,6 +11377,38 @@ expose it from another module in the hierarchy.
 @end itemize")
     (license license:expat)))
 
+(define-public ghc-rio-prettyprint
+  (package
+    (name "ghc-rio-prettyprint")
+    (version "0.1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/rio-prettyprint/rio-prettyprint-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "0n8ldc73i0954c6s8jh0hibxrisp84yh5pcxv3x3q0wg4v2xvr0m"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-aeson" ,ghc-aeson)
+        ("ghc-annotated-wl-pprint" ,ghc-annotated-wl-pprint)
+        ("ghc-ansi-terminal" ,ghc-ansi-terminal)
+        ("ghc-colour" ,ghc-colour)
+        ("ghc-path" ,ghc-path)
+        ("ghc-rio" ,ghc-rio)))
+    (arguments
+      `(#:cabal-revision
+        ("2"
+         "1hvhjqy7kfk7fglx1rw8axscy0dfzqwd1564awnwdhvmf8silkkn")))
+    (home-page
+      "https://github.com/commercialhaskell/stack#readme")
+    (synopsis "Pretty-printing for RIO")
+    (description "Pretty-printing for RIO.")
+    (license license:bsd-3)))
+
 (define-public ghc-rsa
   (package
     (name "ghc-rsa")

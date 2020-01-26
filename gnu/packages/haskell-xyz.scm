@@ -15080,6 +15080,90 @@ modernized interface.")
     (description "Word8 library to be used with @code{Data.ByteString}.")
     (license license:bsd-3)))
 
+(define-public ghc-wreq
+  (package
+    (name "ghc-wreq")
+    (version "0.5.3.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/wreq/wreq-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "16xls71aby6jqc1frhwnlfvz1iwj1ms0rw9xzif02sn84470gn36"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-psqueues" ,ghc-psqueues)
+        ("ghc-aeson" ,ghc-aeson)
+        ("ghc-attoparsec" ,ghc-attoparsec)
+        ("ghc-authenticate-oauth" ,ghc-authenticate-oauth)
+        ("ghc-base16-bytestring" ,ghc-base16-bytestring)
+        ("ghc-case-insensitive" ,ghc-case-insensitive)
+        ("ghc-cryptonite" ,ghc-cryptonite)
+        ("ghc-exceptions" ,ghc-exceptions)
+        ("ghc-hashable" ,ghc-hashable)
+        ("ghc-http-client" ,ghc-http-client)
+        ("ghc-http-client-tls" ,ghc-http-client-tls)
+        ("ghc-http-types" ,ghc-http-types)
+        ("ghc-lens" ,ghc-lens)
+        ("ghc-lens-aeson" ,ghc-lens-aeson)
+        ("ghc-memory" ,ghc-memory)
+        ("ghc-mime-types" ,ghc-mime-types)
+        ("ghc-time-locale-compat" ,ghc-time-locale-compat)
+        ("ghc-unordered-containers" ,ghc-unordered-containers)))
+    (native-inputs
+      `(("cabal-doctest" ,cabal-doctest)
+        ("ghc-hunit" ,ghc-hunit)
+        ("ghc-quickcheck" ,ghc-quickcheck)
+        ("ghc-aeson-pretty" ,ghc-aeson-pretty)
+        ("ghc-base64-bytestring" ,ghc-base64-bytestring)
+        ("ghc-network-info" ,ghc-network-info)
+        ("ghc-snap-core" ,ghc-snap-core)
+        ("ghc-snap-server" ,ghc-snap-server)
+        ("ghc-temporary" ,ghc-temporary)
+        ("ghc-test-framework" ,ghc-test-framework)
+        ("ghc-test-framework-hunit" ,ghc-test-framework-hunit)
+        ("ghc-test-framework-quickcheck2" ,ghc-test-framework-quickcheck2)
+        ("ghc-unix-compat" ,ghc-unix-compat)
+        ("ghc-uuid" ,ghc-uuid)
+        ("ghc-vector" ,ghc-vector)
+        ("ghc-doctest" ,ghc-doctest)))
+    (arguments
+     `(#:tests? #f ; Tests do network IO
+       #:cabal-revision
+        ("1"
+         "0gz674sb266hv6si9l79c3bv7n2nbssl1262c24in79sk27887gb")))
+    (home-page "https://www.serpentine.com/wreq")
+    (synopsis "Easy-to-use HTTP client library")
+    (description
+      "A web client library that is designed for ease of use.
+
+Tutorial: http://www.serpentine.com/wreq/tutorial.html
+
+Features include:
+@itemize
+@item Simple but powerful `lens`-based API .
+
+@item A solid test suite, and built on reliable libraries like http-client and
+lens.
+
+@item Session handling includes connection keep-alive and pooling, and cookie
+persistence.
+
+@item Automatic response body decompression.
+@item Powerful multipart form and file upload handling.
+
+@item Support for JSON requests and responses, including navigation of
+schema-less responses.
+
+@item Basic and OAuth2 bearer authentication.
+@item Early TLS support via the tls package
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public ghc-x11
   (package
     (name "ghc-x11")

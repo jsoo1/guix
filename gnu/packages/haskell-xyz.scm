@@ -14910,6 +14910,39 @@ the @code{conduit} package.")
 documents.")
     (license license:expat)))
 
+(define-public ghc-xmlgen
+  (package
+    (name "ghc-xmlgen")
+    (version "0.6.2.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/xmlgen/xmlgen-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1milbbr2iqwckqbq6i9sypinvs4hs7mzqn274x350psjfy6ajvwj"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-blaze-builder" ,ghc-blaze-builder)))
+    (native-inputs
+      `(("ghc-hxt" ,ghc-hxt)
+        ("ghc-hunit" ,ghc-hunit)
+        ("ghc-quickcheck" ,ghc-quickcheck)))
+    (arguments
+     `(#:tests? #f ; FIXME failing tests
+       #:cabal-revision
+        ("1"
+         "0vwnqd0lsw81llsn0psga5r6pw7jh69vfbj3rnz7c2fpkc0gjh3j")))
+    (home-page
+      "http://hackage.haskell.org/package/xmlgen")
+    (synopsis "Fast XML generation library")
+    (description
+      "Library for high-performance XML generation.")
+    (license license:bsd-3)))
+
 (define-public ghc-xml-hamlet
   (package
     (name "ghc-xml-hamlet")

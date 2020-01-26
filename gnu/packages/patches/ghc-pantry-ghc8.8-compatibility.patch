@@ -1,0 +1,16 @@
+This version of pantry uses some language features that changed from 8.6 to
+8.8.
+
+diff --git a/src/Pantry/Storage.hs.old b/src/Pantry/Storage.hs
+index 8ad03b9..2d0481b 100644
+--- a/src/Pantry/Storage.hs
++++ b/src/Pantry/Storage.hs
+@@ -13,6 +13,8 @@
+ {-# LANGUAGE ViewPatterns #-}
+ {-# LANGUAGE LambdaCase #-}
+ {-# LANGUAGE UndecidableInstances #-}
++{-# LANGUAGE DerivingStrategies #-}
++{-# LANGUAGE StandaloneDeriving #-}
+ module Pantry.Storage
+   ( SqlBackend
+   , initStorage

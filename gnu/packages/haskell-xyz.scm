@@ -10892,6 +10892,33 @@ copious examples.")
 regular expressions.  Parsers can be built using Applicative interface.")
     (license license:expat)))
 
+(define-public ghc-regex-applicative-text
+  (package
+    (name "ghc-regex-applicative-text")
+    (version "0.1.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+              "https://hackage.haskell.org/package/regex-applicative-text"
+              "/regex-applicative-text-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1ng2qhk4mvpzl8fx91ig7ldv09v9aqdsvn6yl9yjapc6h0ghb4xh"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-regex-applicative" ,ghc-regex-applicative)))
+    (arguments
+      `(#:cabal-revision
+        ("4"
+         "0ykzppl1v6k70idjl73m4w161f6lsax89v1gp100y4xgipf3yijj")))
+    (home-page
+      "https://github.com/phadej/regex-applicative-text#readme")
+    (synopsis "Regex-applicative on text")
+    (description
+      "Wrapped regex-applicative primitives to work with Text.")
+    (license license:bsd-3)))
+
 (define-public ghc-regex-base
   (package
     (name "ghc-regex-base")

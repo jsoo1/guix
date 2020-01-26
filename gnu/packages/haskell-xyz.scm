@@ -2634,6 +2634,39 @@ pure @code{Either} value.  This means that you need not remember which specific
 function performs the conversion you desire.")
     (license license:bsd-3)))
 
+(define-public ghc-cpphs
+  (package
+    (name "ghc-cpphs")
+    (version "1.20.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/cpphs/cpphs-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32
+            "1bh524asqhk9v1s0wvipl0hgn7l63iy3js867yv0z3h5v2kn8vg5"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-old-locale" ,ghc-old-locale)
+        ("ghc-old-time" ,ghc-old-time)
+        ("ghc-polyparse" ,ghc-polyparse)))
+    (home-page "https://archives.haskell.org/projects.haskell.org/cpphs/")
+    (synopsis
+      "Liberalised re-implementation of cpp, the C pre-processor")
+    (description
+      "Cpphs is a re-implementation of the C pre-processor that is both more
+compatible with Haskell, and itself written in Haskell so that it can be
+distributed with compilers.
+
+This version of the C pre-processor is pretty-much feature-complete and
+compatible with traditional (K&R) pre-processors.  Additional features
+include: a plain-text mode; an option to unlit literate code files; and an
+option to turn off macro-expansion.")
+    (license license:lgpl2.1)))
+
 (define-public ghc-data-accessor
   (package
     (name "ghc-data-accessor")

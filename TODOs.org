@@ -1,0 +1,18 @@
+#+TITLE: guix
+
+* Todos
+** Fix freecad
+** Upgrade Cedille
+** Fix stack
+** Look into isabelle (remote possibility)
+** Finish kmscon upgrades
+* Notes
+** Build from source instructions - Required for ./pre-inst-env
+   <2019-12-18 Wed>
+   #+BEGIN_SRC fish
+   env SHELL=(which bash) bash
+   guix environment guix --pure
+   ./bootstrap
+   ./configure --localstatedir=/var
+   make
+   #+END_SRC

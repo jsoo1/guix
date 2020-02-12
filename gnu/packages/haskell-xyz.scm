@@ -6210,6 +6210,37 @@ that interconverts between various bibliography formats using a common
 MODS-format XML intermediate.")
     (license license:gpl2+)))
 
+(define-public ghc-hsc2hs
+  (package
+    (name "ghc-hsc2hs")
+    (version "0.68.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://hackage.haskell.org/package/hsc2hs/hsc2hs-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "1clj6bgs9vmiv3mjzp82lvyyik5zr5411nxab7hydbrgq94pbk70"))))
+    (build-system haskell-build-system)
+    (native-inputs
+     `(("ghc-tasty" ,ghc-tasty)
+       ("ghc-tasty-hspec" ,ghc-tasty-hspec)))
+    (home-page
+     "http://hackage.haskell.org/package/hsc2hs")
+    (synopsis
+     "Preprocessor that helps with writing Haskell bindings to C code.")
+    (description
+     "The hsc2hs program can be used to automate some parts of the process of
+writing Haskell bindings to C code.  It reads an almost-Haskell source file
+with embedded special constructs, and outputs a real Haskell file with these
+constructs processed, based on information taken from some C headers.  The
+extra constructs provide Haskell counterparts of C types, values of C
+constants, including sizes of C types, and access to fields of C structs.")
+    (license license:bsd-3)))
+
 (define-public ghc-hslogger
   (package
     (name "ghc-hslogger")

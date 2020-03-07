@@ -25845,6 +25845,32 @@ syntax extension expansion.")
     (description "This package provides a backport of libsyntax.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-sys-info-0.5
+  (package
+    (name "rust-sys-info")
+    (version "0.5.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sys-info" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0g22by74q93jpbpjv3c8ykdpnspdgnzqp7q6wanzqai1r543la2q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/FillZpp/sys-info-rs")
+    (synopsis "Get system information in Rust")
+    (description
+     "This package provides a Rust library for getting data about the kernel,
+CPU, memory, disk, load, hostname, and other similar system information.")
+    (license license:expat)))
+
 (define-public rust-sysctl-0.4
   (package
     (name "rust-sysctl")

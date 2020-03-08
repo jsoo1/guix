@@ -9433,6 +9433,66 @@ DWARF debugging format.")
     (description "File format checker in Rust.")
     (license license:expat)))
 
+(define-public rust-git-testament-0.1
+  (package
+    (name "rust-git-testament")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git-testament" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01sj0jypv6jannngsdpwjacvqp10n80v4kcv9riqz7vmx2501x1y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-git-testament-derive"
+         ,rust-git-testament-derive-0.1))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-tempdir" ,rust-tempdir-0.3))
+       ;; Test data only available in git repository, not uploaded to crates.io.
+       ;; Downloading the source code from GitHub breaks builds of dependants.
+       #:tests? #f))
+    (home-page "https://github.com/kinnison/git-testament/")
+    (synopsis "Record git working tree status when compiling your crate")
+    (description "This package provides a Rust library for recording the git
+status during compilation.")
+    (license license:bsd-3)))
+
+(define-public rust-git-testament-derive-0.1
+  (package
+    (name "rust-git-testament-derive")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git-testament-derive" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0hx55agsjc6ijvm4fxjmz3wqzqzw5hn26sbhmn6wxm1i4382q9nl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-git-testament" ,rust-git-testament-0.1))))
+    (home-page "https://github.com/kinnison/git-testament/")
+    (synopsis "Procedural macro for rust-git-testament")
+    (description "This package provides a Rust procedural macro used internally
+by rust-git-testament.")
+    (license license:bsd-3)))
+
 (define-public rust-git2-0.11
   (package
     (name "rust-git2")

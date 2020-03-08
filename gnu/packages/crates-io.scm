@@ -7002,8 +7002,7 @@ variables.")
          "1ka5y0fmymxzx3gz2yrd7rpz2i555m1iw4fpmcggpzcgr1n10wfk"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-version-check" ,rust-version-check-0.9))))
     (home-page "https://github.com/rust-lang-nursery/error-chain")

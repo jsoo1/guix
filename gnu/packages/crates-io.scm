@@ -6383,6 +6383,39 @@ floating-point primitives to an @code{io::Write}.")
      "Levenshtein edit distance between strings, a measure for similarity.")
     (license license:asl2.0)))
 
+(define-public rust-effective-limits-0.3
+  (package
+    (name "rust-effective-limits")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "effective-limits" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1mrwy1lmqh5kna2rjbbsg7p85aq94v124dy1m4cpdaadwzsq77qa"))
+       (modules '((guix build utils)))
+       (snippet
+         ;; Unpin the dependency version of sys-info. The dependency got pinned
+         ;; because of Windows support, but sys-info@0.5.10 works better on
+         ;; Guix since it shells out to commands less.
+         '(substitute* "Cargo.toml"
+            (("=0.5.8") "0.5.8")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-error-chain" ,rust-error-chain-0.12)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-sys-info" ,rust-sys-info-0.5)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/rbtcollins/effective-limits.rs")
+    (synopsis "Estimate effective resource limits for a process")
+    (description "This package provides a Rust library for estimating effective
+resource limits.")
+    (license license:asl2.0)))
+
 (define-public rust-either-1.5
   (package
     (name "rust-either")

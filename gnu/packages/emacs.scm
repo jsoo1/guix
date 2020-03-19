@@ -21,6 +21,7 @@
 ;;; Copyright © 2019 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -390,6 +391,33 @@ editor (console only)")
 
                     ;; These depend on libx11, so remove them as well.
                     "libotf" "m17n-lib" "dbus")))))
+
+(define-public emacs-next-no-x
+  (package
+    (inherit emacs-next)
+    (name "emacs-next-no-x")
+    (synopsis (package-synopsis emacs-no-x))
+    (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next)
+       ((#:modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:imported-modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:phases p)
+        `(modify-phases ,p
+           (delete 'restore-emacs-pdmp)))))
+    (inputs
+     (fold alist-delete
+           (package-inputs emacs-next)
+           '("libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
+             "imagemagick" "libpng" "librsvg" "libxpm" "libice"
+             "libsm"
+
+             ;; These depend on libx11, so remove them as well.
+             "libotf" "m17n-lib" "dbus")))))
 
 (define-public emacs-no-x-toolkit
   (package (inherit emacs)

@@ -20,6 +20,7 @@
 ;;; Copyright © 2019 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2019, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
+;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -483,6 +484,34 @@ of GTK and supports tree-sitter.")))
             (delete 'strip-double-wrap)))))
     (inputs (list ncurses coreutils gzip))
     (native-inputs (list autoconf pkg-config))))
+
+(define-public emacs-next-minimal
+  (package
+    (inherit emacs-next)
+    (name "emacs-next-minimal")
+    (synopsis (package-synopsis emacs-minimal))
+    (build-system gnu-build-system)
+    (inputs
+     `(("jansson" ,jansson)
+       ("texinfo" ,texinfo)
+       ,@(package-inputs emacs-minimal)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ,@(package-native-inputs emacs-minimal)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next)
+       ((#:modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:imported-modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'install-site-start)
+           (delete 'restore-emacs-pdmp)))
+       ((#:configure-flags flags ''())
+        `(list "--with-gnutls=no" "--disable-build-details"))))))
 
 (define-public emacs-xwidgets
   (package/inherit emacs

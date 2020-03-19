@@ -21,6 +21,7 @@
 ;;; Copyright © 2019 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -359,6 +360,34 @@ languages.")
        ("ncurses" ,ncurses)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))))
+
+(define-public emacs-next-minimal
+  (package
+    (inherit emacs-next)
+    (name "emacs-next-minimal")
+    (synopsis (package-synopsis emacs-minimal))
+    (build-system gnu-build-system)
+    (inputs
+     `(("jansson" ,jansson)
+       ("texinfo" ,texinfo)
+       ,@(package-inputs emacs-minimal)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ,@(package-native-inputs emacs-minimal)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next)
+       ((#:modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:imported-modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'install-site-start)
+           (delete 'restore-emacs-pdmp)))
+       ((#:configure-flags flags ''())
+        `(list "--with-gnutls=no" "--disable-build-details"))))))
 
 (define-public emacs-xwidgets
   (package

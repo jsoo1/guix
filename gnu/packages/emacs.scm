@@ -377,6 +377,33 @@ editor (console only)")
            (delete 'restore-emacs-pdmp)
            (delete 'strip-double-wrap)))))))
 
+(define-public emacs-next-no-x
+  (package
+    (inherit emacs-next)
+    (name "emacs-next-no-x")
+    (synopsis (package-synopsis emacs-no-x))
+    (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next)
+       ((#:modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:imported-modules _)
+        `((guix build emacs-utils)
+          ,@%gnu-build-system-modules))
+       ((#:phases p)
+        `(modify-phases ,p
+           (delete 'restore-emacs-pdmp)))))
+    (inputs
+     (fold alist-delete
+           (package-inputs emacs-next)
+           '("libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
+             "imagemagick" "libpng" "librsvg" "libxpm" "libice"
+             "libsm"
+
+             ;; These depend on libx11, so remove them as well.
+             "libotf" "m17n-lib" "dbus")))))
+
 (define-public emacs-no-x-toolkit
   (package/inherit emacs
     (name "emacs-no-x-toolkit")

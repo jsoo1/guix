@@ -428,10 +428,7 @@ editor (console only)")
            (package-inputs emacs-next)
            '("libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
              "imagemagick" "libpng" "librsvg" "libxpm" "libice"
-             "libsm"
-
-             ;; These depend on libx11, so remove them as well.
-             "libotf" "m17n-lib" "dbus")))))
+             "libsm")))))
 
 (define-public emacs-no-x-toolkit
   (package/inherit emacs

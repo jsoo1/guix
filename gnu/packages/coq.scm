@@ -44,6 +44,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
 (define-public coq
@@ -215,6 +216,20 @@ It is developed using Objective Caml and Camlp5.")
 assistant to write formal mathematical proofs using a variety of theorem
 provers.")
     (license license:gpl2+)))
+
+(define-public proof-general-next
+  (package
+    (inherit proof-general)
+    (name "proof-general-next")
+    (native-inputs
+     (map (match-lambda (("emacs" _) `("emacs" ,emacs-next-minimal))
+                        (x x))
+          (package-native-inputs proof-general)))
+    (inputs
+     (map (match-lambda (("host-emacs" _) `("host-emacs" ,emacs-next))
+                        (x x))
+          (package-inputs proof-general)))
+    (synopsis "Proof general but for emacs-next")))
 
 (define-public coq-flocq
   (package

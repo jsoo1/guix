@@ -5974,7 +5974,33 @@ The XCB util-wm module provides the following libraries:
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (propagated-inputs
-     `(("xauth" ,xauth)))
+     `(("twm" ,twm)
+       ("xauth" ,xauth)
+       ("xclock" ,xclock)
+       ("xorg-server" ,xorg-server)
+       ("xrdb" ,xrdb)
+       ("xterm" ,xterm)))
+    (arguments
+     `(#:configure-flags
+       (list
+        (string-append
+         "--with-twm="
+         (assoc-ref %build-inputs "twm") "/bin/twm")
+        (string-append
+         "--with-xauth="
+         (assoc-ref %build-inputs "xauth") "/bin/xauth")
+        (string-append
+         "--with-xclock="
+         (assoc-ref %build-inputs "xclock") "/bin/xclock")
+        (string-append
+         "--with-xrdb="
+         (assoc-ref %build-inputs "xrdb") "/bin/xrdb")
+        (string-append
+         "--with-xserver="
+         (assoc-ref %build-inputs "xorg-server") "/bin/X")
+        (string-append
+         "--with-xterm="
+         (assoc-ref %build-inputs "xterm") "/bin/xterm"))))
     (home-page "https://www.x.org/")
     (synopsis "Commands to start the X Window server")
     (description

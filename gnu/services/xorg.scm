@@ -84,6 +84,8 @@
             xorg-configuration-keyboard-layout
 
             xorg-configuration-directory
+            xorg-configuration->file
+
             %default-xorg-modules
             %default-xorg-fonts
             %default-xorg-server-arguments

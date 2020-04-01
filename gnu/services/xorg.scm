@@ -65,6 +65,8 @@
             xorg-configuration-server-arguments
 
             xorg-configuration-directory
+            xorg-configuration->file
+
             %default-xorg-modules
             %default-xorg-fonts
             xorg-wrapper

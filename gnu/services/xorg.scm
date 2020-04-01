@@ -66,6 +66,7 @@
             xorg-configuration-server
             xorg-configuration-server-arguments
 
+            xorg-configuration-directory
             %default-xorg-modules
             %default-xorg-fonts
             %default-xorg-server-arguments

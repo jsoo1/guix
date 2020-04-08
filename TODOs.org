@@ -1,8 +1,6 @@
 #+TITLE: guix
 
 * Todos
-** Fix freecad
-** Upgrade Cedille
 ** Fix stack
 ** Look into isabelle (remote possibility)
 ** Finish kmscon upgrades

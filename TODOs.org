@@ -14,3 +14,11 @@
    ./configure --localstatedir=/var
    make
    #+END_SRC
+** How to lint packages for revisions in range
+   #+begin_src sh
+   make && git log --oneline a0a41f17df..HEAD \
+   | rg '^[a-z0-9]+ gnu:' \
+   | sed -E 's/^.*gnu: Add ([a-z-]+)([0-9.]+)?\.$/\1 \2/' \
+   | sed -E 's/-[ ]([0-9.]+)/@\1/' \
+   | while read package; do ./pre-inst-env guix lint $package; done
+   #+end_src

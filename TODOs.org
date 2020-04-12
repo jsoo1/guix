@@ -4,6 +4,8 @@
 ** Fix stack
 ** Look into isabelle (remote possibility)
 ** Finish kmscon upgrades
+** Fix fish not graftable - issue #30265
+   [[gnus:nndoc+ephemeral:bug#30265#8B84EF65-4CCC-4CAF-A6E9-BF6F5566D11E@asu.edu][Email to 30265@debbugs.gnu.org: bug#30265: Fish embeds store file names in UCS-4/UTF-32 literal strings]]
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

@@ -8,6 +8,7 @@
    [[gnus:nndoc+ephemeral:bug#30265#8B84EF65-4CCC-4CAF-A6E9-BF6F5566D11E@asu.edu][Email to 30265@debbugs.gnu.org: bug#30265: Fish embeds store file names in UCS-4/UTF-32 literal strings]]
 ** Make a way to read all (filtered?) news for a channel
 ** Add acl2
+** Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

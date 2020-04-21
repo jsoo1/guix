@@ -3125,6 +3125,32 @@ to add D-Bus support to Haskell applications, without the awkward
 interfaces common to foreign bindings.")
     (license license:asl2.0)))
 
+(define-public ghc-dec
+  (package
+    (name "ghc-dec")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://hackage/package/dec"
+             "/dec-" version ".tar.gz"))
+       (sha256
+        (base32 "1y8bvlm2371dq2v0jv1srki98nbhbz091wh0g2x58wz78h971f6r"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision
+       ("2" "1v5f5yby0cld1ziqqgkcx8b50qkpviplspm82a6wl7lw28cjm0hs")))
+    (home-page "https://github.com/phadej/vec")
+    (synopsis "Decidable propositions in Haskell")
+    (description
+     "Decidable propositions either have a witness or a proof that they are
+uninhabited.
+
+@code{type Neg a = a -> Void}
+@code{data Dec a = Yes a | No (Neg a)}")
+    (license license:bsd-3)))
+
 (define-public ghc-deepseq-generics
   (package
     (name "ghc-deepseq-generics")

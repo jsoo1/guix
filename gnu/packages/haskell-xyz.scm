@@ -849,6 +849,19 @@ of base to a wider range of compilers, without requiring the use of CPP
 pragmas in your code.")
     (license license:bsd-3)))
 
+(define-public ghc-base-compat-0.11
+  (package
+    (inherit ghc-base-compat)
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://hackage/package/base-compat/"
+             "base-compat-" version ".tar.gz"))
+       (sha256
+        (base32 "0dkdmyxg8hfjn1zyrp4mahkr90g4y672mlvkj0m1krwkxi11avrm"))))))
+
 (define-public ghc-base-compat-batteries
   (package
     (name "ghc-base-compat-batteries")

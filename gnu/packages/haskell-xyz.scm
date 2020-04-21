@@ -3439,6 +3439,18 @@ members are shared.")
 and utilities for pretty printing.")
     (license license:bsd-3)))
 
+(define-public ghc-diff-0.4
+  (package
+    (inherit ghc-diff)
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://hackage/package/Diff/"
+                           "Diff-" version ".tar.gz"))
+       (sha256
+        (base32 "1is9y5rlqyxacnj6kbi6h9laym5shp699r0hkj5p9d6qi84sr43j"))))))
+
 (define-public ghc-disk-free-space
   (package
     (name "ghc-disk-free-space")

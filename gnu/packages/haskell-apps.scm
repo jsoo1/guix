@@ -50,7 +50,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rsync)
-  #:use-module (gnu packages version-control))
+  #:use-module (gnu packages version-control)
+  #:use-module (ice-9 match))
 
 (define-public apply-refact
   (package
@@ -140,6 +141,34 @@ library.  It is primarily used with HLint's @code{--refactor} flag.")
 Haskell software by automating the fetching, configuration, compilation and
 installation of Haskell libraries and programs.")
    (license license:bsd-3)))
+
+(define-public cabal-install-next
+  (package
+    (inherit cabal-install)
+    (name "cabal-install-next")
+    (version "3.2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://hackage.haskell.org/package/cabal-install/"
+             "cabal-install-" version ".tar.gz"))
+       (sha256
+        (base32 "1c0cc256bha97aj7l0lf76l5swlnmwcqppiz8l4cl5xgba4mwmd0"))))
+    (inputs
+     `(("ghc-cabal" ,ghc-cabal)
+       ,@(map
+          (match-lambda
+            (("ghc-hackage-security" _)
+             `("ghc-hackage-security" ,ghc-hackage-security-0.6))
+            (x x))
+          (package-inputs cabal-install))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments cabal-install)
+       ((#:cabal-revision _) #f)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'update-constraints)))))))
 
 (define-public corrode
   (let ((commit "b6699fb2fa552a07c6091276285a44133e5c9789"))

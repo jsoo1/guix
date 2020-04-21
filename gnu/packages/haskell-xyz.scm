@@ -12701,6 +12701,31 @@ them.")
 are the bottleneck of web servers.")
     (license license:bsd-3)))
 
+(define-public ghc-singleton-bool
+  (package
+    (name "ghc-singleton-bool")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://hackage/package/singleton-bool/"
+             "singleton-bool-" version ".tar.gz"))
+       (sha256
+        (base32 "17w9vv6arn7vvc7kykqcx81q2364ji43khrryl27r1cjx9yxapa0"))))
+    (build-system haskell-build-system)
+    (inputs `(("ghc-dec" ,ghc-dec)))
+    (arguments
+     `(#:cabal-revision
+       ("2" "118j0h29nqg2acqbzif2ffqnanjbwnqmv2kch9z7xiwqkz6iq8an")))
+    (home-page
+     "https://github.com/phadej/singleton-bool#readme")
+    (synopsis "Type level booleans")
+    (description
+     "Use booleans at the type level. The singletons package provides similar
+functionality, but it has tight dependency constraints.")
+    (license license:bsd-3)))
+
 (define-public ghc-singletons
   (package
     (name "ghc-singletons")

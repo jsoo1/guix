@@ -5322,6 +5322,26 @@ in the US as well as developers on the @uref{https://www.torproject.org/,
 Tor project}.")
     (license license:bsd-3)))
 
+(define-public ghc-hackage-security-0.6
+  (package
+    (inherit ghc-hackage-security)
+    (version "0.6.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://hackage/package/"
+                           "hackage-security/hackage-security-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "05rgz31cmp52137j4jk0074z8lfgk8mrf2x56bzw28asmxrv8qli"))))
+    (inputs
+     `(("ghc-lukko" ,ghc-lukko)
+       ,@(package-inputs ghc-hackage-security)))
+    (arguments
+     `(#:configure-flags '("--flags=+base48") ; For base > 4.8
+       ,@(substitute-keyword-arguments (package-arguments ghc-hackage-security)
+          ((#:cabal-revision _) #f))))))
+
 (define-public ghc-haddock
   (package
     (name "ghc-haddock")

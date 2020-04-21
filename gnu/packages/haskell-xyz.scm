@@ -8059,6 +8059,41 @@ Same combinator can be used for attributes and elements
 @end itemize")
     (license license:bsd-3)))
 
+(define-public ghc-lukko
+  (package
+    (name "ghc-lukko")
+    (version "0.1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://hackage/package/lukko/"
+                           "lukko-" version ".tar.gz"))
+       (sha256
+        (base32 "1lh7cv0fqbrn8sf54xz74wq991bl8p67jcyq4ing3khcvh9x2yca"))))
+    (build-system haskell-build-system)
+    (inputs
+     `(("ghc-async" ,ghc-async)
+       ("ghc-singleton-bool" ,ghc-singleton-bool)
+       ("ghc-temporary" ,ghc-temporary)))
+    (native-inputs
+     `(("ghc-tasty" ,ghc-tasty)
+       ("ghc-tasty-expected-failure" ,ghc-tasty-expected-failure)
+       ("ghc-tasty-hunit" ,ghc-tasty-hunit)))
+  (home-page "https://github.com/phadej/lukko")
+  (synopsis "File locking for Haskell")
+  (description
+   "Lock files according to platform dependent APIs:
+
+@itemize
+@item Open file descriptor locking on Linux (Lukko.OFD)
+@item BSD-style flock(2) locks on UNIX platforms (Lukko.FLock)
+@item Windows locking via LockFileEx (Lukko.Windows)
+@item No-op locking, which throws exceptions (Lukko.NoOp)
+@item @code{Lukko} module exports the best option for the target platform with
+uniform API.
+@end itemize")
+  (license (list license:gpl2+ license:bsd-3))))
+
 (define-public ghc-lzma
   (package
     (name "ghc-lzma")

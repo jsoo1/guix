@@ -1462,6 +1462,69 @@ foreign imports by hand (or using hsc2hs), this ensures that C functions are
 imported with the correct Haskell types.")
     (license license:gpl2)))
 
+(define-public ghc-cabal
+  (package
+    (name "ghc-cabal")
+    (version "3.2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://hackage/package/Cabal/"
+             "Cabal-" version ".tar.gz"))
+       (sha256
+        (base32 "0vz6bl1ia7wjc62sj5iw5jhigdwfz6yz01mripjcymv4qrbkl1gj"))))
+    (build-system haskell-build-system)
+    (native-inputs
+     `(("ghc-integer-logarithms" ,ghc-integer-logarithms)
+       ("ghc-tasty" ,ghc-tasty)
+       ("ghc-tasty-hunit" ,ghc-tasty-hunit)
+       ("ghc-tasty-quickcheck" ,ghc-tasty-quickcheck)
+       ("ghc-tagged" ,ghc-tagged)
+       ("ghc-temporary" ,ghc-temporary)
+       ("ghc-diff" ,ghc-diff-0.4)
+       ("ghc-quickcheck" ,ghc-quickcheck)
+       ("ghc-base-compat" ,ghc-base-compat-0.11)
+       ("ghc-tasty" ,ghc-tasty)
+       ("ghc-tasty-hunit" ,ghc-tasty-hunit)
+       ("ghc-tasty-quickcheck" ,ghc-tasty-quickcheck)
+       ("ghc-tasty-golden" ,ghc-tasty-golden)
+       ("ghc-diff" ,ghc-diff)
+       ("ghc-tree-diff" ,ghc-tree-diff)
+       ("ghc-tasty" ,ghc-tasty)
+       ("ghc-tasty-golden" ,ghc-tasty-golden)
+       ("ghc-diff" ,ghc-diff)
+       ("ghc-base-compat" ,ghc-base-compat)
+       ("ghc-base-orphans" ,ghc-base-orphans)
+       ("ghc-optparse-applicative" ,ghc-optparse-applicative)
+       ("ghc-tar" ,ghc-tar)
+       ("ghc-tree-diff" ,ghc-tree-diff)
+       ("ghc-tasty" ,ghc-tasty)
+       ("ghc-tasty-hunit" ,ghc-tasty-hunit)
+       ("ghc-tasty-quickcheck" ,ghc-tasty-quickcheck)
+       ("ghc-quickcheck" ,ghc-quickcheck)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'remove-network-tests
+           (lambda _
+             (substitute* "Cabal.cabal"
+               (("^([[:space:]]+)main-is: HackageTests.hs" all whitespace)
+                (string-append
+                 all "\n"
+                 whitespace "buildable: False\n"))))))))
+    (home-page "http://www.haskell.org/cabal/")
+    (synopsis
+     "Framework for packaging Haskell software")
+    (description
+     "Cabal is an acronym: The Haskell Common Architecture for Building
+Applications and Libraries. Cabal defines a common interface for authors to
+more easily build their Haskell applications in a portable way.
+
+The Haskell Cabal is part of a larger infrastructure for distributing,
+organizing, and cataloging Haskell libraries and tools.")
+    (license license:bsd-3)))
+
 (define-public ghc-cairo
   (package
     (name "ghc-cairo")

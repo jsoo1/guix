@@ -9,6 +9,8 @@
 ** Make a way to read all (filtered?) news for a channel
 ** Add acl2
 ** Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
+** FreeCAD: Fix python 3.8 compatibility
+   https://forum.freecadweb.org/viewtopic.php?t=38982
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

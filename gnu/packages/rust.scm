@@ -1183,4 +1183,25 @@ move around."
                  (generate-all-checksums "vendor")
                  #t)))))))))
 
+;; TODO: Remove lzma-sys' xz vendored code
+(define-public rust-1.40
+  (let ((base-rust (rust-bootstrapped-package
+                    rust-1.39 "1.40.0"
+                    "1ba9llwhqm49w7sz3z0gqscj039m53ky9wxzhaj11z6yg1ah15yx")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet '(begin
+                     ;; llvm-emscripten was removed
+                     (delete-file-recursively "src/llvm-project")
+                     (delete-file-recursively "vendor/jemalloc-sys/jemalloc")
+                     #t))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases p)
+          `(modify-phases ,p
+             (delete 'remove-unsupported-tests))))))))
+
 (define-public rust rust-1.37)

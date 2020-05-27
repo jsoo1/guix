@@ -1204,4 +1204,9 @@ move around."
           `(modify-phases ,p
              (delete 'remove-unsupported-tests))))))))
 
+(define-public rust-1.41
+  (rust-bootstrapped-package
+   rust-1.40 "1.41.1"
+   "0ws5x0fxv57fyllsa6025h3q6j9v3m8nb3syl4x0hgkddq0kvj9q"))
+
 (define-public rust rust-1.37)

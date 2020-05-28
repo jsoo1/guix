@@ -1209,4 +1209,9 @@ move around."
    rust-1.40 "1.41.1"
    "0ws5x0fxv57fyllsa6025h3q6j9v3m8nb3syl4x0hgkddq0kvj9q"))
 
+(define-public rust-1.42
+  (rust-bootstrapped-package
+   rust-1.41 "1.42.0"
+   "0x9lxs82may6c0iln0b908cxyn1cv7h03n5cmbx3j1bas4qzks6j"))
+
 (define-public rust rust-1.37)

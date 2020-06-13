@@ -30,3 +30,7 @@
    | sed -E 's/-[ ]([0-9.]+)/@\1/' \
    | while read package; do ./pre-inst-env guix lint $package; done
    #+end_src
+** Sign many commits during interactive rebase.
+   #+BEGIN_SRC fish
+   while git commit --amend --no-edit -S; if not git rebase --continue; break; end; end
+   #+END_SRC

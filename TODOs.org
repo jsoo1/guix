@@ -11,6 +11,7 @@
 ** Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
 ** FreeCAD: Fix python 3.8 compatibility
    https://forum.freecadweb.org/viewtopic.php?t=38982
+** Add note about guix pull --allow-downgrades when doing rebase workflow to contributing docs
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

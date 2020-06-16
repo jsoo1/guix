@@ -228,7 +228,7 @@ safety and thread safety guarantees.")
         (modules '((guix build utils)))
         (snippet '(begin (delete-file-recursively "src/llvm") #t))
         (patches (search-patches "rust-1.19-mrustc.patch"))))
-    (outputs '("out" "cargo"))
+    (outputs '("out" "cargo" "source"))
     (properties '((timeout . 72000)               ;20 hours
                   (max-silent-time . 18000)))     ;5 hours (for armel)
     (arguments
@@ -311,6 +311,13 @@ test = { path = \"../libtest\" }
                (("(\"checksum .* = )\".*\"" all name)
                 (string-append name "\"" ,%cargo-reference-hash "\"")))
              (generate-all-checksums "src/vendor")
+             #t))
+         (add-after 'unpack 'install-source
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Install "source" output
+             (mkdir-p (string-append (assoc-ref outputs "source") "/src"))
+             (copy-recursively
+              "." (string-append (assoc-ref outputs "source") "/src"))
              #t))
          ;; This phase is overridden by newer versions.
          (replace 'configure
@@ -474,7 +481,7 @@ safety and thread safety guarantees.")
        `(;; The tests fail with newer versions of GNU Make.
          ("make" ,gnu-make-4.2)
          ,@(package-native-inputs base-rust)))
-      (outputs '("out" "doc" "cargo"))
+      (outputs '("out" "doc" "cargo" "source"))
       ;; Since rust-1.19 is local, it's quite probable that Hydra
       ;; will build rust-1.19 only as a dependency of rust-1.20.
       ;; But then Hydra will use the wrong properties, the ones here,
@@ -583,6 +590,13 @@ jemalloc = \"" jemalloc "/lib/libjemalloc_pic.a" "\"
                     ;; Therefore, use timestamp 1.
                     (utime filename 1 1 1 1))
                   (find-files "." #:directories? #t))
+                 #t))
+             (add-after 'reset-timestamps-after-changes 'install-source
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; Install "source" output
+                 (mkdir-p (string-append (assoc-ref outputs "source") "/src"))
+                 (copy-recursively
+                  "." (string-append (assoc-ref outputs "source") "/src"))
                  #t))
              (replace 'build
                (lambda* _
@@ -918,6 +932,21 @@ jemalloc = \"" jemalloc "/lib/libjemalloc_pic.a" "\"
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
+             (replace 'install-source
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; Install "source" output, now following symlinks
+                 (mkdir-p (string-append (assoc-ref outputs "source")))
+                 ;; copy-recursively fails on these symlinks it sees twice
+                 ;; so just copy them directly
+                 (delete-file "src/tools/cargo/src/crates-io/LICENSE-MIT")
+                 (delete-file "src/tools/cargo/src/crates-io/LICENSE-APACHE")
+                 (copy-file "src/tools/cargo/LICENSE-MIT"
+                            "src/tools/cargo/src/crates-io/LICENSE-MIT")
+                 (copy-file "src/tools/cargo/LICENSE-APACHE"
+                            "src/tools/cargo/src/crates-io/LICENSE-APACHE")
+                 (copy-recursively
+                  "." (string-append (assoc-ref outputs "source") "/src"))
+                 #t))
              (add-after 'patch-cargo-tests 'patch-cargo-env-shebang
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((coreutils (assoc-ref inputs "coreutils")))
@@ -1138,6 +1167,20 @@ move around."
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
+             (replace 'install-source
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; copy-recursively fails on these symlinks it sees twice
+                 ;; so just copy them directly
+                 (delete-file "src/tools/cargo/crates/crates-io/LICENSE-MIT")
+                 (delete-file "src/tools/cargo/crates/crates-io/LICENSE-APACHE")
+                 (copy-file "src/tools/cargo/LICENSE-MIT"
+                            "src/tools/cargo/crates/crates-io/LICENSE-MIT")
+                 (copy-file "src/tools/cargo/LICENSE-APACHE"
+                            "src/tools/cargo/crates/crates-io/LICENSE-APACHE")
+                 (mkdir-p (string-append (assoc-ref outputs "source") "/src"))
+                 (copy-recursively
+                  "." (string-append (assoc-ref outputs "source") "/src"))
+                 #t))
              (add-before 'configure 'configure-cargo-home
                (lambda _
                  (let ((cargo-home (string-append (getcwd) "/.cargo")))
@@ -1273,8 +1316,35 @@ move around."
     "0x9lxs82may6c0iln0b908cxyn1cv7h03n5cmbx3j1bas4qzks6j"))
 
 (define-public rust-1.43
-  (rust-bootstrapped-package rust-1.42 "1.43.0"
-    "18akhk0wz1my6y9vhardriy2ysc482z0fnjdcgs9gy59kmnarxkm"))
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.42 "1.43.0"
+           "18akhk0wz1my6y9vhardriy2ysc482z0fnjdcgs9gy59kmnarxkm")))
+    (package
+      (inherit base-rust)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases p)
+          `(modify-phases ,p
+             (replace 'install-source
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; copy-recursively fails on these symlinks it sees twice
+                 ;; so just copy them directly
+                 (delete-file "src/tools/cargo/crates/crates-io/LICENSE-MIT")
+                 (delete-file "src/tools/cargo/crates/crates-io/LICENSE-APACHE")
+                 (delete-file "src/tools/cargo/crates/cargo-platform/LICENSE-MIT")
+                 (delete-file "src/tools/cargo/crates/cargo-platform/LICENSE-APACHE")
+                 (copy-file "src/tools/cargo/LICENSE-MIT"
+                            "src/tools/cargo/crates/crates-io/LICENSE-MIT")
+                 (copy-file "src/tools/cargo/LICENSE-MIT"
+                            "src/tools/cargo/crates/cargo-platform/LICENSE-MIT")
+                 (copy-file "src/tools/cargo/LICENSE-APACHE"
+                            "src/tools/cargo/crates/crates-io/LICENSE-APACHE")
+                 (copy-file "src/tools/cargo/LICENSE-APACHE"
+                            "src/tools/cargo/crates/cargo-platform/LICENSE-APACHE")
+                 (mkdir-p (string-append (assoc-ref outputs "source") "/src"))
+                 (copy-recursively
+                  "." (string-append (assoc-ref outputs "source") "/src"))
+                 #t)))))))))
 
 (define-public rust-1.44
   (rust-bootstrapped-package rust-1.43 "1.44.1"
@@ -1315,6 +1385,32 @@ move around."
                   (substitute* "src/tools/cargo/tests/testsuite/freshness.rs"
                     (("fn linking_interrupted" all)
                      (string-append "#[ignore] " all)))
+                  #t))
+              (replace 'install-source
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; copy-recursively fails on these symlinks it sees twice
+                 ;; so just copy them directly
+                 (delete-file "src/tools/cargo/crates/crates-io/LICENSE-MIT")
+                 (delete-file "src/tools/cargo/crates/crates-io/LICENSE-APACHE")
+                 (delete-file "src/tools/cargo/crates/cargo-platform/LICENSE-MIT")
+                 (delete-file "src/tools/cargo/crates/cargo-platform/LICENSE-APACHE")
+                 (delete-file "src/tools/clippy/rustc_tools_util/LICENSE-MIT")
+                 (delete-file "src/tools/clippy/rustc_tools_util/LICENSE-APACHE")
+                 (copy-file "src/tools/cargo/LICENSE-MIT"
+                            "src/tools/cargo/crates/crates-io/LICENSE-MIT")
+                 (copy-file "src/tools/cargo/LICENSE-MIT"
+                            "src/tools/cargo/crates/cargo-platform/LICENSE-MIT")
+                 (copy-file "src/tools/cargo/LICENSE-APACHE"
+                            "src/tools/cargo/crates/crates-io/LICENSE-APACHE")
+                 (copy-file "src/tools/cargo/LICENSE-APACHE"
+                            "src/tools/cargo/crates/cargo-platform/LICENSE-APACHE")
+                 (copy-file "src/tools/clippy/LICENSE-MIT"
+                            "src/tools/clippy/rustc_tools_util/LICENSE-MIT")
+                 (copy-file "src/tools/clippy/LICENSE-APACHE"
+                            "src/tools/clippy/rustc_tools_util/LICENSE-APACHE")
+                 (mkdir-p (string-append (assoc-ref outputs "source") "/src"))
+                 (copy-recursively
+                  "." (string-append (assoc-ref outputs "source") "/src"))
                  #t)))))))))
 
 (define-public rust-1.46

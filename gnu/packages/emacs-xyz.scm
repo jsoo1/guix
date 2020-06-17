@@ -172,6 +172,8 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages shells)
@@ -18175,11 +18177,21 @@ files.  It focuses on highlighting the document to improve readability.")
        #:test-command '("make" "test")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-rust-src-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "racer.el"
+               (("/usr/local/src/rust/src")
+                (string-append (assoc-ref inputs "rust") "/src/src"))
+               (("/usr/local/bin/racer")
+                (string-append (assoc-ref inputs "racer") "/bin/racer")))))
          (add-before 'check 'fix-makefile
            (lambda _
              (substitute* "Makefile"
                (("\\$\\{CASK\\} exec ") ""))
              #t)))))
+    (inputs
+     `(("racer" ,racer)
+       ("rust" ,rust "source")))
     (native-inputs
      `(("emacs-ert-runner" ,emacs-ert-runner)
        ("emacs-undercover" ,emacs-undercover)))

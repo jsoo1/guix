@@ -21899,6 +21899,35 @@ It is automatically published using the compiler repository at
 @url{https://www.github.com/rust-lang/rust}")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-ap-rustc-feature-654.0
+  (package
+    (name "rust-rustc-ap-rustc-feature")
+    (version "654.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-ap-rustc_feature" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1xnkfzvf5mmydxmsln5sk8wrp7xpaz45djkiwg1ffv8ff7hm7ywn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1.4)
+        ("rust-rustc-ap-rustc-data-structures"
+         ,rust-rustc-ap-rustc-data-structures-654)
+        ("rust-rustc-ap-rustc-span" ,rust-rustc-ap-rustc-span-654.0))))
+    (home-page "https://github.com/alexcrichton/rustc-auto-publish")
+    (synopsis
+     "Automatically published version of the feature gates used in rustc")
+    (description
+     "Use the feature gates of Rust compiler with this crate.
+It is automatically published using the compiler repository at
+@url{https://www.github.com/rust-lang/rust}")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustc-ap-rustc-fs-util-654.0
   (package
     (name "rust-rustc-ap-rustc-fs-util")

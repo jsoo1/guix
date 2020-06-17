@@ -21810,6 +21810,21 @@ rust.")
 console applications.")
   (license license:asl2.0)))
 
+(define-public rust-rpassword-2.1.0
+  (package
+    (inherit rust-rpassword-4)
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rpassword" version))
+       (file-name
+        (string-append
+         (package-name rust-rpassword-4) "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1v255xqkig5lwnczvm3achydhxx6kf9jcdxdlgzndgpd18bp6x6k"))))))
+
 (define-public rust-rusqlite-0.19
   (package
     (name "rust-rusqlite")

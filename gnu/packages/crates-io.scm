@@ -30957,6 +30957,39 @@ to XDG Base Directory specification.")
        (("rust-clippy" ,rust-clippy-0.0)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.3))))))
 
+(define-public rust-yansi-term-0.1
+  (package
+    (name "rust-yansi-term")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yansi-term" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1w8vjlvxba6yvidqdvxddx3crl6z66h39qxj8xi6aqayw2nk0p7y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page
+     "https://github.com/botika/yansi-term")
+    (synopsis
+     "Library for ANSI terminal colours and styles (bold, underline)")
+    (description
+     "Yansi-term provices a library for ANSI terminal colours and
+styles (bold, underline).  It is adapted from
+@url{https://github.com/ogham/rust-ansi-term}.  It was refactored to support
+@code{fmt::Display and FnOnce(&mut fmt::Formatter) -> fmt::Result}")
+    (license license:expat)))
+
 (define-public rust-zbase32-0.1
   (package
     (name "rust-zbase32")

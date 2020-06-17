@@ -26676,6 +26676,32 @@ bindings are a small wrapper around the raw C functions, which converts integer
 return values to @code{std::io::Result} to indicate success or failure.")
     (license license:expat)))
 
+(define-public rust-termize-0.1
+  (package
+    (name "rust-termize")
+    (version "0.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "termize" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "158j22glm4cw6b2whs8fxpvqwk5132qydxzmj9qcw8s3armvw1hp"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-libc" ,rust-libc-0.2)
+         ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/JohnTitor/termize")
+    (synopsis
+      "Functions for determining terminal sizes and dimensions")
+    (description
+     "This is a Rust library to enable getting terminal sizes and dimensions
+This is a fork of @url{https://github.com/clap-rs/term_size-rs}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-test-assembler-0.1
   (package
     (name "rust-test-assembler")

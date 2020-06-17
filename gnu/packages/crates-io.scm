@@ -14743,6 +14743,36 @@ for Rust structs.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-mime-guess-2.0
+  (package
+    (name "rust-mime-guess")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mime-guess" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "16c5ssgali30db6jh1cndy77dd1qgcykhshiyfyjvxxf94wx03hs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-mime" ,rust-mime-0.3)
+        ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.2)
+        ("rust-unicase" ,rust-unicase-2))))
+    (home-page
+     "https://github.com/abonander/mime_guess")
+    (synopsis
+     "Detect a file's MIME type by its extension")
+    (description
+     "This crate provides MIME/MediaType guessing by file extension.  It uses
+a static map of known file extension to MIME type mappings.")
+    (license license:expat)))
+
 (define-public rust-miniz-oxide-0.3
   (package
     (name "rust-miniz-oxide")

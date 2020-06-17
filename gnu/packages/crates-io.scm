@@ -19791,6 +19791,42 @@ This library mimics the Git way of showing progress.")
 stack pointer and inspect the properties of the stack.")
     (license (list license:isc license:asl2.0))))
 
+(define-public rust-publicsuffix-1.5
+  (package
+    (name "rust-publicsuffix")
+    (version "1.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "publicsuffix" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "040mrdpzj9lv5djxfksq2nbk29baiv3hx6gca2cfpcp23nl5kwlv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-error-chain" ,rust-error-chain-0.12)
+        ("rust-idna" ,rust-idna-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-url" ,rust-url-2.1))
+       #:cargo-development-inputs
+       (("rust-rspec" ,rust-rspec-1))))
+    (home-page
+     "https://github.com/rushmorem/publicsuffix")
+    (synopsis
+     "Robust domain name parsing and RFC compliant email address validation")
+    (description
+     "This library uses Mozilla's Public Suffix List to reliably parse domain
+names and email addresses in Rust.  Though parsing domain names is it's
+primary goal, it also fully exposes the list allowing you to use convenient
+methods like @code{list.all()} to get all known domain extensions or
+@code{list.icann()} to get only ICANN extensions.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pulldown-cmark-0.4
   (package
     (name "rust-pulldown-cmark")

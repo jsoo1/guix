@@ -443,6 +443,39 @@ shapes, lines and text to buffers.")
     (description "This package provides the glue for the Android JNI.")
     (license license:expat)))
 
+(define-public rust-annotate-snippets-0.8
+  (package
+    (name "rust-annotate-snippets")
+    (version "0.8.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "annotate-snippets" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1rbyczndanxj8380i695xaqixsnp3mgy6py0n43acpjf149s13np"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-yansi-term" ,rust-yansi-term-0.1))
+        #:cargo-development-inputs
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-difference" ,rust-difference-2.0)
+         ("rust-glob" ,rust-glob-0.3)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-toml" ,rust-toml-0.5)
+         ("rust-yansi-term" ,rust-yansi-term-0.1))))
+    (home-page "https://github.com/rust-lang/annotate-snippets-rs")
+    (synopsis
+      "Library for building code annotations")
+    (description
+     "This library helps visualize meta information annotating source code
+slices.  It takes a data structure called @code{Snippet} on the input and
+produces a @code{String} that underlines the sources of errors and more.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ansi-colours-1
   (package
     (name "rust-ansi-colours")

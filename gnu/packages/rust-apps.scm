@@ -32,7 +32,10 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control))
 
@@ -233,6 +236,60 @@ provides defaults for 80% of the use cases.")
 for distinguishing different kinds of bytes such as NULL bytes, printable ASCII
 characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
     (license (list license:expat license:asl2.0))))
+
+(define-public racer
+  (package
+    (name "racer")
+    ;; Racer "requires" nightly rustc but 2.1.33 is known to work with 1.44.0
+    (version "2.1.33")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "racer" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0hiylb0xx15r99y9h5sz98bbg1zki084l96hg46hxwkxdxljncjl"))))
+    (build-system cargo-build-system)
+    (inputs
+     `(("perl" ,perl)
+       ("python-wrapper" ,python-wrapper)
+       ("ruby" ,ruby)))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-derive-more" ,rust-derive-more-0.99)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rls-span" ,rust-rls-span-0.5)
+        ("rust-rustc-ap-rustc-ast" ,rust-rustc-ap-rustc-ast-654)
+        ("rust-rustc-ap-rustc-ast-pretty" ,rust-rustc-ap-rustc-ast-pretty-654.0)
+        ("rust-rustc-ap-rustc-errors" ,rust-rustc-ap-rustc-errors-654.0)
+        ("rust-rustc-ap-rustc-data-structures" ,rust-rustc-ap-rustc-data-structures-654)
+        ("rust-rustc-ap-rustc-parse" ,rust-rustc-ap-rustc-parse-654.0)
+        ("rust-rustc-ap-rustc-session" ,rust-rustc-ap-rustc-session-654.0)
+        ("rust-rustc-ap-rustc-span" ,rust-rustc-ap-rustc-span-654.0)
+        ("rust-lazycell" ,rust-lazycell-1.2)
+        ("rust-racer-cargo-metadata" ,rust-racer-cargo-metadata-0.1))
+       #:tests? #f ; FIXME: Test crate causes build problems
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-rustc-bootstrap
+           (lambda _ (setenv "RUSTC_BOOTSTRAP" "1") #t))
+         (add-after 'unpack 'remove-circular-test-dependency
+           (lambda _
+             (substitute* "Cargo.toml"
+               (("\\[dev-dependencies.racer-testutils\\]") "")
+               (("version = \"0.1\"") "")
+               (("path = \"testutils\"") "")))))))
+    (home-page "https://github.com/racer-rust/racer")
+    (synopsis "Code completion for Rust")
+    (description "Code completion for Rust")
+    (license license:expat)))
 
 (define-public ripgrep
   (package

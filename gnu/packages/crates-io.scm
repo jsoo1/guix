@@ -22033,6 +22033,50 @@ It is automatically published using the compiler repository at
 @url{https://www.github.com/rust-lang/rust}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-ap-rustc-parse-654.0
+  (package
+    (name "rust-rustc-ap-rustc-parse")
+    (version "654.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-ap-rustc-parse" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0j8zqmx4ijdnq41ng8krzwsr1g2sg4chicddpf3mzv4iql8hryrd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustc-ap-rustc-ast" ,rust-rustc-ap-rustc-ast-654)
+        ("rust-rustc-ap-rustc-ast-pretty"
+         ,rust-rustc-ap-rustc-ast-pretty-654.0)
+        ("rust-rustc-ap-rustc-data-structures"
+         ,rust-rustc-ap-rustc-data-structures-654)
+        ("rust-rustc-ap-rustc-errors"
+         ,rust-rustc-ap-rustc-errors-654.0)
+        ("rust-rustc-ap-rustc-feature"
+         ,rust-rustc-ap-rustc-feature-654.0)
+        ("rust-rustc-ap-rustc-lexer"
+         ,rust-rustc-ap-rustc-lexer-654)
+        ("rust-rustc-ap-rustc-session"
+         ,rust-rustc-ap-rustc-session-654.0)
+        ("rust-rustc-ap-rustc-span"
+         ,rust-rustc-ap-rustc-span-654.0)
+        ("rust-unicode-normalization"
+         ,rust-unicode-normalization-0.1))))
+    (home-page "https://github.com/alexcrichton/rustc-auto-publish")
+    (synopsis
+     "Automatically published version of the rustc parser")
+    (description
+     "Use the parser from the Rust compiler with this crate.
+It is automatically published using the compiler repository at
+@url{https://www.github.com/rust-lang/rust}")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustc-ap-rustc-span-654
   (package
     (name "rust-rustc-ap-rustc-span")

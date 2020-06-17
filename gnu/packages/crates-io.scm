@@ -11629,6 +11629,40 @@ SystemTime}}.")
 0.11.x.")
     (license license:expat)))
 
+(define-public rust-hyper-rustls-0.18
+  (package
+    (name "rust-hyper-rustls")
+    (version "0.18.0-alpha.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-rustls" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "08s8c8hqgmjmv0ivavn90yxvh9vbakr4a5dzj70y0x6qc6vm0hgj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-ct-logs" ,rust-ct-logs-0.6)
+        ("rust-futures-preview" ,rust-futures-preview-0.3)
+        ("rust-hyper" ,rust-hyper-0.12)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-tokio-io" ,rust-tokio-io-0.1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.1))))
+    (home-page "https://github.com/ctz/hyper-rustls")
+    (synopsis
+     "Rustls+hyper integration for pure rust HTTPS")
+    (description
+     "Rustls+hyper integration for pure rust HTTPS")
+    (license (list license:asl2.0 license:isc license:expat))))
+
 (define-public rust-hyper-tls-0.3
   (package
     (name "rust-hyper-tls")

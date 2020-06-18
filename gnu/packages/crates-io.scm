@@ -21887,6 +21887,80 @@ uses finite automata and guarantees linear time matching on all inputs.")
     (description "File reopening utility.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-reqwest-0.9
+  (package
+    (name "rust-reqwest")
+    (version "0.9.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reqwest" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0y4wvzl3pspd8drr2hf9kk107cjw455cb6p529sh90x58dhqjv8g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.9)
+        ("rust-bytes" ,rust-bytes-0.4)
+        ("rust-cookie" ,rust-cookie-0.12)
+        ("rust-cookie-store" ,rust-cookie-store-0.7)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-flate2" ,rust-flate2-1.0)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-hyper" ,rust-hyper-0.12)
+        ("rust-hyper-old-types" ,rust-hyper-old-types-0.11)
+        ("rust-hyper-rustls" ,rust-hyper-rustls-0.18)
+        ("rust-hyper-tls" ,rust-hyper-tls-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-mime-guess" ,rust-mime-guess-2.0)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.5)
+        ("rust-socks" ,rust-socks-0.3)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-executor" ,rust-tokio-executor-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
+        ("rust-tokio-threadpool" ,rust-tokio-threadpool-0.1)
+        ("rust-tokio-timer" ,rust-tokio-timer-0.2)
+        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.12)
+        ("rust-url" ,rust-url-1.7)
+        ("rust-uuid" ,rust-uuid-0.7)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17)
+        ("rust-winreg" ,rust-winreg-0.6))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-libflate" ,rust-libflate-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1))))
+    (home-page
+     "https://github.com/seanmonstar/reqwest")
+    (synopsis "Higher level HTTP client library")
+    (description
+     "This package provides an ergonomic, batteries-included HTTP Client for
+Rust. It features:
+
+@itemize
+@item Plain bodies, JSON, urlencoded, multipart
+@item Customizable redirect policy
+@item HTTP Proxies
+@item HTTPS via system-native TLS (or optionally, rustls)
+@item Cookie Store
+@item WASM
+@end itemize")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-resize-0.3
   (package
     (name "rust-resize")

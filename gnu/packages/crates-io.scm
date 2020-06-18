@@ -476,6 +476,21 @@ slices.  It takes a data structure called @code{Snippet} on the input and
 produces a @code{String} that underlines the sources of errors and more.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-annotate-snippets-0.6
+  (package
+    (inherit rust-annotate-snippets-0.8)
+    (version "0.6.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "annotate-snippets" version))
+        (file-name
+          (string-append
+           (package-name rust-annotate-snippets-0.8) "-" version ".tar.gz"))
+        (sha256
+          (base32
+           "19x7ldklprdgf8pam8b3lfhrxqw5yldcvk5j0bw2agsajbj1q0n7"))))))
+
 (define-public rust-ansi-colours-1
   (package
     (name "rust-ansi-colours")

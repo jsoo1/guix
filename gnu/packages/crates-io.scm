@@ -29539,6 +29539,20 @@ serializing Rust structures.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-toml-0.4
+  (package
+    (inherit rust-toml-0.5)
+    (version "0.4.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "toml" version))
+       (file-name
+        (string-append (package-name rust-toml-0.5) "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "07qilkzinn8z13vq2sss65n2lza7wrmqpvkbclw919m3f7y691km"))))))
+
 (define-public rust-toml-0.2
   (package
     (name "rust-toml")

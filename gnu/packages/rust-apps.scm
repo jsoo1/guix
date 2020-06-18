@@ -56,6 +56,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -69,12 +70,15 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ssh)
+  #:use-module (gnu packages llvm)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages sequoia)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
@@ -712,6 +716,117 @@ replacement for i3status, written in pure Rust.  It provides a way to display
 @code{blocks} of system information (time, battery status, volume, etc) on the i3
 bar.  It is also compatible with sway.")
     (license license:gpl3)))
+
+(define-public pijul
+  (package
+    (name "pijul")
+    (version "0.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pijul" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "12aqpfd2si70qbvfnn9kvznxyd5g5gsb1kk1q52wm077cd03yapr"))))
+    (build-system cargo-build-system)
+    (inputs
+     `(("clang" ,clang)
+       ("libressl" ,libressl)
+       ("libsodium" ,libsodium)
+       ("nettle" ,nettle)
+       ("pkg-config" ,pkg-config)))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-base64" ,rust-base64-0.9)
+        ("rust-bincode" ,rust-bincode-1)
+        ("rust-bs58" ,rust-bs58-0.2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-cryptovec" ,rust-cryptovec-0.4)
+        ("rust-dirs" ,rust-dirs-1)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-getch" ,rust-getch-0.2)
+        ("rust-hex" ,rust-hex-0.3)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-libpijul" ,rust-libpijul-0.12)
+        ("rust-line" ,rust-line-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-pathdiff" ,rust-pathdiff-0.1)
+        ("rust-progrs" ,rust-progrs-0.1)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-reqwest" ,rust-reqwest-0.9)
+        ("rust-rpassword" ,rust-rpassword-2)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-shell-escape" ,rust-shell-escape-0.1)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-term" ,rust-term-0.5)
+        ("rust-thrussh" ,rust-thrussh-0.21)
+        ("rust-thrussh-config" ,rust-thrussh-config-0.2)
+        ("rust-thrussh-keys" ,rust-thrussh-keys-0.11)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-uds" ,rust-tokio-uds-0.2)
+        ("rust-toml" ,rust-toml-0.4)
+        ("rust-username" ,rust-username-0.2))
+       #:cargo-development-inputs
+       (("rust-walkdir" ,rust-walkdir-2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'set-clang-env
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv
+              "LIBCLANG_PATH"
+              (string-append (assoc-ref inputs "clang") "/lib"))
+             #t))
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (use-modules (ice-9 popen)
+                          (ice-9 textual-ports))
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (share (string-append out "/share"))
+                    (bash (string-append
+                           share "/bash-completion/completions"))
+                    (zsh (string-append
+                          share "/zsh/site-functions"))
+                    (fish (string-append
+                           share "/fish/vendor_completions.d")))
+               (for-each
+                (lambda (x)
+                  (let ((dir (cddr x))
+                        (file (cadr x))
+                        (shell (car x)))
+                    (mkdir-p dir)
+                    (call-with-output-file (string-append dir "/" file)
+                      (lambda (f)
+                        (let* ((cmd (string-append
+                                     bin "/pijul generate-completions --"
+                                     shell))
+                               (pipe (open-input-pipe cmd))
+                               (completion (get-string-all pipe)))
+                          (format f "~A" completion)
+                          (close-pipe pipe)))) ))
+                `(("bash" . ("pijul" . ,bash))
+                  ("zsh" . ("_pijul" . ,zsh))
+                  ("fish" . ("pijul.fish" . ,fish))))
+               #t))))))
+    (home-page "https://pijul.org/")
+    (synopsis
+     "Patch-based distributed version control system")
+    (description
+     "This package is a version control system based on patches.  Its
+fundamental promise is that two patches producible in parallel always commute.
+This makes the whole system more correct, and much simpler to use.")
+    (license license:gpl2+)))
 
 (define-public ripgrep
   (package

@@ -7022,6 +7022,35 @@ Standard.")
      "Streaming transcoding for encoding_rs.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-enum-as-inner-0.3
+  (package
+    (name "rust-enum-as-inner")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enum-as-inner" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0bj914fh5b57j1ij66m021l9pdhvp1bnpwpahhl4qgsjprznq2lh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heck" ,rust-heck-0.3)
+        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-0.15))))
+    (home-page
+     "https://github.com/bluejekyll/enum-as-inner")
+    (synopsis
+     "Macro for deriving inner field accessor functions on enums")
+    (description
+     "This package provides a deriving proc-macro for generating functions to
+automatically give access to the inner members of an enum.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-env-logger-0.7
   (package
     (name "rust-env-logger")

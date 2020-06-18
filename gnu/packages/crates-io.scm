@@ -29141,6 +29141,54 @@ Serialize/Deserialize traits for TOML data to facilitate deserializing and
 serializing Rust str")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tracing-0.1
+  (package
+    (name "rust-tracing")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0r1yn5b1nssvi5kqj19rq4x8l6kh8s9s2hpd9vi7l6sda1d3a7vh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-spin" ,rust-spin-0.5)
+        ("rust-tracing-attributes"
+         ,rust-tracing-attributes-0.1)
+        ("rust-tracing-core" ,rust-tracing-core-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.2)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-log" ,rust-log-0.4))))
+    (home-page "https://tokio.rs")
+    (synopsis
+     "Application-level tracing for Rust")
+    (description
+     "Tracing is a framework for instrumenting Rust programs to collect
+structured, event-based diagnostic information.
+
+In asynchronous systems like Tokio, interpreting traditional log messages can
+often be quite challenging.  Since individual tasks are multiplexed on the same
+thread, associated events and log lines are intermixed making it difficult to
+trace the logic flow.  Tracing expands upon logging-style diagnostics by
+allowing libraries and applications to record structured events with
+additional information about temporality and causality — unlike a log message,
+a span in tracing has a beginning and end time, may be entered and exited by
+the flow of execution, and may exist within a nested tree of similar spans.  In
+addition, tracing spans are structured, with the ability to record typed data
+as well as textual messages.
+
+The tracing crate provides the APIs necessary for instrumenting libraries and
+applications to emit trace data.")
+    (license license:expat)))
+
 (define-public rust-tracing-attributes-0.1
   (package
     (name "rust-tracing-attributes")

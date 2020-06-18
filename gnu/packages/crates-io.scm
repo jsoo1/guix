@@ -28280,6 +28280,38 @@ fixed set of worker threads.")
      "This package provides a client and server SSH library.")
     (license license:asl2.0)))
 
+(define-public rust-thrussh-config-0.2
+  (package
+    (name "rust-thrussh-config")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-config" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0h19qysnbdvv6z2y3ii3cxqn42yvjg73wnghx83kbwj6af6chryb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-dirs" ,rust-dirs-2.0)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-thrussh" ,rust-thrussh-0.21)
+        ("rust-tokio" ,rust-tokio-0.1))))
+    (home-page
+     "https://nest.pijul.com/pijul_org/thrussh")
+    (synopsis
+     "Utilities to parse .ssh/config files, including helpers")
+    (description
+     "This package contains utilities to parse .ssh/config files,
+including helpers to implement ProxyCommand in Thrussh.")
+    (license license:asl2.0)))
+
 (define-public rust-thrussh-keys-0.11
   (package
     (name "rust-thrussh-keys")

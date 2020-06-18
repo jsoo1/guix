@@ -29144,6 +29144,50 @@ serializing Rust str")
      "This package provides a library for visualizing tree structured data.")
     (license license:expat)))
 
+(define-public rust-trust-dns-https-0.4
+  (package
+    (name "rust-trust-dns-https")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-https" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1ypkbgm5p7smjfkca3gaszhvknbr2ykf8skw8pyvpn0sq95lv5ia"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-data-encoding" ,rust-data-encoding-2.1)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-h2" ,rust-h2-0.1)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-tokio-executor" ,rust-tokio-executor-0.1)
+        ("rust-tokio-reactor" ,rust-tokio-reactor-0.1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.8)
+        ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.7)
+        ("rust-typed-headers" ,rust-typed-headers-0.1)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-tokio" ,rust-tokio-0.1))))
+    (home-page "http://www.trust-dns.org/index.html")
+    (synopsis
+     "Trust-DNS is a safe and secure DNS library")
+    (description
+     "Trust-DNS is a safe and secure DNS library.  This is an
+extension for the Trust-DNS client to use DNS over HTTPS.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-trust-dns-proto-0.8
   (package
   (name "rust-trust-dns-proto")

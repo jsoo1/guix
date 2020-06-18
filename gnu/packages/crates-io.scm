@@ -27289,6 +27289,41 @@ CPU, memory, disk, load, hostname, and other similar system information.")
     (description "Send log messages to syslog.")
     (license license:expat)))
 
+(define-public rust-take-mut-0.2
+  (package
+    (name "rust-take-mut")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "take-mut" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0q2d7w6nd5bl7bay5csq065sjg8fw0jcx6hl1983cpzf25fh0r7p"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Sgeo/take_mut")
+    (synopsis "Take a T from a mutuble T temporarily")
+    (description
+    "This crate provides several functions for handling @code{&mut T}
+including @code{take()}.
+
+@code{take()} allows for taking @code{T} out of a @code{&mut T}, doing
+anything with it including consuming it, and producing another
+@code{T} to put back in the @code{&mut T}.
+
+During @code{take()}, if a panic occurs, the entire process will be
+aborted, as there's no valid @code{T} to put back into the @code{&mut
+T}. Use @code{take_or_recover()} to replace the @code{&mut T} with a
+recovery value before continuing the panic.
+
+Contrast with @code{std::mem::replace()}, which allows for putting a
+different @code{T} into a @code{&mut T}, but requiring the new
+@code{T} to be available before being able to consume the old
+@code{T}.")
+    (license license:expat)))
+
 (define-public rust-takeable-option-0.4
   (package
     (name "rust-takeable-option")

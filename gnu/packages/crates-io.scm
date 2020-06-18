@@ -29253,6 +29253,41 @@ serializing Rust str")
      "The arena, a fast but limited type of allocator.")
     (license license:expat)))
 
+(define-public rust-typed-headers-0.1
+  (package
+    (name "rust-typed-headers")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-headers" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0g40nlq5iw0zxhwb7nfmfbr9m86abgwwhxwhzrm10nfq6bsmlvxx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-bytes" ,rust-bytes-0.4)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-mime" ,rust-mime-0.3))))
+    (home-page
+     "https://github.com/sfackler/typed-headers")
+    (synopsis
+     "Typed HTTP header serialization and deserialization")
+    (description
+     "This crate is still in its early, experimental stages.  It currently
+takes a fairly pedantic view of parsing, and tries to support exactly what's
+specified in the HTTP RFCs.
+
+The HeaderMapExt extension trait provides new methods on the
+@code{http::HeaderMap} type to insert, retrieve, and remove headers in a typed
+manner.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-typemap-0.3
   (package
     (name "rust-typemap")

@@ -29531,6 +29531,37 @@ application authors using tracing to instrument their applications.")
 extension for the Trust-DNS client to use DNS over HTTPS.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-trust-dns-native-tls-0.7
+  (package
+    (name "rust-trust-dns-native-tls")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-native-tls" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0dkwfqxjjmbikm3mav71zjymgy8wmqr4mca64x49qzknvc4qwy6z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-tokio-tls" ,rust-tokio-tls-0.3)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.8))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.1))))
+    (home-page "http://www.trust-dns.org/index.html")
+    (synopsis
+     "Trust-DNS is a safe and secure DNS library")
+    (description
+     "Trust-DNS is a safe and secure DNS library.  This is an
+extension for the Trust-DNS client to use native-tls for TLS.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-trust-dns-openssl-0.7
   (package
     (name "rust-trust-dns-openssl")

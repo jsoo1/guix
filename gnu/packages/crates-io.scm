@@ -28245,6 +28245,41 @@ fixed set of worker threads.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-thrussh-0.21
+  (package
+    (name "rust-thrussh")
+    (version "0.21.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0k8ah3kx8q6vnkq3hi78s8acxdcws6yck0x989xzx2wi89nqflhl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-byteorder" ,rust-byteorder-1.3)
+        ("rust-cryptovec" ,rust-cryptovec-0.4)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-thrussh-keys" ,rust-thrussh-keys-0.11)
+        ("rust-thrussh-libsodium"
+         ,rust-thrussh-libsodium-0.1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.6))))
+    (home-page "https://pijul.org/thrussh")
+    (synopsis "Client and server SSH library in Rust")
+    (description
+     "This package provides a client and server SSH library.")
+    (license license:asl2.0)))
+
 (define-public rust-thrussh-keys-0.11
   (package
     (name "rust-thrussh-keys")

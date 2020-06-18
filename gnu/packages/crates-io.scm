@@ -29641,6 +29641,58 @@ extension for the Trust-DNS client to use tokio-openssl for TLS.")
 foundational DNS protocol library for all Trust-DNS projects.")
   (license (list license:asl2.0 license:expat))))
 
+(define-public rust-trust-dns-resolver-0.12
+  (package
+    (name "rust-trust-dns-resolver")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-resolver" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0cjkz3rcisk7v354l5hqb3j5x9x389pjqd6da6h8skvqxr0kl6yb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-ipconfig" ,rust-ipconfig-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-lru-cache" ,rust-lru-cache-0.1)
+        ("rust-resolv-conf" ,rust-resolv-conf-0.6)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-0.6)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-executor" ,rust-tokio-executor-0.1)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-tokio-udp" ,rust-tokio-udp-0.1)
+        ("rust-trust-dns-https" ,rust-trust-dns-https-0.4)
+        ("rust-trust-dns-native-tls" ,rust-trust-dns-native-tls-0.7)
+        ("rust-trust-dns-openssl" ,rust-trust-dns-openssl-0.7)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.8)
+        ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.7)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1))))
+    (home-page "http://www.trust-dns.org/index.html")
+    (synopsis
+     "Trust-DNS is a safe and secure DNS library")
+    (description
+     "Trust-DNS is a safe and secure DNS library.  This Resolver library uses
+the Client library to perform all DNS queries.  The Resolver is intended to be
+a high-level library for any DNS record resolution see Resolver and
+AsyncResolver for supported resolution types.  The Client can be used for
+other queries.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-trust-dns-rustls-0.7
   (package
     (name "rust-trust-dns-rustls")

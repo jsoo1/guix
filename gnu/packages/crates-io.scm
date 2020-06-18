@@ -5245,26 +5245,45 @@ and reallocations.")
      "Bare bones CSV parsing with no_std support.")
     (license (list license:unlicense license:expat))))
 
-(define-public rust-ct-logs-0.3
+(define-public rust-ct-logs-0.6
   (package
     (name "rust-ct-logs")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ct-logs" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04wiwiv4ghni3x2vni3z711mlz0ndqvh04vmdkbw3nr7zbsqcdjd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-sct" ,rust-sct-0.6))))
+    (home-page "https://github.com/ctz/ct-logs")
+    (synopsis "Google's list of Certificate Transparency logs")
+    (description
+     "This package contains Google's list of Certificate
+Transparency logs for use with sct crate.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
+(define-public rust-ct-logs-0.3
+  (package
+    (inherit rust-ct-logs-0.6)
     (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ct-logs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name
+        (string-append
+         (package-name rust-ct-logs-0.6) "-" version ".tar.gz"))
        (sha256
         (base32 "1f0885ws3p49xh6dfgnhh7zjw9h4rhs9ljs8i9cnkhifzz98784f"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-sct" ,rust-sct-0.3))))
-    (home-page "https://github.com/ctz/ct-logs")
-    (synopsis "Google's list of Certificate Transparency logs")
-    (description "This package contains Google's list of Certificate
-Transparency logs for use with sct crate.")
-    (license (list license:asl2.0 license:isc license:expat))))
+       (("rust-sct" ,rust-sct-0.3))))))
 
 (define-public rust-ctor-0.1
   (package

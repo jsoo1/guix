@@ -29141,6 +29141,40 @@ Serialize/Deserialize traits for TOML data to facilitate deserializing and
 serializing Rust str")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tracing-attributes-0.1
+  (package
+    (name "rust-tracing-attributes")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-attributes" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1yly610mxhjs2078mrxn5vzx9r3jgxvhzpgw6r59zf8cbn1s2hsv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-0.15))
+       #:cargo-development-inputs
+       (("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-core" ,rust-tracing-core-0.1)
+        ("rust-tracing-fmt" ,rust-tracing-fmt-0.1))))
+    (home-page "https://tokio.rs")
+    (synopsis
+     "Procedural macro attributes for automatically instrumenting functions")
+    (description
+     "Tracing is a framework for instrumenting Rust programs to collect structured,
+event-based diagnostic information.  This crate provides the
+@code{#[instrument]} attribute for automatically instrumenting functions using
+tracing.
+
+Note that this macro is also re-exported by the main tracing crate.")
+    (license license:expat)))
+
 (define-public rust-tracing-core-0.1
   (package
     (name "rust-tracing-core")

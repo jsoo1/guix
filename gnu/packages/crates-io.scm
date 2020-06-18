@@ -28635,6 +28635,39 @@ applications backed by buffers.")
 Tokio.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tokio-openssl-0.4
+  (package
+    (name "rust-tokio-openssl")
+    (version "0.4.0-alpha.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-openssl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1h649wxs0shqc7sk2fnf9nbanfghg9viy1c1n43npyzncarn2jl9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio-io" ,rust-tokio-io-0.1))
+       #:cargo-development-inputs
+       (("rust-futures-preview" ,rust-futures-preview-0.3)
+        ("rust-tokio" ,rust-tokio-0.1))))
+    (home-page
+     "https://github.com/alexcrichton/tokio-openssl")
+    (synopsis
+     "SSL streams for Tokio backed by OpenSSL")
+    (description
+     "This library is an implementation of TLS streams using OpenSSL for
+negotiating the connection.  Each TLS stream implements the Read and Write
+traits to interact and interoperate with the rest of the futures I/O
+ecosystem.  Client connections initiated from this crate verify hostnames
+automatically and by default.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-tokio-process-0.2
   (package
     (name "rust-tokio-process")

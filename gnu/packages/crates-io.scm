@@ -29221,6 +29221,38 @@ serializing Rust str")
 extension for the Trust-DNS client to use DNS over HTTPS.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-trust-dns-openssl-0.7
+  (package
+    (name "rust-trust-dns-openssl")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-openssl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "19qxi4y33wd2g55r4v9d6b06d20bdhqhvsrsmbpz5ir3i7l5psp7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio-openssl" ,rust-tokio-openssl-0.4)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.8))
+       #:cargo-development-inputs
+       (("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio" ,rust-tokio-0.1))))
+    (home-page "http://www.trust-dns.org/index.html")
+    (synopsis
+     "Trust-DNS is a safe and secure DNS library")
+    (description
+     "Trust-DNS is a safe and secure DNS library.  This is an
+extension for the Trust-DNS client to use tokio-openssl for TLS.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-trust-dns-proto-0.8
   (package
   (name "rust-trust-dns-proto")

@@ -29144,6 +29144,53 @@ serializing Rust str")
      "This package provides a library for visualizing tree structured data.")
     (license license:expat)))
 
+(define-public rust-trust-dns-proto-0.8
+  (package
+  (name "rust-trust-dns-proto")
+  (version "0.8.0")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (crate-uri "trust-dns-proto" version))
+      (file-name
+        (string-append name "-" version ".tar.gz"))
+      (sha256
+        (base32
+          "1f9xjyz7fsa83dj00zif7lmljd4x420c0vmniinhb7c35777wi85"))))
+  (build-system cargo-build-system)
+  (arguments
+    `(#:cargo-inputs
+      (("rust-data-encoding" ,rust-data-encoding-2.1)
+       ("rust-enum-as-inner" ,rust-enum-as-inner-0.3)
+       ("rust-failure" ,rust-failure-0.1)
+       ("rust-futures" ,rust-futures-0.1)
+       ("rust-idna" ,rust-idna-0.1)
+       ("rust-lazy-static" ,rust-lazy-static-1.3)
+       ("rust-log" ,rust-log-0.4)
+       ("rust-openssl" ,rust-openssl-0.10)
+       ("rust-rand" ,rust-rand-0.4)
+       ("rust-ring" ,rust-ring-0.16)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-smallvec" ,rust-smallvec-0.6)
+       ("rust-socket2" ,rust-socket2-0.3)
+       ("rust-tokio-executor" ,rust-tokio-executor-0.1)
+       ("rust-tokio-io" ,rust-tokio-io-0.1)
+       ("rust-tokio-reactor" ,rust-tokio-reactor-0.1)
+       ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+       ("rust-tokio-timer" ,rust-tokio-timer-0.2)
+       ("rust-tokio-udp" ,rust-tokio-udp-0.1)
+       ("rust-url" ,rust-url-1.7))
+      #:cargo-development-inputs
+      (("rust-env-logger" ,rust-env-logger-0.6)
+       ("rust-tokio" ,rust-tokio-0.1))))
+  (home-page "http://www.trust-dns.org/index.html")
+  (synopsis
+    "Trust-DNS is a safe and secure DNS library")
+  (description
+    "Trust-DNS is a safe and secure DNS library.  This is the
+foundational DNS protocol library for all Trust-DNS projects.")
+  (license (list license:asl2.0 license:expat))))
+
 (define-public rust-try-from-0.3
   (package
     (name "rust-try-from")

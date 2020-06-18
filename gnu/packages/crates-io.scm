@@ -24711,6 +24711,36 @@ for the serde framework.")
                ((", path = \"../serde\"") ""))
              #t)))))))
 
+(define-public rust-serde-urlencoded-0.5
+  (package
+    (name "rust-serde-urlencoded")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-urlencoded" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0nhnzllx5xrij4x17g351n14md691r95mxr7sbpz4sl80n8xcbb4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-dtoa" ,rust-dtoa-0.4)
+        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-url" ,rust-url-1.7))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page
+     "https://github.com/nox/serde_urlencoded")
+    (synopsis "Serde support for x-www-form-urlencoded")
+    (description
+      "This package provides serde support for the x-www-form-urlencoded
+format.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-serde-yaml-0.8
   (package
     (name "rust-serde-yaml")

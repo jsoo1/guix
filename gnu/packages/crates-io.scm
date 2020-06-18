@@ -12258,6 +12258,35 @@ immutable interval tree.")
     (description "Parsing ISO8601 dates using nom.")
     (license license:expat)))
 
+(define-public rust-ipconfig-0.2
+  (package
+    (name "rust-ipconfig")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ipconfig" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gyqiqr4nk2dw9ild1aq3hnv6984sgydfdq7ki586q5ydwhzlyda"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-socket2" ,rust-socket2-0.3)
+        ("rust-widestring" ,rust-widestring-0.4)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-winreg" ,rust-winreg-0.6))))
+    (home-page
+     "https://github.com/liranringel/ipconfig")
+    (synopsis
+     "Get network adapters information and network configuration for windows")
+    (description
+     "You can get network adapters information and network configuration for
+windows with this crate.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-itertools-0.9
   (package
     (name "rust-itertools")

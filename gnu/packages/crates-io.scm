@@ -13157,6 +13157,36 @@ values of all the exported APIs match the platform that libc is compiled for.")
 macros on libc without stdlib.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-libflate-0.1
+  (package
+    (name "rust-libflate")
+    (version "0.1.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libflate" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1p8z839c5lpl0g01mf8iglys9lgcjxw6xjw56crhwp8z7gs5s4yr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-adler32" ,rust-adler32-1)
+        ("rust-crc32fast" ,rust-crc32fast-1.2)
+        ("rust-rle-decode-fast" ,rust-rle-decode-fast-1)
+        ("rust-take-mut" ,rust-take-mut-0.2))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2))))
+    (home-page "https://github.com/sile/libflate")
+    (synopsis
+     "Rust implementation of DEFLATE algorithm and formats")
+    (description
+     "This package provides a Rust implementation of DEFLATE algorithm and
+related formats including ZLIB and GZIP.")
+    (license license:expat)))
+
 (define-public rust-libgit2-sys-0.10
   (package
     (name "rust-libgit2-sys")

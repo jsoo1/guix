@@ -1856,6 +1856,20 @@ that uses Serde for transforming structs into bytes and vice versa!")
      "This package provides a vector of bits.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-bit-vec-0.4
+  (package
+    (inherit rust-bit-vec-0.5)
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bit-vec" version))
+       (file-name
+        (string-append (package-name rust-bit-vec-0.5) "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0pw902a8ail0k64a7092a8vngfzsq7xkj2r22hz6q1z62s5zzd02"))))))
+
 (define-public rust-bitflags-1
   (package
     (name "rust-bitflags")

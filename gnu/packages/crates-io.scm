@@ -33588,6 +33588,35 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
        (("rust-clippy" ,rust-clippy-0.0)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.3))))))
 
+(define-public rust-yasna-0.1
+  (package
+    (name "rust-yasna")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yasna" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1frcd79rzi6dlly7lldjn2avnhfmj6yxrjsgvb2p1k2zbxdzyc9s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bit-vec" ,rust-bit-vec-0.4)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-num" ,rust-num-0.1)
+        ("rust-num-bigint" ,rust-num-bigint-0.1))
+       #:cargo-development-inputs
+       (("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/qnighy/yasna.rs")
+    (synopsis "ASN.1 library for Rust")
+    (description
+     "To serialize ASN.1 data, you can use @code{construct_der}.
+To deserialize ASN.1 data, you can use parse_ber or @code{parse_der}."  )
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-zbase32-0.1
   (package
     (name "rust-zbase32")

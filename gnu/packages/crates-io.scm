@@ -29042,6 +29042,42 @@ pool.")
     (description "Timer facilities for Tokio.")
     (license license:expat)))
 
+(define-public rust-tokio-tls-0.3
+  (package
+    (name "rust-tokio-tls")
+    (version "0.3.0-alpha.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-tls" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1hcxgqqmg8v0lmw5hnfr5w2x7p2x97m50yisjrmxjcz89a8v2ay6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-tokio-io" ,rust-tokio-io-0.1))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-futures-preview" ,rust-futures-preview-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-schannel" ,rust-schannel-0.1)
+        ("rust-security-framework" ,rust-security-framework-0.3)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-net" ,rust-tokio-net-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://tokio.rs")
+    (synopsis
+     "TLS/SSL streams for Tokio")
+    (description
+     "This package provides an implementation of TLS/SSL streams for Tokio
+giving an implementation of TLS for nonblocking I/O streams.")
+    (license license:expat)))
+
 (define-public rust-tokio-trace-core-0.2
   (package
     (name "rust-tokio-trace-core")

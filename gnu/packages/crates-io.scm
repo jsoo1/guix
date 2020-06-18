@@ -30790,6 +30790,32 @@ untrusted inputs in Rust.")
 See winapi for types and constants.")
     (license license:expat)))
 
+(define-public rust-username-0.2
+  (package
+    (name "rust-username")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "username" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "028s7gpsz17z6chy818bpkxldixfxhlvicvyvhdbrxr7cpgjbr4j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-advapi32-sys" ,rust-advapi32-sys-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://pijul.org/darcs/user")
+    (synopsis
+     "Portably retrieve the username of the user running the current thread")
+    (description
+     "Portably retrieve the user name (and possibly other information in
+future versions) of the user running the current thread.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-users-0.10
   (package
     (name "rust-users")

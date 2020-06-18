@@ -15923,8 +15923,7 @@ cryptographic library.")
     (inputs
      `(("nettle", nettle)))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-development-inputs
+     `(#:cargo-inputs
        (("rust-bindgen" ,rust-bindgen-0.51)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (home-page "https://gitlab.com/sequoia-pgp/nettle-sys")

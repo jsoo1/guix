@@ -28806,6 +28806,51 @@ fixed set of worker threads.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-thrussh-keys-0.11
+  (package
+    (name "rust-thrussh-keys")
+    (version "0.11.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thrussh-keys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0rkhkkav9kv1q9lgxgydnrkniq4ccrf107lcygimralnkwyzjwjy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-bit-vec" ,rust-bit-vec-0.4)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cryptovec" ,rust-cryptovec-0.4)
+        ("rust-dirs" ,rust-dirs-2.0)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-hex" ,rust-hex-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.1)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-thrussh-libsodium"
+         ,rust-thrussh-libsodium-0.1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-yasna" ,rust-yasna-0.1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-tempdir" ,rust-tempdir-0.3)
+        ("rust-tokio-uds" ,rust-tokio-uds-0.2))))
+    (home-page "https://pijul.org/thrussh/")
+    (synopsis
+     "Deal with SSH keys in Rust")
+    (description
+     "This package provides a rust library to deal with SSH keys.
+With it you can load them, decrypt them, and call an SSH agent.")
+    (license license:asl2.0)))
+
 (define-public rust-thrussh-libsodium-0.1
   (package
     (name "rust-thrussh-libsodium")

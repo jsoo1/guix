@@ -185,6 +185,34 @@ the Rust programming language.")
     (license (list license:bsd-3
                    license:zlib))))
 
+(define-public rust-advapi32-sys-0.2
+  (package
+    (name "rust-advapi32-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "advapi32-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "16largvlrd1800vvdchml0ngnszjlnpqm01rcz5hm7di1h48hrg0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-winapi-build" ,rust-winapi-build-0.1))))
+    (home-page
+     "https://github.com/retep998/winapi-rs")
+    (synopsis
+     "Contains function definitions for the Windows API library advapi32")
+    (description
+     "Contains function definitions for the Windows API library advapi32.
+The winapi crate's types and constants has more details about this API.")
+    (license license:expat)))
+
 (define-public rust-aead-0.3
   (package
     (name "rust-aead")

@@ -33736,9 +33736,36 @@ other queries.")
 extension for the Trust-DNS client to use rustls for TLS.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-trust-dns-rustls-0.6
+(define-public rust-trust-dns-rustls-0.7
   (package
     (inherit rust-trust-dns-rustls-0.19)
+    (name "rust-trust-dns-rustls")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-rustls" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0glpggq31764q7lp19h5l6implsr7ik015qkm5rg7pqwy93krsb3"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.19)
+        ("rust-webpki" ,rust-webpki-0.21))
+       #:cargo-development-inputs
+       (("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio" ,rust-tokio-0.1))))))
+
+(define-public rust-trust-dns-rustls-0.6
+  (package
+    (inherit rust-trust-dns-rustls-0.7)
     (name "rust-trust-dns-rustls")
     (version "0.6.4")
     (source

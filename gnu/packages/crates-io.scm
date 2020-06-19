@@ -32515,6 +32515,45 @@ Verification.")
        (("rust-untrusted" ,rust-untrusted-0.6)
         ("rust-webpki" ,rust-webpki-0.18))))))
 
+(define-public rust-websocket-base-0.24
+  (package
+    (name "rust-websocket-base")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "websocket-base" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0x535b292mqivc3v1iyy34l260z72plfx91h9jswqk8cs3q10f2y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-byteorder" ,rust-byteorder-1.3)
+        ("rust-bytes" ,rust-bytes-0.4)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-sha1" ,rust-sha1-0.6)
+        ("rust-tokio-codec" ,rust-tokio-codec-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-tokio-tls" ,rust-tokio-tls-0.2))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.1))))
+    (home-page
+     "https://github.com/websockets-rs/rust-websocket")
+    (synopsis
+     "WebSocket library for Rust")
+    (description
+     "This package provides a WebSocket (RFC6455) library for Rust: low-level
+component.  It contains HTTP-independent aspect of WebSockets")
+    (license license:expat)))
+
 (define-public rust-weedle-0.10
   (package
     (name "rust-weedle")

@@ -22170,6 +22170,43 @@ this crate is here to save you the hassle of maintaining and testing
 your own implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rls-analysis-0.18
+  (package
+    (name "rust-rls-analysis")
+    (version "0.18.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "rls-analysis" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+           "02myq1c8yk070j5xfpp8j8jn39r3x3cl4jy7489505v7ss5203ac"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-derive-new" ,rust-derive-new-0.5)
+         ("rust-fst" ,rust-fst-0.4)
+         ("rust-itertools" ,rust-itertools-0.8)
+         ("rust-json" ,rust-json-0.12)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-rls-data" ,rust-rls-data-0.19)
+         ("rust-rls-span" ,rust-rls-span-0.5)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1))
+        #:cargo-development-inputs
+        (("rust-env-logger" ,rust-env-logger-0.7)
+         ("rust-lazy-static" ,rust-lazy-static-1.4))))
+    (home-page "https://github.com/rust-lang/rls")
+    (synopsis
+      "Library for processing rustc's save-analysis data for the RLS")
+    (description
+      "RLS is the Rust Language Server - an implementation of the language
+server protocol for Rust.  This is a library for processing rustc's
+save-analysis data for the RLS")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rls-data-0.19
   (package
     (name "rust-rls-data")

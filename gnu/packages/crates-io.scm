@@ -12858,6 +12858,39 @@ ipc, websockets and tcp.")
 jsonrpc-core crate.")
     (license license:expat)))
 
+(define-public rust-jsonrpc-tcp-server-14.2
+  (package
+    (name "rust-jsonrpc-tcp-server")
+    (version "14.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonrpc-tcp-server" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0c5i3rqkav1s6vcx1d73jibb6x51aj0xdg7qmrbfk3k76r8yhh14"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+        ("rust-jsonrpc-server-utils"
+         ,rust-jsonrpc-server-utils-14.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.10)
+        ("rust-tokio-service" ,rust-tokio-service-0.1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page
+     "https://github.com/paritytech/jsonrpc")
+    (synopsis "TCP/IP server for JSON-RPC")
+    (description
+     "This package provides a TCP/IP server for JSON-RPC implemented in
+Rust.")
+    (license license:expat)))
+
 (define-public rust-kernel32-sys-0.2
   (package
     (name "rust-kernel32-sys")

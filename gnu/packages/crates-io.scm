@@ -12826,6 +12826,38 @@ Specification.  It has transport-agnostic core and transport servers for http,
 ipc, websockets and tcp.")
     (license license:expat)))
 
+(define-public rust-jsonrpc-server-utils-14.2
+  (package
+    (name "rust-jsonrpc-server-utils")
+    (version "14.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonrpc-server-utils" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fq28jwiabpsxgsfi9718avcbckp5cf0v7qx28hjx43z5r3gpjsn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-globset" ,rust-globset-0.4)
+        ("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+        ("rust-lazy-static" ,rust-lazy-static-1.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-codec" ,rust-tokio-codec-0.1)
+        ("rust-unicase" ,rust-unicase-2))))
+    (home-page
+     "https://github.com/paritytech/jsonrpc")
+    (synopsis "Server utils for jsonrpc-core crate")
+    (description
+     "This package provides utilities to write servers in conjunction with the
+jsonrpc-core crate.")
+    (license license:expat)))
+
 (define-public rust-kernel32-sys-0.2
   (package
     (name "rust-kernel32-sys")

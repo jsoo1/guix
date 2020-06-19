@@ -22156,6 +22156,38 @@ this crate is here to save you the hassle of maintaining and testing
 your own implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rls-data-0.19
+  (package
+    (name "rust-rls-data")
+    (version "0.19.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "rls-data" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "14f4ymf04ndgvwmgf7w3jfqg5sayvkmmgc8b57vfanq4gsljxivn"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-rls-span" ,rust-rls-span-0.5)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/rust-lang/rls")
+    (synopsis
+      "Data structures used by the RLS and Rust compiler")
+    (description
+     "These are used by the save-analysis functionality in the
+compiler (rustc -Zsave-analysis).  In that use, the compiler translates info in
+its internal data structures to these data structures then serialises them as
+JSON. Clients (such as the RLS) can use this crate when deserialising.
+
+The data can also be passed directly from compiler to client if the compiler
+is used as a library.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rls-span-0.5
   (package
     (name "rust-rls-span")

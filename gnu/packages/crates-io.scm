@@ -12760,10 +12760,10 @@ like Node.js and browsers, built on @code{#[wasm_bindgen]} using the
 wasm-bindgen crate.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-json-0.11
+(define-public rust-json-0.12
   (package
     (name "rust-json")
-    (version "0.11.15")
+    (version "0.12.4")
     (source
       (origin
         (method url-fetch)
@@ -12771,15 +12771,29 @@ wasm-bindgen crate.")
         (file-name (string-append name "-" version ".crate"))
         (sha256
          (base32
-          "1rg9jxf6bpbwis3ixd5ak8rp37him7n4z8awz4ssrxl6hyplbhlj"))))
+          "1z9vybaaz3xq95bwmyln2ijmn4dmzj61xlz06jsc9dnzmxg2i3h7"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
     (home-page "https://github.com/maciejhirsz/json-rust")
     (synopsis "JSON implementation in Rust")
     (description "This crate provides a JSON implementation in Rust, reducing
 friction with idiomatic Rust structs to ease interopability.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-json-0.11
+  (package
+    (inherit rust-json-0.12)
+    (version "0.11.15")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "json" version))
+        (file-name
+         (string-append
+          (package-name rust-json-0.12) "-" version ".crate"))
+        (sha256
+         (base32
+          "1rg9jxf6bpbwis3ixd5ak8rp37him7n4z8awz4ssrxl6hyplbhlj"))))))
 
 (define-public rust-kernel32-sys-0.2
   (package

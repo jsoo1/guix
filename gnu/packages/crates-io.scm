@@ -4598,6 +4598,46 @@ to @code{is_x86_feature_detected}.")
      "This package provides a statistics-driven micro-benchmarking library.")
     (license (list license:asl2.0 license:expat))))
 
+;; Pinned for itertools@0.9
+(define-public rust-criterion-0.3.0
+  (package
+    (inherit rust-criterion-0.3)
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion" version))
+       (file-name
+        (string-append (package-name rust-criterion-0.3)
+                       "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1lgpr82rlmg6rm4gr3c3pla2xgxnakbf8w9sabjsig8jkikmbiqz"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-cast" ,rust-cast-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.4)
+        ("rust-csv" ,rust-csv-1.1)
+        ("rust-itertools" ,rust-itertools-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand-core" ,rust-rand-core-0.5)
+        ("rust-rand-os" ,rust-rand-os-0.2)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tinytemplate" ,rust-tinytemplate-1.0)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-tempdir" ,rust-tempdir-0.3))))))
+
 (define-public rust-criterion-0.2
   (package
     (inherit rust-criterion-0.3)

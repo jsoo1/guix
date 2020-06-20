@@ -12859,6 +12859,41 @@ ipc, websockets and tcp.")
      "This package provides a Rust http server using JSONRPC 2.0.")
     (license license:expat)))
 
+(define-public rust-jsonrpc-ipc-server-14.2
+  (package
+    (name "rust-jsonrpc-ipc-server")
+    (version "14.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonrpc-ipc-server" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1d9w770w07d8xlpykkahlq77l2pk6y8rb7jl7fb37n156dlwvp6y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+        ("rust-jsonrpc-server-utils"
+         ,rust-jsonrpc-server-utils-14.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-parity-tokio-ipc" ,rust-parity-tokio-ipc-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.10)
+        ("rust-tokio-service" ,rust-tokio-service-0.1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-tokio-uds" ,rust-tokio-uds-0.2))))
+    (home-page
+     "https://github.com/paritytech/jsonrpc")
+    (synopsis "IPC server for JSON-RPC")
+    (description
+     "This package provides a Rust implementation of an IPC server for
+JSON-RPC.")
+    (license license:expat)))
+
 (define-public rust-jsonrpc-pubsub-14.2
   (package
     (name "rust-jsonrpc-pubsub")

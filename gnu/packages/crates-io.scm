@@ -24357,6 +24357,34 @@ rustc compiler.")
      "Automatically apply the suggestions made by rustc.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustfmt-config-proc-macro-0.5
+  (package
+    (name "rust-rustfmt-config-proc-macro")
+    (version "0.5.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "rustfmt-config-proc-macro" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1zklv9yliyphyccami8hzip8kgfr6azllqzjgh1ynhj5r9d9alqf"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))
+        #:cargo-development-inputs
+        (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-lang/rustfmt")
+    (synopsis
+      "Procedural macros for rustfmt")
+    (description
+      "This package provides a collection of procedural macros for rustfmt.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustls-0.16
   (package
     (name "rust-rustls")

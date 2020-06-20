@@ -28,6 +28,7 @@
 (define-module (gnu packages crates-io)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -22588,6 +22589,45 @@ JSON. Clients (such as the RLS) can use this crate when deserialising.
 The data can also be passed directly from compiler to client if the compiler
 is used as a library.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-rls-ipc-0.1
+  (let ((commit "rust-1.44.1")
+        (revision "1"))
+    (package
+      (name "rust-rls-ipc")
+      (version (string-append "0.1.0-" revision "-" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/rust-lang/rls.git")
+           (commit commit)))
+         (file-name (string-append name "-" version))
+         (sha256
+          (base32 "1lncx24yhgqf0yxrm3q2qr154j8v2ihknqi98vwdi83jjc6qjsm6"))))
+      (build-system cargo-build-system)
+      (arguments
+       `(#:cargo-inputs
+         (("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+          ("rust-jsonrpc-core-client" ,rust-jsonrpc-core-client-14.2)
+          ("rust-jsonrpc-derive" ,rust-jsonrpc-derive-14.2)
+          ;; Pin 14.0.3 to use single parity-tokio-ipc version (0.2)
+          ("rust-jsonrpc-ipc-server" ,rust-jsonrpc-ipc-server-14.2)
+          ("rust-rls-data" ,rust-rls-data-0.19)
+          ("rust-serde" ,rust-serde-1))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'chdir-ipc
+             (lambda _
+               (chdir "rls-ipc")
+               #t)))))
+      (home-page "https://github.com/rust-lang/rls")
+      (synopsis "Inter-process communication between RLS and rustc")
+      (description
+       "This package provides Inter-process communication (IPC) layer between
+RLS (Rust Language Server) and rustc.")
+      (license (list license:asl2.0 license:expat)))))
 
 (define-public rust-rls-span-0.5
   (package

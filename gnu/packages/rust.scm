@@ -1475,4 +1475,4 @@ move around."
                        (package-inputs base-rust))))))
 
 ;; TODO(staging): Bump this variable to the latest packaged rust.
-(define-public rust rust-1.45)
+(define-public rust rust-1.46)

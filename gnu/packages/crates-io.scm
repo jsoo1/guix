@@ -11838,6 +11838,32 @@ SystemTime}}.")
        (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-rustc-test" ,rust-rustc-test-0.3))))))
 
+(define-public rust-if-chain-1.0
+  (package
+    (name "rust-if-chain")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "if-chain" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0zgcn31bahnsmsjc0cgk0cy38p8sfjs79yvi6rjs5zz5b5xhqdn3"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/lfairy/if_chain")
+    (synopsis
+     "Macro for writing nested `if let` expressions.")
+    (description
+     "This crate provides a single macro called @code{if_chain!}.
+
+@code{if_chain!} lets you write long chains of nested @code{if} and @code{if
+let} statements without the associated rightward drift.  It also supports
+multiple patterns (e.g. @code{if let Foo(a) | Bar(a) = b}) in places where
+Rust would normally not allow them.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ignore-0.4
   (package
     (name "rust-ignore")

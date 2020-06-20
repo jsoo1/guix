@@ -258,7 +258,7 @@ Interface} specification.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-2)
         ("rust-cssparser" ,rust-cssparser-0.27)
-        ("rust-html5ever" ,rust-html5ever-0.24)
+        ("rust-html5ever" ,rust-html5ever-0.25)
         ("rust-regex" ,rust-regex-1)
         ("rust-reqwest" ,rust-reqwest-0.10)
         ("rust-sha2" ,rust-sha2-0.9)
@@ -1157,7 +1157,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
                   "ImportTaxonomy"
                   "ImportText"
                   "ImportXML"))
-               (for-each 
+               (for-each
                 (lambda (directory)
                   (copy-recursively directory
                                     (string-append perl "/../" directory)))

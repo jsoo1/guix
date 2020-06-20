@@ -12875,6 +12875,33 @@ Specification.  It has transport-agnostic core and transport servers for http,
 ipc, websockets and tcp.")
     (license license:expat)))
 
+(define-public rust-jsonrpc-core-client-14.2
+  (package
+    (name "rust-jsonrpc-core-client")
+    (version "14.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonrpc-core-client" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04s7r56w8q77y8s9nqid151mp0sk6lvd7qpxldwn5dkrphii28il"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-jsonrpc-client-transports"
+         ,rust-jsonrpc-client-transports-14.2))))
+    (home-page
+     "https://github.com/paritytech/jsonrpc")
+    (synopsis
+     "Transport agnostic JSON-RPC 2.0 client implementation.")
+    (description
+     "This package provides core client functionality for a transport agnostic
+JSON-RPC 2.0 implementation.")
+    (license license:expat)))
+
 (define-public rust-jsonrpc-http-server-14.2
   (package
     (name "rust-jsonrpc-http-server")

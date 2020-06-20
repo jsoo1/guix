@@ -3725,6 +3725,44 @@ colorization.")
 pitfalls in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-clippy-lints-0.0
+  (package
+    (name "rust-clippy-lints")
+    ;; Version pinned to work with rust version 1.44
+    (version "0.0.202")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clippy-lints" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0sz7mxg8s5y4ws73jfda0dv2jxab4rfdq8r80z3bf72arcjwc7lg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cargo-metadata" ,rust-cargo-metadata-0.9)
+        ("rust-if-chain" ,rust-if-chain-1.0)
+        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-matches" ,rust-matches-0.1)
+        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.7)
+        ("rust-quine-mc-cluskey" ,rust-quine-mc-cluskey-0.2)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
+        ("rust-semver" ,rust-semver-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1)
+        ("rust-url" ,rust-url-1.7))))
+    (home-page "https://github.com/rust-lang-nursery/rust-clippy")
+    (synopsis
+     "Lints to avoid common pitfalls in Rust")
+    (description
+     "This package provides a bunch of helpful lints to avoid common pitfalls in Rust.")
+    (license license:mpl2.0)))
+
 (define-public rust-cloudabi-0.0
   (package
     (name "rust-cloudabi")

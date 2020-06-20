@@ -14768,6 +14768,41 @@ platform-independently.")
         (base32
          "08ayl9aqjnmf7ly1ipy6dk3wjvyfn4w51l40jzh1fh984ykldbzi"))))))
 
+(define-public rust-markup5ever-rcdom-0.1
+  (package
+    (name "rust-markup5ever-rcdom")
+    (version "0.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "markup5ever-rcdom" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0axf6vrms8579lvhbjaj0v7bhs8xb7s26d4sam2g3m6qpi1xl5gh"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-html5ever" ,rust-html5ever-0.25)
+         ("rust-markup5ever" ,rust-markup5ever-0.10)
+         ("rust-tendril" ,rust-tendril-0.4)
+         ("rust-xml5ever" ,rust-xml5ever-0.16))
+        #:cargo-development-inputs
+        (("rust-rustc-test" ,rust-rustc-test-0.3)
+         ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/servo/html5ever")
+    (synopsis
+      "Unsupported DOM structure for tests in html5ever/xml5ever")
+    (description
+     "This crate is built for the express purpose of writing automated tests
+for the html5ever and xml5ever crates.  It is not intended to be a
+production-quality DOM implementation, and has not been fuzzed or tested
+against arbitrary, malicious, or nontrivial inputs.  No maintenance or support
+for any such issues will be provided.  If you use this DOM implementation in a
+production, user-facing system, you do so at your own risk.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-match-cfg-0.1
   (package
     (name "rust-match-cfg")

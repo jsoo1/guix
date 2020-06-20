@@ -20985,6 +20985,22 @@ integers, floats, tuples, booleans, lists, strings, options and results.")
         ("rust-log" ,rust-log-0.3)
         ("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-quickcheck-0.3
+  (package
+    (inherit rust-quickcheck-0.4)
+    (name "rust-quickcheck")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quickcheck" version))
+       (file-name
+        (string-append (package-name rust-quickcheck-0.4)
+                       "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01a6s6lmnjld9lahbl54qp7h7x2hnkkzhcyr2gdhbk460sj3scqb"))))))
+
 (define-public rust-quickcheck-0.2
   (package
     (inherit rust-quickcheck-0.4)

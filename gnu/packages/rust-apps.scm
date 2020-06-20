@@ -26,6 +26,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
@@ -521,6 +522,79 @@ gitignore rules.")
         (sha256
          (base32
           "13jzbmjz1bmmfr0i80hw6ar484mgabx3hbpb2ynhk0ddqi0yr58m"))))))
+
+(define-public rustfmt-nightly
+  (let ((commit "rust-1.44-beta")
+        (revision "1"))
+    (package
+      (name "rustfmt-nightly")
+      (version (string-append "1.4.14-" revision "-" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/rust-lang/rustfmt.git")
+           (commit commit)))
+         (file-name (string-append name "-" version))
+         (sha256
+          (base32
+           "12sgiqlxxb20k96bfgqv62gycdy4aalvns7cvpiq1y01i37g64ka"))))
+      (build-system cargo-build-system)
+      (arguments
+       `(#:cargo-inputs
+         (("rust-itertools" ,rust-itertools-0.8)
+          ("rust-toml" ,rust-toml-0.5)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-json" ,rust-serde-json-1)
+          ("rust-unicode-segmentation"
+           ,rust-unicode-segmentation-1.0)
+          ("rust-regex" ,rust-regex-1)
+          ("rust-term" ,rust-term-0.6)
+          ("rust-diff" ,rust-diff-0.1)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-env-logger" ,rust-env-logger-0.7)
+          ("rust-getopts" ,rust-getopts-0.2)
+          ("rust-derive-new" ,rust-derive-new-0.5)
+          ("rust-cargo-metadata" ,rust-cargo-metadata-0.8)
+          ("rust-failure" ,rust-failure-0.1)
+          ("rust-bytecount" ,rust-bytecount-0.6)
+          ("rust-unicode-width" ,rust-unicode-width-0.1)
+          ("rust-unicode-categories" ,rust-unicode-categories-0.1)
+          ("rust-dirs" ,rust-dirs-2.0)
+          ("rust-ignore" ,rust-ignore-0.4)
+          ("rust-annotate-snippets" ,rust-annotate-snippets-0.8)
+          ("rust-structopt" ,rust-structopt-0.3)
+          ("rust-rustfmt-config-proc-macro"
+           ,rust-rustfmt-config-proc-macro-0.5)
+          ("rust-lazy-static" ,rust-lazy-static-1.0)
+          ("rust-rustc-workspace-hack" ,rust-rustc-workspace-hack-1.0)
+          ("rust-rustc-ap-rustc-ast"
+           ,rust-rustc-ap-rustc-ast-654)
+          ("rust-rustc-ap-rustc-ast-pretty"
+           ,rust-rustc-ap-rustc-ast-pretty-654.0)
+          ("rust-rustc-ap-rustc-data-structures"
+           ,rust-rustc-ap-rustc-data-structures-654)
+          ("rust-rustc-ap-rustc-errors"
+           ,rust-rustc-ap-rustc-errors-654.0)
+          ("rust-rustc-ap-rustc-expand"
+           ,rust-rustc-ap-rustc-expand-654.0)
+          ("rust-rustc-ap-rustc-parse"
+           ,rust-rustc-ap-rustc-parse-654.0)
+          ("rust-rustc-ap-rustc-session"
+           ,rust-rustc-ap-rustc-session-654.0)
+          ("rust-rustc-ap-rustc-span"
+           ,rust-rustc-ap-rustc-span-654.0))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-rustc-bootstrap
+             (lambda _ (setenv "RUSTC_BOOTSTRAP" "1") #t)))))
+      (home-page "https://github.com/rust-lang/rustfmt")
+      (synopsis "Tool to find and fix Rust formatting issues")
+      (description
+       "This package provides a tool for formatting Rust code according to
+style guidelines.")
+      (license (list license:asl2.0 license:expat)))))
 
 (define-public tokei
   (package

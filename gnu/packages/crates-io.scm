@@ -26113,7 +26113,7 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
   (package
     (inherit rust-html5ever-0.25)
     (name "rust-html5ever")
-    (version "0.24.1")
+    (version "0.25.1")
     (source
      (origin
        (method url-fetch)
@@ -26126,10 +26126,10 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-mac" ,rust-mac-0.1)
-        ("rust-markup5ever" ,rust-markup5ever-0.9)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))
+        ("rust-markup5ever" ,rust-markup5ever-0.10)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.2)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)

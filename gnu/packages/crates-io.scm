@@ -22929,6 +22929,31 @@ save-analysis with a stable toolchain.")
 Rust Language Server.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rls-vfs-0.8
+  (package
+    (name "rust-rls-vfs")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rls-vfs" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1jc3ijf5dh4db7myf9x3zpd3s20y2h1gqa20q5gfsc23bfr5fjyf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-rls-span" ,rust-rls-span-0.5))))
+    (home-page "https://github.com/rust-lang/rls")
+    (synopsis "Virtual File System for the RLS")
+    (description
+     "This package provides a Virtual File System for the RLS (Rust Language
+Server).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ron-0.4
   (package
     (name "rust-ron")

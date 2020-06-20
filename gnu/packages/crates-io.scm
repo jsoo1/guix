@@ -24300,6 +24300,30 @@ require unstable language features.")
 rustc compiler.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-workspace-hack-1.0
+  (package
+    (name "rust-rustc-workspace-hack")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-workspace-hack" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1yx8l58n2vb2ldpi3z1jn4dmi5hnxvikbhpd5lilpdvkl7xd4wgw"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-lang/rust")
+    (synopsis
+     "Hack for the compiler's own build system")
+    (description
+     "This crate is a bit of a hack to make workspaces in rustc work a bit
+better.  The rationale for this existence is a bit subtle, but the general
+idea is that we want commands like @command{./x.py build
+src/tools/{rls,clippy,cargo}} to share as many dependencies as possible.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustdoc-stripper-0.1
   (package
     (name "rust-rustdoc-stripper")

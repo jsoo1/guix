@@ -20623,10 +20623,10 @@ methods like @code{list.all()} to get all known domain extensions or
 @code{list.icann()} to get only ICANN extensions.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-pulldown-cmark-0.4
+(define-public rust-pulldown-cmark-0.7
   (package
     (name "rust-pulldown-cmark")
-    (version "0.4.1")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
@@ -20635,8 +20635,41 @@ methods like @code{list.all()} to get all known domain extensions or
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1db8vlhm3n72051bkq4am80q28rfrh88796i3y9ajf5hhk3lrdyi"))))
+         "007f01rzcbpf6s6fgbvjgag0wcapsyqs0szf0l321lj9iwxjq51y"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-html5ever" ,rust-html5ever-0.25)
+        ("rust-markup5ever-rcdom" ,rust-markup5ever-rcdom-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-tendril" ,rust-tendril-0.4))))
+    (home-page "https://github.com/raphlinus/pulldown-cmark")
+    (synopsis "Pull parser for CommonMark")
+    (description
+     "This package provides a pull parser for CommonMark.")
+    (license license:expat)))
+
+(define-public rust-pulldown-cmark-0.4
+  (package
+    (inherit rust-pulldown-cmark-0.7)
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pulldown-cmark" version))
+       (file-name
+        (string-append (package-name rust-pulldown-cmark-0.7)
+                       "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1db8vlhm3n72051bkq4am80q28rfrh88796i3y9ajf5hhk3lrdyi"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs

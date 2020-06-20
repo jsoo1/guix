@@ -31399,6 +31399,29 @@ with the Unicode character database.")
      "Implementation of the Unicode Bidirectional Algorithm.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-unicode-categories-0.1
+  (package
+    (name "rust-unicode-categories")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-categories" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0kp1d7fryxxm7hqywbk88yb9d1avsam9sg76xh36k5qx2arj9v1r"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/swgillespie/unicode-categories")
+    (synopsis
+     "Query Unicode category membership for chars")
+    (description
+     "This package provides a simple crate that adds many extensions to the
+char type that allow for the querying of whether or not a character is a
+member of a certain category of unicode characters.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-normalization-0.1
   (package
     (name "rust-unicode-normalization")

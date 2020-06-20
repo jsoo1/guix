@@ -12795,6 +12795,55 @@ friction with idiomatic Rust structs to ease interopability.")
          (base32
           "1rg9jxf6bpbwis3ixd5ak8rp37him7n4z8awz4ssrxl6hyplbhlj"))))))
 
+(define-public rust-jsonrpc-client-transports-14.2
+  (package
+    (name "rust-jsonrpc-client-transports")
+    (version "14.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonrpc-client-transports" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0n6i8nqy42jrdqm8l7b21bkf29vaapbjnszss7cnhc942z6amggc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-failure" ,rust-failure-0.1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-hyper" ,rust-hyper-0.12)
+        ("rust-hyper-tls" ,rust-hyper-tls-0.3)
+        ("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+        ("rust-jsonrpc-pubsub" ,rust-jsonrpc-pubsub-14.2)
+        ("rust-jsonrpc-server-utils"
+         ,rust-jsonrpc-server-utils-14.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-parity-tokio-ipc" ,rust-parity-tokio-ipc-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-url" ,rust-url-1.7)
+        ("rust-websocket" ,rust-websocket-0.24))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1.3)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-jsonrpc-http-server"
+         ,rust-jsonrpc-http-server-14.2)
+        ("rust-jsonrpc-ipc-server"
+         ,rust-jsonrpc-ipc-server-14.2)
+        ("rust-lazy-static" ,rust-lazy-static-1.4)
+        ("rust-tokio" ,rust-tokio-0.1))))
+    (home-page
+     "https://github.com/paritytech/jsonrpc")
+    (synopsis
+     "Transport agnostic JSON-RPC 2.0 client implementation")
+    (description
+     "This package provides a Rust implementation of a JSON-RPC 2.0 client
+implementation.  This package provides various transport implementations.")
+    (license license:expat)))
+
 (define-public rust-jsonrpc-core-14.2
   (package
     (name "rust-jsonrpc-core")

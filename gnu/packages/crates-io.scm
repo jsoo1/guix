@@ -12902,6 +12902,47 @@ ipc, websockets and tcp.")
 JSON-RPC 2.0 implementation.")
     (license license:expat)))
 
+(define-public rust-jsonrpc-derive-14.2
+  (package
+    (name "rust-jsonrpc-derive")
+    (version "14.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jsonrpc-derive" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vxm7nc10jq3gp3v701xyblm8ic69m9i8daqba14cwi2bsagdb8g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-crate" ,rust-proc-macro-crate-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+        ("rust-jsonrpc-core-client"
+         ,rust-jsonrpc-core-client-14.2)
+        ("rust-jsonrpc-pubsub" ,rust-jsonrpc-pubsub-14.2)
+        ("rust-jsonrpc-tcp-server"
+         ,rust-jsonrpc-tcp-server-14.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-trybuild" ,rust-trybuild-1.0))))
+    (home-page
+     "https://github.com/paritytech/jsonrpc")
+    (synopsis
+     "High level, typed wrapper for jsonrpc-core")
+    (description
+     "This package provides a high level, typed wrapper for
+rust-jsonrpc-core.  It is a Rust implementation of JSON-RPC 2.0.")
+    (license license:expat)))
+
 (define-public rust-jsonrpc-http-server-14.2
   (package
     (name "rust-jsonrpc-http-server")

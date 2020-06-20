@@ -22861,6 +22861,48 @@ is used as a library.")
 RLS (Rust Language Server) and rustc.")
       (license (list license:asl2.0 license:expat)))))
 
+(define-public rust-rls-rustc-0.6
+  (let ((commit "rust-1.44.1")
+        (revision "1"))
+    (package
+      (name "rust-rls-rustc")
+      (version (string-append "0.6.0-" revision "-" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/rust-lang/rls.git")
+           (commit commit)))
+         (file-name (string-append name "-" version))
+         (sha256
+          (base32 "1lncx24yhgqf0yxrm3q2qr154j8v2ihknqi98vwdi83jjc6qjsm6"))))
+      (build-system cargo-build-system)
+      (arguments
+       `(#:cargo-inputs
+         (("rust-env-logger" ,rust-env-logger-0.7)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-rand" ,rust-rand-0.7)
+          ("rust-clippy-lints" ,rust-clippy-lints-0.0)
+          ("rust-tokio" ,rust-tokio-0.1)
+          ("rust-failure" ,rust-failure-0.1)
+          ("rust-futures" ,rust-futures-0.1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-rls-data" ,rust-rls-data-0.19)
+          ("rust-rls-ipc" ,rust-rls-ipc-0.1))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'chdir-rustc
+             (lambda _
+               (chdir "rls-rustc")
+               #t)))))
+      (home-page "https://github.com/rust-lang/rls")
+      (synopsis "Shim around rustc for save-analysis")
+      (description
+       "This package provides a simple shim around rustc to allow using
+save-analysis with a stable toolchain.")
+      (license (list license:asl2.0 license:expat)))))
+
 (define-public rust-rls-span-0.5
   (package
     (name "rust-rls-span")

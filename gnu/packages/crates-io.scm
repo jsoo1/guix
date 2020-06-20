@@ -11399,10 +11399,10 @@ Hash-based Message Authentication Code}.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winutil" ,rust-winutil-0.1))))))
 
-(define-public rust-html5ever-0.24
+(define-public rust-html5ever-0.25
   (package
     (name "rust-html5ever")
-    (version "0.24.1")
+    (version "0.25.1")
     (source
      (origin
        (method url-fetch)
@@ -11416,14 +11416,12 @@ Hash-based Message Authentication Code}.")
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-mac" ,rust-mac-0.1)
-        ("rust-markup5ever" ,rust-markup5ever-0.9)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))
+        ("rust-markup5ever" ,rust-markup5ever-0.10)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.2)
-        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
-        ("rust-rustc-test" ,rust-rustc-test-0.3)
+       (("rust-criterion" ,rust-criterion-0.3)
         ("rust-typed-arena" ,rust-typed-arena-1.4))))
     (home-page "https://github.com/servo/html5ever")
     (synopsis "High-performance browser-grade HTML5 parser")
@@ -11432,16 +11430,19 @@ Hash-based Message Authentication Code}.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-html5ever-0.23
-  (package/inherit rust-html5ever-0.24
-    (name "rust-html5ever")
+  (package
+    (inherit rust-html5ever-0.25)
     (version "0.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "html5ever" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name
+        (string-append (package-name rust-html5ever-0.25)
+                       "-" version ".tar.gz"))
        (sha256
-        (base32 "1dx8k7synrmf3fl6gcfm5q1cybfglvhc9xnvly3s5xcc0b45mrjw"))))
+        (base32
+         "1dx8k7synrmf3fl6gcfm5q1cybfglvhc9xnvly3s5xcc0b45mrjw"))))
     (arguments
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)

@@ -19998,6 +19998,40 @@ replacements, adding colorful diffs.")
 formatted tables in terminal.")
     (license license:bsd-3)))
 
+(define-public rust-proc-macro-crate-0.1
+  (package
+    (name "rust-proc-macro-crate")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro-crate" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "07pyc64bxlcz9g4hl0gc8cwqcjxpgh4ssvgxjvxsgj2ly58ln3g1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-0.6)
+        ("rust-syn" ,rust-syn-0.15))))
+    (home-page "https://github.com/bkchr/proc-macro-crate")
+    (synopsis
+     "Replacement for macro_rules crate in proc-macros")
+    (description
+     "This crate provides a way to get the name of a crate, even if it renamed
+in Cargo.toml.  For this purpose a single function crate_name is provided.
+This function needs to be called in the context of a proc-macro with the name
+of the desired crate.  CARGO_MANIFEST_DIR will be used to find the current
+active Cargo.toml and this Cargo.toml is searched for the desired crate.  The
+returned name of crate_name is either the given original rename (crate not
+renamed) or the renamed name.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-proc-macro-error-0.4
   (package
     (name "rust-proc-macro-error")

@@ -31323,6 +31323,21 @@ boundaries according to Unicode Standard Annex #29 rules.")
         (base32
          "1a9jqg7rb1yq6w2xc9jgxcs111yk5vxm9afjfvykfnrmzk6z8rqr"))))))
 
+(define-public rust-unicode-segmentation-1.0
+  (package
+    (inherit rust-unicode-segmentation-1.3)
+    (name "rust-unicode-segmentation")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-segmentation" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1dnlsrjrapsvml2dfaayk3s11bijdrq1q59n1fp7g2ix2z2kclrw"))))))
+
 (define-public rust-unicode-width-0.1
   (package
     (name "rust-unicode-width")

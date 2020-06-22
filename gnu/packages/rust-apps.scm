@@ -28,6 +28,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
@@ -55,7 +56,8 @@
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1s902xgplz1167k0r7x235p914lprpsqy2if0kpa1mlb0fswqqq4"))))
+         "1s902xgplz1167k0r7x235p914lprpsqy2if0kpa1mlb0fswqqq4"))
+       (patches (search-patches "exa-ignore-tests.patch"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -85,32 +87,6 @@
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((openssl (assoc-ref inputs "openssl")))
                (setenv "OPENSSL_DIR" openssl))
-             #t))
-         ;; Ignoring failing tests.
-         ;; Reported in https://github.com/ogham/exa/issues/318
-         (add-before 'check 'disable-failing-tests
-           (lambda _
-             (substitute* "src/options/mod.rs"
-               (("^.*fn oneline_across.*" oneline-across)
-                (string-append "#[ignore]\n" oneline-across)))
-
-             (substitute* "src/options/view.rs"
-               (("test!\\(across:.*") "")
-               (("test!\\(empty:.*") "")
-               (("test!\\(gracross:.*") "")
-               (("test!\\(grid:.*") "")
-               (("test!\\(icons:.*") "")
-               (("test!\\(just_binary:.*") "")
-               (("test!\\(just_blocks:.*") "")
-               (("test!\\(just_bytes:.*") "")
-               (("test!\\(just_git:.*") "")
-               (("test!\\(just_group:.*") "")
-               (("test!\\(just_header:.*") "")
-               (("test!\\(just_inode:.*") "")
-               (("test!\\(just_links:.*") "")
-               (("test!\\(leg:.*") "")
-               (("test!\\(lid:.*") "")
-               (("test!\\(original_g:.*") ""))
              #t))
          (add-after 'install 'install-extras
            (lambda* (#:key outputs #:allow-other-keys)

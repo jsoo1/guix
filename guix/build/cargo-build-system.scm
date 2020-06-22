@@ -147,8 +147,9 @@ directory = '" port)
   "Build a given Cargo package."
   (or skip-build?
       (apply invoke "cargo" "build"
-             "--features" (string-join features)
-             cargo-build-flags)))
+             (append (if (nil? features) '()
+                         (list "--features" (string-join features)))
+                     cargo-build-flags))))
 
 (define* (check #:key
                 tests?

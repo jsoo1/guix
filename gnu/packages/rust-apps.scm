@@ -41,6 +41,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control))
 
@@ -438,6 +439,86 @@ system, easy to use and fast.  Command-line interface.")
 your current directory for a regex pattern while respecting your
 gitignore rules.")
     (license (list license:unlicense license:expat))))
+
+(define-public rls
+  (let ((commit "rust-1.44.1")
+        (revision "1"))
+    (package
+      (name "rls")
+      (version "1.41.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/rust-lang/rls.git")
+           (commit commit)))
+         (file-name (string-append name "-" version))
+         (sha256
+          (base32
+           "1lncx24yhgqf0yxrm3q2qr154j8v2ihknqi98vwdi83jjc6qjsm6"))
+         (patches (search-patches "rls-remove-git-sources.patch"))))
+      (build-system cargo-build-system)
+      (arguments
+       `(#:cargo-inputs
+         (("rust-rls-analysis" ,rust-rls-analysis-0.18)
+          ("rust-rls-data" ,rust-rls-data-0.19)
+          ("rust-rls-rustc" ,rust-rls-rustc-0.6)
+          ("rust-rls-span" ,rust-rls-span-0.5)
+          ("rust-rls-vfs" ,rust-rls-vfs-0.8)
+          ("rust-rls-ipc" ,rust-rls-ipc-0.1)
+          ("rust-anyhow" ,rust-anyhow-1.0)
+          ("rust-cargo" ,rust-cargo-0.44)
+          ("rust-cargo-metadata" ,rust-cargo-metadata-0.8)
+          ("rust-clippy-lints" ,rust-clippy-lints-0.0)
+          ("rust-env-logger" ,rust-env-logger-0.7)
+          ("rust-futures" ,rust-futures-0.1)
+          ("rust-home" ,rust-home-0.5)
+          ("rust-itertools" ,rust-itertools-0.8)
+          ("rust-jsonrpc-core" ,rust-jsonrpc-core-14.2)
+          ("rust-lsp-types" ,rust-lsp-types-0.74)
+          ("rust-lazy-static" ,rust-lazy-static-1)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-num-cpus" ,rust-num-cpus-1)
+          ("racer" ,racer)
+          ("rust-rand" ,rust-rand-0.7)
+          ("rust-rayon" ,rust-rayon-1)
+          ("rust-rustc-tools-util" ,rust-rustc-tools-util-0.2)
+          ("rustfmt-nightly" ,rustfmt-nightly)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-json" ,rust-serde-1)
+          ("rust-serde-derive" ,rust-serde-derive-1)
+          ("rust-serde-ignored" ,rust-serde-ignored-0.1)
+          ("rust-tokio" ,rust-tokio-0.1)
+          ("rust-url" ,rust-url-2.1)
+          ("rust-walkdir" ,rust-walkdir-2)
+          ("rust-regex" ,rust-regex-1)
+          ("rust-ordslice" ,rust-ordslice-0.3)
+          ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
+          ("rust-toml" ,rust-toml-0.5)
+          ("rust-heck" ,rust-heck-0.3)
+          ("rust-rustc-workspace-hack" ,rust-rustc-workspace-hack-1.0)
+          ("rust-difference" ,rust-difference-2.0)
+          ("rust-tempfile" ,rust-tempfile-3)
+          ("rust-lsp-codec" ,rust-lsp-codec-0.1)
+          ("rust-tokio" ,rust-tokio-0.1)
+          ("rust-futures" ,rust-futures-0.1)
+          ("rust-tokio-process" ,rust-tokio-process-0.2)
+          ("rust-tokio-timer" ,rust-tokio-timer-0.2))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-rustc-bootstrap
+             (lambda _ (setenv "RUSTC_BOOTSTRAP" "1") #t)))))
+      (home-page "https://github.com/rust-lang/rls")
+      (synopsis
+       "Provides information about Rust programs to IDEs and other tools")
+      (description
+       "The RLS (Rust Language Server) provides a server that runs in the
+background, providing IDEs, editors, and other tools with information about
+Rust programs.  It supports functionality such as 'goto definition', symbol
+search, reformatting, and code completion, and enables renaming and
+refactorings.")
+      (license (list license:asl2.0 license:expat)))))
 
 (define-public rust-cbindgen
   (package

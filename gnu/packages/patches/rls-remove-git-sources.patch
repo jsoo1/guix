@@ -1,0 +1,24 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 7f9fa03..5e3e961 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -24,15 +24,15 @@ path = "rls/src/main.rs"
+ rls-analysis = "0.18.0"
+ rls-data = "0.19"
+ # FIXME: Release rls-rustc 0.6.0 to crates.io
+-rls-rustc = { version = "0.6.0", path = "rls-rustc" }
++rls-rustc = "0.6.0"
+ rls-span = "0.5"
+ rls-vfs = "0.8"
+-rls-ipc = { version = "0.1.0", path = "rls-ipc", optional = true }
++rls-ipc = { version = "0.1.0", optional = true }
+ 
+ anyhow = "1.0.26"
+-cargo = { git = "https://github.com/rust-lang/cargo", rev = "bda50510d1daf6e9c53ad6ccf603da6e0fa8103f" }
++cargo = "^0.44"
+ cargo_metadata = "0.8"
+-clippy_lints = { git = "https://github.com/rust-lang/rust-clippy", rev = "d236b30a1d638340aad8345fa2946cfe9543dcf0", optional = true }
++clippy_lints = { version = "^0.0", optional = true }
+ env_logger = "0.7"
+ futures = { version = "0.1", optional = true }
+ home = "0.5.1"

@@ -5952,6 +5952,31 @@ algorithm which serves to quantify the difference between two colors.")
     (description "Demo of proc-macro-hack.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-derive-arbitrary-0.4
+  (package
+    (name "rust-derive-arbitrary")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive-arbitrary" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vyjacw4drkiln1h4j5z7rsmjqq2xihsfg528k6pvkp7sf2k3d02"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/nagisa/rust_arbitrary")
+    (synopsis "Derive the Arbitrary trait")
+    (description "This package provides deriving macro for the Arbitrary
+trait.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-builder-0.9
   (package
     (name "rust-derive-builder")

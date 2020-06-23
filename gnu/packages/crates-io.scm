@@ -31355,6 +31355,34 @@ extension for the Trust-DNS client to use rustls for TLS.")
      "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-twox-hash-1.5
+  (package
+    (name "rust-twox-hash")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "twox-hash" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0mmgs93dahlsqqwy447znljcad6y787gk7lvzxwffp4jaxsmpz9v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.8)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/shepmaster/twox-hash")
+    (synopsis
+     "Rust implementation of the XXHash algorithm")
+    (description
+     "This package provides a Rust implementation of the XXHash algorithm.")
+    (license license:expat)))
+
 (define-public rust-typeable-0.1
   (package
     (name "rust-typeable")

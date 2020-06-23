@@ -3054,9 +3054,24 @@ capabilities")
 metadata}.")
     (license license:expat)))
 
-(define-public rust-cargo-metadata-0.6
+(define-public rust-cargo-metadata-0.8
   (package
     (inherit rust-cargo-metadata-0.9)
+    (name "rust-cargo-metadata")
+    (version "0.8.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cargo_metadata" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "09n4fp9hrg0z84y5q0q98rlinh0832zls3q0s0ip4dbxzlqkf2vh"))))))
+
+(define-public rust-cargo-metadata-0.6
+  (package
+    (inherit rust-cargo-metadata-0.8)
     (name "rust-cargo-metadata")
     (version "0.6.4")
     (source

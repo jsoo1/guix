@@ -14543,6 +14543,36 @@ key-value pairs.")
         (base32
          "0jxsgkn378kxkiqdshdjdclw5wwp2xaz45cqd3yw85fhn8a38fza"))))))
 
+(define-public rust-lsp-codec-0.1
+  (package
+    (name "rust-lsp-codec")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lsp-codec" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "06nkn53xg46cfxr1arbn6x4qqmjl5w9dj10q5pcdvy4wv1x7778n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tokio-codec" ,rust-tokio-codec-0.1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-tokio" ,rust-tokio-0.1))))
+    (home-page "https://github.com/Xanewok/lsp-codec")
+    (synopsis
+     "Tokio based Codec implementation for Language Server Protocol")
+    (description
+     "This package provides a simple Tokio 0.1-based Codec implementation for
+Language Server Protocol.")
+    (license license:expat)))
+
 (define-public rust-lsp-types-0.74
   (package
     (name "rust-lsp-types")

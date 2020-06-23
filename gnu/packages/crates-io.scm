@@ -15441,6 +15441,33 @@ for Rust structs.")
     (description "Rust bindings for Metal.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-metrohash-1.0
+  (package
+    (name "rust-metrohash")
+    (version "1.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "metrohash" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0v2hn33ypx79naimfcz58pz46qhj2prawvx1p9abrb72375m799v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-fnv" ,rust-fnv-1)
+        ("rust-twox-hash" ,rust-twox-hash-1.5))))
+    (home-page
+     "https://github.com/arthurprs/metrohash-rs")
+    (synopsis
+     "MetroHash hash algorithm in Rust")
+    (description
+     "This package provides a Rust implementation of MetroHash, a high
+quality, high performance hash algorithm.")
+    (license license:expat)))
+
 (define-public rust-mime-0.3
   (package
     (name "rust-mime")

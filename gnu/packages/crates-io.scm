@@ -25845,6 +25845,38 @@ for the serde framework.")
      "Macros to auto-generate implementations for the serde framework.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-repr-0.1
+  (package
+    (name "rust-serde-repr")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde_repr" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0xhwamlb1ax3w87mpq0awcphwchprh93y1hb47rm3c0p3favgiid"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1.0)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1.0))))
+    (home-page "https://github.com/dtolnay/serde-repr")
+    (synopsis
+     "Derive Serialize and Deserialize using repr of a C-like enum")
+    (description
+     "Derive Serialize and Deserialize that delegates to the underlying repr
+of a C-like enum.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-test-1
   (package
     (name "rust-serde-test")

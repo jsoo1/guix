@@ -724,8 +724,31 @@ text or blue underlined text, on ANSI terminals.")
          "153awzwywmb61xg857b80l63b1x6hifx2pha7lxf6fck9qxwraq8"))))
     (arguments '())))
 
+(define-public rust-arbitrary-0.4
+  (package
+    (name "rust-arbitrary")
+    (version "0.4.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "arbitrary" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+           "1x60qfkifl0kbm09h699ppg09kf3dzsxri7q6i5zzaky0pql9dbw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-derive-arbitrary" ,rust-derive-arbitrary-0.4))))
+    (home-page "https://github.com/nagisa/rust_arbitrary/")
+    (synopsis "Trait for generating structured data from unstructured data")
+    (description
+     "The trait for generating structured data from unstructured data.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-arbitrary-0.2
   (package
+    (inherit rust-arbitrary-0.4)
     (name "rust-arbitrary")
     (version "0.2.0")
     (source
@@ -737,12 +760,7 @@ text or blue underlined text, on ANSI terminals.")
         (sha256
           (base32
             "1i3fhcdyjq4isn22xx2svmpfr5hwyzi0wavbm07fs8i2dv5pdkv4"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/nagisa/rust_arbitrary/")
-    (synopsis "Trait for generating structured data from unstructured data")
-    (description
-     "The trait for generating structured data from unstructured data.")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:cargo-inputs ()))))
 
 (define-public rust-arc-swap-0.4
   (package

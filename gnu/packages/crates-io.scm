@@ -14543,6 +14543,36 @@ key-value pairs.")
         (base32
          "0jxsgkn378kxkiqdshdjdclw5wwp2xaz45cqd3yw85fhn8a38fza"))))))
 
+(define-public rust-lsp-types-0.74
+  (package
+    (name "rust-lsp-types")
+    (version "0.74.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lsp-types" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "14nkm2m3haa297jiifdbxzqly7cjpa1164s5888krqg0i577aq5k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.12)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1)
+        ("rust-url" ,rust-url-2.1))))
+    (home-page "https://github.com/gluon-lang/lsp-types")
+    (synopsis
+     "Types for interaction with a language server")
+    (description
+     "This package provides Rust types for interaction with a language
+server, using VSCode's Language Server Protocol.")
+    (license license:expat)))
+
 (define-public rust-lyon-geom-0.14
   (package
     (name "rust-lyon-geom")

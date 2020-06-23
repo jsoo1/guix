@@ -17717,6 +17717,28 @@ iteration.  NOTE: This crate was renamed to @code{indexmap}.  Please use it
 under its new name.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ordslice-0.3
+  (package
+    (name "rust-ordslice")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ordslice" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0950m13dnh1dzw1059fw65l7c2jyqimax03xrclnhdz4vg1yw86x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/alkis/ordslice-rs")
+    (synopsis "Extensions for ordered slices")
+    (description "This crate provides extensions for ordered slices.")
+    (license license:asl2.0)))
+
 (define-public rust-os-pipe-0.8
   (package
     (name "rust-os-pipe")

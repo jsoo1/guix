@@ -1876,6 +1876,28 @@ that uses Serde for transforming structs into bytes and vice versa!")
         ("rust-diff" ,rust-diff-0.1)
         ("rust-shlex" ,rust-shlex-0.1))))))
 
+(define-public rust-bit-field-0.10
+  (package
+    (name "rust-bit-field")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bit_field" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1h0x72mv5c6xryc916fdyqqvvc0ykdpgna1smka42iq8rw3dcrd1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/phil-opp/rust-bit-field")
+    (synopsis
+     "Bit field trait for Rust's integral types")
+    (description
+     "This package provides a simple bit field trait providing get_bit,
+get_bits, set_bit, and set_bits methods for Rust's integral types.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-bit-set-0.5
   (package
     (name "rust-bit-set")

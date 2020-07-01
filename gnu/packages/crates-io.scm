@@ -22087,6 +22087,41 @@ random number generators.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.6))))))
 
+(define-public rust-raw-cpuid-8
+  (package
+    (name "rust-raw-cpuid")
+    (version "8.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "raw-cpuid" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "19nw1hnmc432jcl3g1c0y1dsi62yfgyw0xi4i3x35kci6qripc2s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))
+       #:cargo-development-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-core-affinity" ,rust-core-affinity-0.5)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
+        ("rust-rustversion" ,rust-rustversion-0.1))))
+    (home-page "https://github.com/gz/rust-cpuid")
+    (synopsis
+     "Library to parse the x86 CPUID instruction")
+    (description
+     "This package provides a library to parse the x86 CPUID instruction,
+written in rust with no external dependencies.  The implementation closely
+resembles the Intel CPUID manual description.  The library does only depend on
+libcore.")
+    (license license:expat)))
+
 (define-public rust-raw-window-handle-0.3
   (package
     (name "rust-raw-window-handle")

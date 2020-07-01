@@ -15,6 +15,7 @@
 ** Look into packaging bcc and bpftrace
    - https://github.com/iovisor/bpftrace/releases
    - https://github.com/iovisor/bcc
+** Cargo importer missing things: MPL licenses and homepages
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

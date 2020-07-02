@@ -35096,6 +35096,43 @@ color in a Windows console.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:cc0)))
 
+(define-public rust-x86-0.34
+  (package
+    (name "rust-x86")
+    (version "0.34.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x86" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "06f8j4ahzx76kyjxrgbg1il3994gmakmkhbqffc7dq3ifk2cnin1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bit-field" ,rust-bit-field-0.10)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-phf" ,rust-phf-0.7)
+        ("rust-raw-cpuid" ,rust-raw-cpuid-8))
+       #:cargo-development-inputs
+       (("rust-csv" ,rust-csv-1.1)
+        ("rust-klogger" ,rust-klogger-0.0)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.7)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-x86test" ,rust-x86test-0.0))))
+    (home-page "https://github.com/gz/rust-x86")
+    (synopsis
+     "Program x86 hardware in Rust")
+    (description
+     "This package provides a library to program x86 (amd64) hardware.
+It contains x86 specific data structure descriptions, data-tables, as well as
+convenience function to call assembly instructions typically not exposed in
+higher level languages.")
+    (license license:expat)))
+
 (define-public rust-x86test-0.0
   (package
     (name "rust-x86test")

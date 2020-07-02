@@ -3161,6 +3161,88 @@ remote procedure call protocol")
 capabilities")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-0.44
+  (package
+    (name "rust-cargo")
+    (version "0.44.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cargo" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+           "192isbnq1sjwawq66zgcl32a76v62iwygg64xqc7brdanx4p6lia"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-anyhow" ,rust-anyhow-1.0)
+         ("rust-atty" ,rust-atty-0.2)
+         ("rust-bytesize" ,rust-bytesize-1)
+         ("rust-cargo-platform" ,rust-cargo-platform-0.1)
+         ("rust-clap" ,rust-clap-2)
+         ("rust-core-foundation" ,rust-core-foundation-0.6)
+         ("rust-crates-io" ,rust-crates-io-0.32)
+         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
+         ("rust-crypto-hash" ,rust-crypto-hash-0.3)
+         ("rust-curl" ,rust-curl-0.4)
+         ("rust-curl-sys" ,rust-curl-sys-0.4)
+         ("rust-env-logger" ,rust-env-logger-0.7)
+         ("rust-filetime" ,rust-filetime-0.2)
+         ("rust-flate2" ,rust-flate2-1.0)
+         ("rust-fwdansi" ,rust-fwdansi-1)
+         ("rust-git2" ,rust-git2-0.11)
+         ("rust-git2-curl" ,rust-git2-curl-0.14)
+         ("rust-glob" ,rust-glob-0.3)
+         ("rust-hex" ,rust-hex-0.4)
+         ("rust-home" ,rust-home-0.5)
+         ("rust-humantime" ,rust-humantime-2)
+         ("rust-ignore" ,rust-ignore-0.4)
+         ("rust-im-rc" ,rust-im-rc-15)
+         ("rust-jobserver" ,rust-jobserver-0.1)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-lazycell" ,rust-lazycell-1.2)
+         ("rust-libc" ,rust-libc-0.2)
+         ("rust-libgit2-sys" ,rust-libgit2-sys-0.10)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-memchr" ,rust-memchr-2)
+         ("rust-miow" ,rust-miow-0.3)
+         ("rust-num-cpus" ,rust-num-cpus-1)
+         ("rust-opener" ,rust-opener-0.4)
+         ("rust-openssl" ,rust-openssl-0.10)
+         ("rust-percent-encoding" ,rust-percent-encoding-2.1)
+         ("rust-pretty-env-logger"
+          ,rust-pretty-env-logger-0.3)
+         ("rust-remove-dir-all" ,rust-remove-dir-all-0.5)
+         ("rust-rustc-workspace-hack"
+          ,rust-rustc-workspace-hack-1.0)
+         ("rust-rustfix" ,rust-rustfix-0.4)
+         ("rust-same-file" ,rust-same-file-1.0)
+         ("rust-semver" ,rust-semver-0.9)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-ignored" ,rust-serde-ignored-0.1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-shell-escape" ,rust-shell-escape-0.1)
+         ("rust-strip-ansi-escapes"
+          ,rust-strip-ansi-escapes-0.1)
+         ("rust-tar" ,rust-tar-0.4)
+         ("rust-tempfile" ,rust-tempfile-3)
+         ("rust-termcolor" ,rust-termcolor-1)
+         ("rust-toml" ,rust-toml-0.5)
+         ("rust-unicode-width" ,rust-unicode-width-0.1)
+         ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+         ("rust-url" ,rust-url-2.1)
+         ("rust-walkdir" ,rust-walkdir-2)
+         ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://crates.io")
+    (synopsis "Library for Cargo the package manager for Rust")
+    (description
+      "This package provides the library for Cargo, a package manager for
+Rust.  Use the cargo output from rust install Cargo the binary: @command{guix
+package -i rust:cargo}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-metadata-0.9
   (package
     (name "rust-cargo-metadata")

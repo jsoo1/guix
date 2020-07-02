@@ -35096,6 +35096,33 @@ color in a Windows console.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:cc0)))
 
+(define-public rust-x86test-macro-0.0
+  (package
+    (name "rust-x86test-macro")
+    (version "0.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "x86test-macro" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "188flp8g46787fl9y0rk1c6xa33pdiw2iyfs37xk11hj5nmh6l57"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+         ("rust-quote" ,rust-quote-0.6)
+         ("rust-syn" ,rust-syn-0.15)
+         ("rust-x86test-types" ,rust-x86test-types-0.0))))
+    (home-page "https://github.com/gz/rust-x86")
+    (synopsis
+      "Procedural macro for x86test")
+    (description
+      "This package provides procedural macros for the x86test runner.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x86test-types-0.0
   (package
     (name "rust-x86test-types")

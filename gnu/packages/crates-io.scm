@@ -3591,6 +3591,31 @@ for computer graphics.")
      "This package provides current CI environment information.")
     (license license:asl2.0)))
 
+(define-public rust-civet-sys-0.3
+  (package
+    (name "rust-civet-sys")
+    (version "0.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "civet-sys" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "18n4341w4wa4vwkxiwhsxy1i3y6mw9i8xf78zq8l58hm4vg10sc7"))))
+    (build-system cargo-build-system)
+    ;; FIXME: Un-vendor libcivetweb
+    (arguments
+      `(#:cargo-development-inputs
+        (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/jtgeibel/rust-civet")
+    (synopsis
+      "Native bindings to the libcivetweb library")
+    (description
+      "This package provides Rust bindings to libcivetweb.")
+    (license license:expat)))
+
 (define-public rust-clang-sys-0.29
   (package
     (name "rust-clang-sys")

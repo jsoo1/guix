@@ -2769,6 +2769,31 @@ little-endian.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-bytesize-1
+  (package
+    (name "rust-bytesize")
+    (version "1.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "bytesize" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1nl2j2bi9nk3q564jhyb77947wdv5ch54r14gjv4c59s563qd8c1"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page
+      "https://github.com/hyunsik/bytesize/")
+    (synopsis
+      "Human-readable bytes representations")
+    (description
+      "This package provides a utility for human-readable bytes
+representations.")
+    (license license:asl2.0)))
+
 (define-public rust-bzip2-0.3
   (package
     (name "rust-bzip2")

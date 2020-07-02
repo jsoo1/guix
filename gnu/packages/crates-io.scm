@@ -9409,6 +9409,34 @@ for the futures-rs library.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fwdansi-1
+  (package
+    (name "rust-fwdansi")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fwdansi" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "027jz2x5fbi6rskic8sd6xx0mn03a7dnhwkpyz8hamg8gxwgbh88"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-memchr" ,rust-memchr-2)
+        ("rust-termcolor" ,rust-termcolor-1))
+       #:cargo-development-inputs
+       (("rust-proptest" ,rust-proptest-0.9))))
+    (home-page "https://github.com/altsysrq/proptest")
+    (synopsis
+     "Forwards a byte string with ANSI escape code to a termcolor terminal")
+    (description
+     "This package forwards a byte string with ANSI escape code to a termcolor
+terminal.")
+    (license license:expat)))
+
 (define-public rust-fxhash-0.2
   (package
     (name "rust-fxhash")

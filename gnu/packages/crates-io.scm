@@ -10333,6 +10333,40 @@ reading and writing git repositories.")
         ("rust-thread-id" ,rust-thread-id-3.3)
         ("rust-time" ,rust-time-0.1))))))
 
+(define-public rust-git2-curl-0.14
+  (package
+    (name "rust-git2-curl")
+    (version "0.14.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "git2-curl" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1mrb44zc78rz40dr4b1qwcs0krin0bcx8sf87gmln6065lm56bah"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-curl" ,rust-curl-0.4)
+         ("rust-git2" ,rust-git2-0.11)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-url" ,rust-url-2.1))
+        #:cargo-development-inputs
+        (("rust-civet" ,rust-civet-0.12)
+         ("rust-conduit" ,rust-conduit-0.9)
+         ("rust-conduit-git-http-backend"
+          ,rust-conduit-git-http-backend-0.9)
+         ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/jtgeibel/rust-civet")
+    (synopsis
+      "Backend for HTTP transport in libgit2 powered by libcurl")
+    (description
+      "This package provides a backend for an HTTP transport in libgit2 powered by libcurl.
+It is intended to be used with the git2 crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gl-0.11
   (package
     (name "rust-gl")

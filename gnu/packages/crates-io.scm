@@ -4160,6 +4160,34 @@ CMAKE environmental variable is set.")
        (sha256
         (base32 "0fildacm47g86acmx44yvxx6cka8fdym5qkgfm8x8gh2hsrghc7r"))))))
 
+(define-public rust-commoncrypto-0.2
+  (package
+    (name "rust-commoncrypto")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "commoncrypto" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01whnqcziclsj1gwavvqhrw2r5cmwh00j2fbc56iwnm2ddcahmnh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clippy" ,rust-clippy-0.0)
+        ("rust-commoncrypto-sys" ,rust-commoncrypto-sys-0.2))
+       #:cargo-development-inputs
+       (("rust-hex" ,rust-hex-0.4))))
+    (home-page "https://github.com/malept/rust-commoncrypto")
+    (synopsis
+     "Idiomatic Rust wrappers for the CommonCrypto library")
+    (description
+     "This package provides idiomatic Rust wrappers for the CommonCrypto
+library.")
+    (license license:expat)))
+
 (define-public rust-commoncrypto-sys-0.2
   (package
     (name "rust-commoncrypto-sys")

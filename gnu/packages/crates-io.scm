@@ -16413,6 +16413,32 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-mmap-0.1
+  (package
+    (name "rust-mmap")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mmap" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "08xqhvr4l3rf1fkz2w4cwz3z5wd0m1jab1d34sxd4v80lr459j0b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-tempdir" ,rust-tempdir-0.3))))
+    (home-page
+     "https://github.com/rbranson/rust-mmap")
+    (synopsis
+     "A library for dealing with memory-mapped I/O")
+    (description
+     "This package provides a library for dealing with memory-mapped I/O.")
+    (license license:expat)))
+
 (define-public rust-model-0.1
   (package
     (name "rust-model")

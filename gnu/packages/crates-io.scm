@@ -4211,6 +4211,33 @@ harness.")
      "This package provides a common HTTP server interface.")
     (license license:expat)))
 
+(define-public rust-conduit-git-http-backend-0.9
+  (package
+    (name "rust-conduit-git-http-backend")
+    (version "0.9.0-alpha.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "conduit-git-http-backend" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "10y3f4v9zgaimaagxrw3if9yayfj32sk7c6p0cbzl4a1nprawh9a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-conduit" ,rust-conduit-0.9)
+        ("rust-flate2" ,rust-flate2-1.0))))
+    (home-page
+     "https://github.com/conduit-rust/conduit-git-http-backend")
+    (synopsis
+     "Conduit handler for serving a git repository")
+    (description
+     "Conduit handler for running @command{git http-backend} and serving a
+git repository.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-console-0.11
   (package
     (name "rust-console")

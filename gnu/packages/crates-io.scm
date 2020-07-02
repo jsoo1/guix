@@ -2051,6 +2051,31 @@ behave like a set of bitflags.")
        (sha256
         (base32 "08qdq5w1nd3hzwsrxk0dxzqv4g8wbwj6v2193njskwzdd09r6rsg"))))))
 
+(define-public rust-bitmaps-2
+  (package
+    (name "rust-bitmaps")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bitmaps" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "18k4mcwxl96yvii5kcljkpb8pg5j4jj1zbsdn26nsx4r83846403"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs
+       (("rust-proptest" ,rust-proptest-0.9)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.1))))
+    (home-page "https://github.com/bodil/bitmaps")
+    (synopsis "Fixed size boolean arrays")
+    (description "This package provides fixed size boolean arrays.")
+    (license license:mpl2.0)))
+
 (define-public rust-bitstream-io-0.8
   (package
     (name "rust-bitstream-io")

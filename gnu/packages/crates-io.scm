@@ -3591,6 +3591,35 @@ for computer graphics.")
      "This package provides current CI environment information.")
     (license license:asl2.0)))
 
+(define-public rust-civet-0.12
+  (package
+    (name "rust-civet")
+    (version "0.12.0-alpha.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "civet" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1793cba49s6c6vswj04vl1s257hq1bcxj831mkgn2ffhinjf2q7k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-civet-sys" ,rust-civet-sys-0.3)
+        ("rust-conduit" ,rust-conduit-0.9)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-route-recognizer" ,rust-route-recognizer-0.2))))
+    (home-page "https://github.com/jtgeibel/rust-civet")
+    (synopsis
+     "Civetweb-based server implementation for conduit")
+    (description
+     "This package provides a civetweb-based server implementation for
+conduit.")
+    (license license:expat)))
+
 (define-public rust-civet-sys-0.3
   (package
     (name "rust-civet-sys")

@@ -12471,6 +12471,52 @@ Rust would normally not allow them.")
 ignore files such as .gitignore against file paths.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-im-rc-15
+  (package
+    (name "rust-im-rc")
+    (version "15.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "im-rc" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gsgcs1nn38r40973l6zr1v4d85f4s9qyl32n5f20jphf5z9ba1w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-0.4)
+        ("rust-bitmaps" ,rust-bitmaps-2)
+        ("rust-proptest" ,rust-proptest-0.9)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand-core" ,rust-rand-core-0.5)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-refpool" ,rust-refpool-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sized-chunks" ,rust-sized-chunks-0.6)
+        ("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs
+       (("rust-metrohash" ,rust-metrohash-1.0)
+        ("rust-pretty-assertions"
+         ,rust-pretty-assertions-0.6)
+        ("rust-proptest" ,rust-proptest-0.9)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.1)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "http://immutable.rs/")
+    (synopsis
+     "Immutable collection datatypes - not thread safe")
+    (description
+     "This package provides immutable collection datatypes (the fast but not
+thread safe version).")
+    (license license:mpl2.0)))
+
 (define-public rust-image-0.23
   (package
     (name "rust-image")

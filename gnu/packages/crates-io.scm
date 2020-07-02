@@ -3234,6 +3234,29 @@ metadata}.")
        (;("rust-docopt" ,rust-docopt-0.8)
         ("rust-clap" ,rust-clap-2))))))
 
+(define-public rust-cargo-platform-0.1
+  (package
+    (name "rust-cargo-platform")
+    (version "0.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cargo-platform" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1mzi60pf0z83qkzqp7jwd61xnqz2b5ydsj7rnnikbgyicd5989h2"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis
+      "Cargo's representation of a target platform")
+    (description
+      "This package provides Cargo's representation of a target platform.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargon-0.0
   (package
     (name "rust-cargon")

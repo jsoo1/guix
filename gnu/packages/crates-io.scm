@@ -23498,6 +23498,28 @@ Server).")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-route-recognizer-0.2
+  (package
+    (name "rust-route-recognizer")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "route-recognizer" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "17mmnyzg7yr5x84n28y6bll1qn21g11k61p6sgg2fjf0xdshcxsn"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rustasync/route-recognizer")
+    (synopsis
+     "Recognize URL patterns with support for dynamic and glob segments")
+    (description
+     "This package provides URL pattern recognition with support for dynamic
+and glob segments.")
+    (license license:expat)))
+
 (define-public rust-rspec-1
   (package
     (name "rust-rspec")

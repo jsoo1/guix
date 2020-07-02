@@ -11271,6 +11271,41 @@ the template engine that renders the official Rust website")
      "This package provides a Rust port of Google's SwissTable hash map.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-heapless-0.5
+  (package
+    (name "rust-heapless")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "heapless" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1h1d6s1f9zn0rz2vkdn0b42kcnkmlpd90yhfyqqhpirv38ws5a3k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-as-slice" ,rust-as-slice-0.1)
+        ("rust-generic-array" ,rust-generic-array-0.13)
+        ("rust-hash32" ,rust-hash32-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-stable-deref-trait"
+         ,rust-stable-deref-trait-1.1)
+        ("rust-ufmt-write" ,rust-ufmt-write-0.1))
+       #:cargo-development-inputs
+       (("rust-scoped-threadpool"
+         ,rust-scoped-threadpool-0.1)
+        ("rust-ufmt" ,rust-ufmt-0.1))))
+    (home-page "https://github.com/japaric/heapless")
+    (synopsis
+     "Static friendly data structures")
+    (description
+     "This package provides @code{static} friendly data structures that don't
+require dynamic memory allocation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-heapsize-0.4
   (package
     (name "rust-heapsize")

@@ -27073,6 +27073,35 @@ variants in pure Rust.")
      "SipHash functions from rust-core < 1.13.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sized-chunks-0.6
+  (package
+    (name "rust-sized-chunks")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sized-chunks" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0bqdhdqycdlk1wxnhwbwdzdlczxni25m8xyc8kaackv4lpn1rhqy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-0.4)
+        ("rust-array-ops" ,rust-array-ops-0.1)
+        ("rust-bitmaps" ,rust-bitmaps-2)
+        ("rust-refpool" ,rust-refpool-0.4)
+        ("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/bodil/sized-chunks")
+    (synopsis "Efficient sized chunk datatypes")
+    (description "This package provides efficient sized chunk datatypes for
+Rust.")
+    (license license:mpl2.0)))
+
 (define-public rust-skeptic-0.9
   (package
     (name "rust-skeptic")

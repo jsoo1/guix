@@ -13504,6 +13504,35 @@ kernel32.")
      "The Khronos XML API Registry, exposed as byte string constants.")
     (license license:asl2.0)))
 
+(define-public rust-klogger-0.0
+  (package
+    (name "rust-klogger")
+    (version "0.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "klogger" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0khxh743lfmvbd7p1l3d4h4g39m97njpm0b9qjgkpgiya29v9d4d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heapless" ,rust-heapless-0.5)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-spin" ,rust-spin-0.5)
+        ("rust-termcodes" ,rust-termcodes-0.0)
+        ("rust-x86" ,rust-x86-0.34))))
+    (home-page "https://github.com/gz/rust-klogger")
+    (synopsis "Library for logging in kernel mode")
+    (description
+     "This package provides a library that allows for logging and debug output
+in kernel code and only depends on libcore.  Currently has support for x86
+hardware where it sends everything to serial out.")
+    (license license:expat)))
+
 (define-public rust-language-tags-0.2
   (package
     (name "rust-language-tags")

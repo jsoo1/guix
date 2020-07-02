@@ -35096,6 +35096,36 @@ color in a Windows console.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:cc0)))
 
+(define-public rust-x86test-0.0
+  (package
+    (name "rust-x86test")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x86test" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "00y3mc3sah5r197658dm8ndknwlhycbxjly7klskm29li8zn3jns"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-klogger" ,rust-klogger-0.0)
+        ("rust-kvm-sys" ,rust-kvm-sys-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mmap" ,rust-mmap-0.1)
+        ("rust-x86" ,rust-x86-0.34)
+        ("rust-x86test-macro" ,rust-x86test-macro-0.0)
+        ("rust-x86test-types" ,rust-x86test-types-0.0))))
+    (home-page "https://github.com/gz/rust-x86")
+    (synopsis
+     "Custom test runner for x86 tests")
+    (description
+     "This package provides a custom test runner for x86 tests.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x86test-macro-0.0
   (package
     (name "rust-x86test-macro")

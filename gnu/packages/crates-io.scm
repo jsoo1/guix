@@ -16107,6 +16107,50 @@ for Rust structs.")
 @code{libsodium/utils}.")
     (license license:expat)))
 
+(define-public rust-mesalink-1
+  (package
+    (name "rust-mesalink")
+    (version "1.1.0-cratesio")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mesalink" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "02lp27j5vxdc95bf5g983yr660cm6vljikk0yqry4j6cjvfnyq85"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.12)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-enum-to-u8-slice-derive"
+         ,rust-enum-to-u8-slice-derive-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-jemallocator" ,rust-jemallocator-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-parking-lot" ,rust-parking-lot-0.10)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-sct" ,rust-sct-0.6)
+        ("rust-untrusted" ,rust-untrusted-0.7)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page
+     "https://github.com/mesalock-linux/mesalink")
+    (synopsis
+     "OpenSSL-compatible TLS library based on Rustls and Ring")
+    (description
+     "This package provides a memory-safe and OpenSSL-compatible TLS library
+based on Rustls and Ring.")
+    (license license:bsd-3)))
+
 (define-public rust-metadeps-1.1
   (package
     (name "rust-metadeps")

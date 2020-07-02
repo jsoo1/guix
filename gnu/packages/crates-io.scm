@@ -21208,6 +21208,38 @@ This library mimics the Git way of showing progress.")
        #:cargo-development-inputs
        (("rust-regex" ,rust-regex-0.2))))))
 
+(define-public rust-proptest-derive-0.1
+  (package
+    (name "rust-proptest-derive")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proptest-derive" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1m1jbydld98v3kfr32c1xqgmgkrcnym6x2rjjkjxzsg9vch9s785"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-0.6)
+        ("rust-syn" ,rust-syn-0.15))
+       #:cargo-development-inputs
+       (("rust-compiletest-rs" ,rust-compiletest-rs-0.3)
+        ("rust-criterion" ,rust-criterion-0.2)
+        ("rust-proptest" ,rust-proptest-0.9))))
+    (home-page
+     "https://altsysrq.github.io/proptest-book/proptest-derive/index.html")
+    (synopsis
+     "Custom-derive for the Arbitrary trait of proptest")
+    (description
+     "This package provides a custom-derive macro for the Arbitrary trait of
+proptest.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-psm-0.1
   (package
     (name "rust-psm")

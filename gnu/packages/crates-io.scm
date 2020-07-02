@@ -35096,6 +35096,30 @@ color in a Windows console.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:cc0)))
 
+(define-public rust-x86test-types-0.0
+  (package
+    (name "rust-x86test-types")
+    (version "0.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "x86test-types" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1mzf90i6pcwx2jr77c2l5690q9kz9n480ykv4m8hckxs4zasf1s9"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs (("rust-x86" ,rust-x86-0.34))))
+    (home-page "https://github.com/gz/rust-x86")
+    (synopsis
+      "Common types for x86test runner and the x86test procedural macro")
+    (description
+      "This package provides common types for x86test runnter and the x86test
+procedural macro.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-xattr-0.2
   (package
     (name "rust-xattr")

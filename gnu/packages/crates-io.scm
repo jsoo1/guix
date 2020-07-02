@@ -4189,6 +4189,28 @@ harness.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-conduit-0.9
+  (package
+    (name "rust-conduit")
+    (version "0.9.0-alpha.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "conduit" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04p4vsi22qhh9z99k8l2gwlmwfhnm74wfgkmxmp34dz38vfjwhs7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-http" ,rust-http-0.2))))
+    (home-page "https://github.com/conduit-rust/conduit")
+    (synopsis "Common HTTP server interface")
+    (description
+     "This package provides a common HTTP server interface.")
+    (license license:expat)))
+
 (define-public rust-console-0.11
   (package
     (name "rust-console")

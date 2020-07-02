@@ -5668,3 +5668,39 @@ mechanism of @code{dogpile}.")
 It helps people take data of any shape or size and publish that as an
 interactive, explorable website and accompanying API.")
     (license license:asl2.0)))
+
+(define-public cpp-driver
+  (let ((tag "2.15.2")
+        (revision "1"))
+    (package
+      (name "cpp-driver")
+      (version tag)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/datastax/cpp-driver.git")
+               (commit tag)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0ix40xhwr3ypivzwqq7mq993rf8s2db2hr056rycvbjyvvk6f2zi"))))
+      (build-system cmake-build-system)
+      (inputs
+       `(("libuv" ,libuv)
+         ("openssl" ,openssl)
+         ("pkg-config" ,pkg-config)
+         ("zlib" ,zlib)))
+      (arguments
+       `(#:tests? #f ; No check target
+         #:configure-flags
+         `(,(string-append "-DLIBUV_ROOT_DIR=" (assoc-ref %build-inputs "libuv"))
+           "-DCASS_BUILD_STATIC=On")))
+      (home-page "https://github.com/datastax/cpp-driver")
+      (synopsis
+       "DataStax C/C++ Driver for Apache Cassandra")
+      (description
+       "This package provides a modern, feature-rich and highly tunable C/C++
+client library for Apache Cassandra® 2.1+ using exclusively Cassandra's binary
+protocol and Cassandra Query Language v3.")
+      (license license:asl2.0))))

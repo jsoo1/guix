@@ -13859,6 +13859,40 @@ in kernel code and only depends on libcore.  Currently has support for x86
 hardware where it sends everything to serial out.")
     (license license:expat)))
 
+(define-public rust-kvm-sys-0.3
+  (package
+    (name "rust-kvm-sys")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "kvm-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0pc8jr6ymfhc88f3zy4cz2q49km1fr2hn2cf6w2ncnpdxdsprcff"))
+       (patches
+        (search-patches "rust-kvm-sys-relax-dependencies.patch"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: Tests fail due to kvm not being found.
+       ;; Is this a circular dependency?
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-clippy" ,rust-clippy-0.0)
+        ("rust-errno" ,rust-errno-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.3)
+        ("rust-memmap" ,rust-memmap-0.2))
+       #:cargo-development-inputs
+       (("rust-gcc" ,rust-gcc-0.3))))
+    (home-page "https://github.com/gz/kvm")
+    (synopsis "Bindings for KVM interface")
+    (description
+     "This package provides Rust bindings for KVM interface.")
+    (license license:asl2.0)))
+
 (define-public rust-language-tags-0.2
   (package
     (name "rust-language-tags")

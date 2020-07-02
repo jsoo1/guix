@@ -1,0 +1,17 @@
+diff --git a/Cargo.toml.new b/Cargo.toml.new.bak
+index 1056bab..bb2b052 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -22,5 +22,5 @@ keywords = ["kvm", "virtualization"]
+ license = "Apache-2.0"
+ repository = "https://github.com/gz/kvm.git"
+ [dependencies.clippy]
+-version = "0.0.23"
++version = "^0.0"
+ optional = true
+
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -25,2 +25,2 @@ [dependencies.errno]
+-version = "0.1.4"
++version = "^0.2"

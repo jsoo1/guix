@@ -31879,6 +31879,33 @@ with the Unicode character database.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-ufmt-0.1
+  (package
+    (name "rust-ufmt")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ufmt" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1844qwbmc4m69nfi6xmdcdf4fmjjvypi9rpfg3wgilvrxykwwzif"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+        ("rust-ufmt-macros" ,rust-ufmt-macros-0.1)
+        ("rust-ufmt-write" ,rust-ufmt-write-0.1))))
+    (home-page "https://github.com/japaric/ufmt")
+    (synopsis
+     "Alternative to the standard Rust formatting library")
+    (description
+     "This package provides a smaller, faster and panic-free alternative to
+@core{core::fmt}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ufmt-macros-0.1
   (package
     (name "rust-ufmt-macros")

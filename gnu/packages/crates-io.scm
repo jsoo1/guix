@@ -29287,6 +29287,27 @@ grid layout.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.2))))))
 
+(define-public rust-termcodes-0.0
+  (package
+    (name "rust-termcodes")
+    (version "0.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termcodes" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "11am1kadmh3iym8qglxj91avc8z6ihcfajlfry38xm5l1f46myir"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/termcodes/0.0.1/termcodes/")
+    (synopsis
+     "A library for styled output in ANSI terminals")
+    (description
+     "This package provides a library for styled output in ANSI terminals.")
+    (license license:expat)))
+
 (define-public rust-termcolor-1
   (package
     (name "rust-termcolor")

@@ -21899,6 +21899,29 @@ It is automatically published using the compiler repository at
 @url{https://www.github.com/rust-lang/rust}")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-ap-rustc-fs-util-654.0
+  (package
+    (name "rust-rustc-ap-rustc-fs-util")
+    (version "654.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-ap-rustc_fs_util" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "028yi1gr8khnf05dj0726j574g3jd7bp259154kzqs74wmbi7yg3"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/alexcrichton/rustc-auto-publish")
+    (synopsis
+     "Automatically published version of the file system utilities in rustc")
+    (description
+     "Use the file system utilities library used in the Rust compiler with
+this crate.  It is automatically published using the compiler repository at
+@url{https://www.github.com/rust-lang/rust}")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustc-ap-rustc-index-654
   (package
     (name "rust-rustc-ap-rustc-index")

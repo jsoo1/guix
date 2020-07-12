@@ -21860,6 +21860,45 @@ It is automatically published using the compiler repository at
 @url{https://www.github.com/rust-lang/rust}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustc-ap-rustc-errors-654.0
+  (package
+    (name "rust-rustc-ap-rustc-errors")
+    (version "654.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustc-ap-rustc-errors" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1030psm9nx3f132dswbkwqahb4hy020bjvdsyj53dfy6hyhix3lh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-annotate-snippets"
+         ,rust-annotate-snippets-0.6)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustc-ap-rustc-data-structures"
+         ,rust-rustc-ap-rustc-data-structures-654)
+        ("rust-rustc-ap-serialize"
+         ,rust-rustc-ap-serialize-654)
+        ("rust-rustc-ap-rustc-span"
+         ,rust-rustc-ap-rustc-span-654.0)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-termize" ,rust-termize-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/alexcrichton/rustc-auto-publish")
+    (synopsis
+     "Automatically published version of the errors used in rustc")
+    (description
+     "Use the errors from the Rust compiler with this crate.
+It is automatically published using the compiler repository at
+@url{https://www.github.com/rust-lang/rust}")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustc-ap-rustc-index-654
   (package
     (name "rust-rustc-ap-rustc-index")

@@ -22,3 +22,36 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system go)
   #:use-module (gnu packages golang))
+
+(define-public go-github-com-kubernetes-apimachinery
+  (package
+    (name "go-github-com-kubernetes-apimachinery")
+    (version "0.18.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/kubernetes/apimachinery")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1br2s2lablabn5dps7qcch1grwn3zcv9v6cvl57smr5wys7hdfi6"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "k8s.io/apimachinery"
+       #:unpack-path "k8s.io/apimachinery"
+       ;; FIXME: What needs to be built?
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'build)
+         (delete 'check))))
+    (home-page "https://kubernetes.io")
+    (synopsis
+     "Common types and serialization for Kubernetes API objects.")
+    (description
+     "This library is a shared dependency for servers and clients to work with
+Kubernetes API infrastructure without direct type dependencies.  Its first
+consumers are k8s.io/kubernetes, k8s.io/client-go, and k8s.io/apiserver.")
+    (license license:asl2.0)))

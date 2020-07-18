@@ -1825,8 +1825,35 @@ which satisfies the cron expression.")
     (description "Go library for ini files")
     (license license:asl2.0)))
 
+(define-public go-gopkg-in-yaml-v3
+  (package
+    (name "go-gopkg-in-yaml-v3")
+    (version "3")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://gopkg.in/yaml.v3.git")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "06m3kx5mp6vwfcpjl04c39r1dpbakg2la9ql1jw3zvpi6jk7iwbk"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "gopkg.in/yaml.v3"))
+    (native-inputs
+     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))
+    (home-page "https://gopkg.in/yaml.v2")
+    (synopsis "YAML reader and writer for the Go language")
+    (description
+     "This package provides a Go library for encode and decode YAML
+values.")
+    (license license:asl2.0)))
+
 (define-public go-gopkg-in-yaml-v2
   (package
+    (inherit go-gopkg-in-yaml-v3)
     (name "go-gopkg-in-yaml-v2")
     (version "2.2.2")
     (source
@@ -1839,17 +1866,10 @@ which satisfies the cron expression.")
         (sha256
          (base32
           "01wj12jzsdqlnidpyjssmj0r4yavlqy7dwrg7adqd8dicjc4ncsa"))))
-    (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/yaml.v2"))
     (native-inputs
-     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))
-    (home-page "https://gopkg.in/yaml.v2")
-    (synopsis "YAML reader and writer for the Go language")
-    (description
-     "This package provides a Go library for encode and decode YAML
-values.")
-    (license license:asl2.0)))
+     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))))
 
 (define-public go-github-com-mattn-go-isatty
   (package

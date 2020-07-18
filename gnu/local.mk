@@ -311,6 +311,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kerberos.scm			\
   %D%/packages/key-mon.scm			\
   %D%/packages/kodi.scm				\
+  %D%/packages/kubernetes.scm			\
   %D%/packages/language.scm			\
   %D%/packages/lean.scm				\
   %D%/packages/lego.scm				\

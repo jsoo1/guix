@@ -5676,3 +5676,29 @@ Included are the following:
 except that it adds convenience functions that use the fmt package to format
 error messages.")
     (license license:bsd-3)))
+
+(define-public go-github-com-alessio-shellescape
+  (package
+    (name "go-github-com-alessio-shellescape")
+    (version "1.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alessio/shellescape")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03y742y6a2zprdzm1nkic9kjm7cbv6w93n80jabq2k73723z377r"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/alessio/shellescape"))
+    (home-page "https://github.com/alessio/shellescape")
+    (synopsis
+     "Escape arbitrary strings for safe use as command line arguments")
+    (description
+     "This package provides the @code{shellescape.Quote()} function that returns a
+shell-escaped copy of a string.  This functionality could be helpful in those
+cases where it is known that the output of a Go program will be appended
+to/used in the context of shell programs' command line arguments.")
+    (license license:expat)))

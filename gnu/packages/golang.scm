@@ -5702,3 +5702,30 @@ shell-escaped copy of a string.  This functionality could be helpful in those
 cases where it is known that the output of a Go program will be appended
 to/used in the context of shell programs' command line arguments.")
     (license license:expat)))
+
+(define-public go-github-com-evanphx-json-patch-v5
+  (package
+    (name "go-github-com-evanphx-json-patch-v5")
+    (version "5.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/evanphx/json-patch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f8npnyhx82rk5lsclcc8wzbyhx93zicnqm1r0zi4glh3a3kr557"))))
+    (build-system go-build-system)
+    (inputs
+     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)))
+    (arguments
+     `(#:import-path "github.com/evanphx/json-patch/v5"))
+    (home-page "https://github.com/evanphx/json-patch")
+    (synopsis
+     "Apply RFC6902 patches and create and apply RFC7386 patches")
+    (description
+     "This library provides functionality for both applying RFC6902 JSON
+patches against documents, as well as for calculating & applying RFC7396 JSON
+merge patches.")
+    (license license:expat)))

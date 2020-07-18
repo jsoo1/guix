@@ -55,3 +55,33 @@
 Kubernetes API infrastructure without direct type dependencies.  Its first
 consumers are k8s.io/kubernetes, k8s.io/client-go, and k8s.io/apiserver.")
     (license license:asl2.0)))
+
+(define-public go-github-com-kubernetes-sigs-yaml
+  (package
+    (name "go-github-com-kubernetes-sigs-yaml")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/kubernetes-sigs/yaml")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "059a1chkd6afyvqszrx7h93k6cgik3ia92x29f5whpwi66461pzq"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "sigs.k8s.io/yaml"
+       #:unpack-path "sigs.k8s.io/yaml"))
+    (home-page "https://github.com/kubernetes-sigs/yaml")
+    (synopsis
+     "A better way to marshal and unmarshal YAML in Golang")
+    (description
+     "In short, this library first converts YAML to JSON using go-yaml and
+then uses @code{json.Marshal} and @code{json.Unmarshal} to convert to or from
+the struct.  This means that it effectively reuses the JSON struct tags as
+well as the custom JSON methods MarshalJSON and UnmarshalJSON unlike
+go-yaml.")
+    (license license:expat)))

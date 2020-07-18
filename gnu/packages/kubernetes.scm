@@ -85,3 +85,46 @@ the struct.  This means that it effectively reuses the JSON struct tags as
 well as the custom JSON methods MarshalJSON and UnmarshalJSON unlike
 go-yaml.")
     (license license:expat)))
+
+(define-public kind
+  (package
+    (name "kind")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/kubernetes-sigs/kind")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0r301nqvycik8fwlghq0cymmq4rm7xp8haj39i2nynxyw8zk6zym"))))
+    (build-system go-build-system)
+    (inputs
+     `(("go-github-com-burntsushi-toml" ,go-github-com-burntsushi-toml)
+       ("go-github-com-alessio-shellescape"
+        ,go-github-com-alessio-shellescape)
+       ("go-github-com-evanphx-json-patch"
+        ,go-github-com-evanphx-json-patch-v5)
+       ("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
+       ("go-github-com-pelletier-go-toml" ,go-github-com-pelletier-go-toml)
+       ("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
+       ("go-github-com-spf13-cobra" ,go-github-com-spf13-cobra)
+       ("go-gopkg-in-yaml-v3" ,go-gopkg-in-yaml-v3)
+       ("go-github-com-kubernetes-apimachinery"
+        ,go-github-com-kubernetes-apimachinery)
+       ("go-github-kubernetes-sigs-yaml"
+        ,go-github-com-kubernetes-sigs-yaml)))
+    (arguments
+     `(#:import-path "sigs.k8s.io/kind"
+       #:unpack-path "sigs.k8s.io/kind"))
+    (home-page "https://kind.sigs.k8s.io/")
+    (synopsis
+     "Test local Kubernetes clusters in Docker")
+    (description
+     "This package provides a tool for running local Kubernetes clusters
+using Docker container \"nodes\".  kind was primarily designed for testing
+Kubernetes itself, but may be used for local development or CI.")
+    (license license:asl2.0)))

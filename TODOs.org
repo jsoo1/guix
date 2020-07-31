@@ -1,21 +1,18 @@
 #+TITLE: guix
 
 * Todos
-** Fix stack
+** TODO Fix stack
 ** Look into isabelle (remote possibility)
-** Finish kmscon upgrades
-** Fix fish not graftable - issue #30265
+** TODO Finish kmscon upgrades
+** TODO Fix fish not graftable - issue #30265
    [[gnus:nndoc+ephemeral:bug#30265#8B84EF65-4CCC-4CAF-A6E9-BF6F5566D11E@asu.edu][Email to 30265@debbugs.gnu.org: bug#30265: Fish embeds store file names in UCS-4/UTF-32 literal strings]]
-** Make a way to read all (filtered?) news for a channel
-** Add acl2
-** Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
-** FreeCAD: Fix python 3.8 compatibility
+** TODO Make a way to read all (filtered?) news for a channel
+** TODO Add acl2
+** TODO Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
+** TODO FreeCAD: Fix python 3.8 compatibility
    https://forum.freecadweb.org/viewtopic.php?t=38982
-** Add note about guix pull --allow-downgrades when doing rebase workflow to contributing docs
-** Look into packaging bcc and bpftrace
-   - https://github.com/iovisor/bpftrace/releases
-   - https://github.com/iovisor/bcc
-** Cargo importer missing things: MPL licenses and homepages
+** TODO Add note about guix pull --allow-downgrades when doing rebase workflow to contributing docs
+** TODO Cargo importer missing things: MPL licenses and homepages
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

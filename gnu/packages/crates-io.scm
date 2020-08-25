@@ -1550,6 +1550,48 @@ and no more (caveat: black_box is still missing!).")
 tracebacks.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-binary-install-0.0
+  (package
+    (name "rust-binary-install")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "binary-install" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1m2czm8wa8pnxh3q3mj3zm9cppa2kyvxlg9h1c6simhdqpwcanvv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-curl" ,rust-curl-0.4)
+        ("rust-dirs" ,rust-dirs-2.0)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-flate2" ,rust-flate2-1.0)
+        ("rust-fs2" ,rust-fs2-0.4)
+        ("rust-hex" ,rust-hex-0.3)
+        ("rust-is-executable" ,rust-is-executable-0.1)
+        ("rust-siphasher" ,rust-siphasher-0.2)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-zip" ,rust-zip-0.5))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("curl" ,curl)
+       ("openssl" ,openssl)
+       ("zlib" ,zlib)))
+    (home-page
+     "https://github.com/rustwasm/binary-install")
+    (synopsis
+     "Install a binary from a path to a global cache")
+    (description
+     "This package provides binary installation a path to a global cache.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bincode-1
   (package
     (name "rust-bincode")

@@ -13251,6 +13251,33 @@ immutable interval tree.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-is-executable-0.1
+  (package
+    (name "rust-is-executable")
+    (version "0.1.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "is_executable" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0xy516afjh79a0d53j9v4w5mgi2s0r6f6qynnyz8g0dwi8xmab9h"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-winapi" ,rust-winapi-0.3))
+        #:cargo-development-inputs
+        (("rust-diff" ,rust-diff-0.1))))
+    (home-page
+      "https://github.com/fitzgen/is_executable")
+    (synopsis
+      "Executable detection")
+    (description
+      "This package provides executable file detection at a given path.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-iso8601-0.1
   (package
     (name "rust-iso8601")

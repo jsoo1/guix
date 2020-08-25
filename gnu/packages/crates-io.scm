@@ -18724,6 +18724,28 @@ under its new name.")
      "A cross-platform library for opening OS pipes.")
     (license license:expat)))
 
+(define-public rust-os-type-2
+  (package
+    (name "rust-os-type")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "os_type" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1sz90xi9br82zmp3s0fbp397ajm5f0xsir7pikwbg65fy0d03p3y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/schultyy/os_type")
+    (synopsis "Detect the operating system type")
+    (description "This package provides operating system type detection from
+Rust programs.")
+    (license license:expat)))
+
 (define-public rust-output-vt100-0.1
   (package
     (name "rust-output-vt100")

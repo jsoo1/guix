@@ -32,6 +32,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages llvm)
@@ -810,3 +811,74 @@ the details of how it was triggered.
 library and a dynamic library, and a C header to be used by any C (and
 C-compatible) software.")
     (license license:expat)))
+
+(define-public rust-wasm-pack
+  (package
+    (name "rust-wasm-pack")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wasm-pack" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1m9gh48incyczsns78pqk403bisnmg0gy9gqn8x9v0mmdgqiaj8b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; FIXME
+       #:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-binary-install" ,rust-binary-install-0.0)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.8)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-console" ,rust-console-0.6)
+        ("rust-curl" ,rust-curl-0.4)
+        ("rust-dialoguer" ,rust-dialoguer-0.3)
+        ("rust-dirs" ,rust-dirs-1.0)
+        ("rust-env-logger" ,rust-env-logger-0.5)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-glob" ,rust-glob-0.2)
+        ("rust-human-panic" ,rust-human-panic-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-parking-lot" ,rust-parking-lot-0.6)
+        ("rust-reqwest" ,rust-reqwest-0.9)
+        ("rust-semver" ,rust-semver-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-ignored" ,rust-serde-ignored-0.0)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-siphasher" ,rust-siphasher-0.2)
+        ("rust-strsim" ,rust-strsim-0.8)
+        ("rust-structopt" ,rust-structopt-0.2)
+        ("rust-toml" ,rust-toml-0.4)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-which" ,rust-which-2.0))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-0.11)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-predicates" ,rust-predicates-1)
+        ("rust-serial-test" ,rust-serial-test-0.2)
+        ("rust-serial-test-derive"
+         ,rust-serial-test-derive-0.2)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs
+     `(("curl" ,curl)
+       ("openssl" ,openssl)
+       ("zlib" ,zlib)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page
+     "https://github.com/ashleygwilliams/wasm-pack.git")
+    (synopsis
+     "Rust to wasm workflow tool")
+    (description
+     "This tool seeks to be a one-stop shop for building and working with
+Rust-generated WebAssembly that you would like to interop with JavaScript, in
+the browser or with Node.js.  wasm-pack helps you build Rust-generated
+WebAssembly packages that you could publish to the npm registry, or otherwise
+use alongside any javascript packages in workflows that you already use, such
+as webpack or greenkeeper.")
+    (license (list license:expat license:asl2.0))))

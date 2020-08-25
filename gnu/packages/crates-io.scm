@@ -12381,6 +12381,35 @@ or response body.")
      "This package provides a tiny, safe, speedy, zero-copy HTTP/1.x parser.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-human-panic-1
+  (package
+    (name "rust-human-panic")
+    (version "1.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "human-panic" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0djfad84iwl86kabj8rqfhv5nn1qi1fd9hb7z72xgjxb02jmgwrr"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-backtrace" ,rust-backtrace-0.3)
+         ("rust-os-type" ,rust-os-type-2)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-derive" ,rust-serde-derive-1)
+         ("rust-termcolor" ,rust-termcolor-1)
+         ("rust-toml" ,rust-toml-0.5)
+         ("rust-uuid" ,rust-uuid-0.8))))
+    (home-page
+      "https://github.com/yoshuawuyts/human-panic")
+    (synopsis "Panic messages for humans")
+    (description "This package provides panic messages for humans.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-humantime-2
   (package
     (name "rust-humantime")

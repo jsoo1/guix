@@ -27570,7 +27570,8 @@ format.")
     (home-page
      "https://github.com/palfrey/serial_test_derive/")
     (synopsis "Serialising Rust tests")
-    (description "Serialising Rust tests")
+    (description "This package provides a generic derivation macro for
+serialising Rust tests.")
     (license license:expat)))
 
 (define-public rust-serial-test-derive-0.1

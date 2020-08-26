@@ -27168,6 +27168,21 @@ You can use this to warn users about extraneous keys in a config file, for
 example.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-ignored-0.0
+  (package
+    (inherit rust-serde-ignored-0.1)
+    (name "rust-serde-ignored")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-ignored" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0hmi3z05scaadrrh98qnl1qv1qy70sh962bf7gk6pdgdvijrf3hr"))))))
+
 (define-public rust-serde-json-1
   (package
     (name "rust-serde-json")

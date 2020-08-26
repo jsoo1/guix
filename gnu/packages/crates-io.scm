@@ -1104,6 +1104,29 @@ Mac, and Unix.")
     (description "Test CLI Applications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-assert-cmd-0.11
+  (package
+    (inherit rust-assert-cmd-1)
+    (name "rust-assert-cmd")
+    (version "0.11.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "assert-cmd" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "07jsda2nbb3yh7plj3dbybyk51ckckgv7xmnk6bw6bnq7dwpgi1d"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-escargot" ,rust-escargot-0.4)
+        ("rust-predicates" ,rust-predicates-1)
+        ("rust-predicates-core" ,rust-predicates-core-1)
+        ("rust-predicates-tree" ,rust-predicates-tree-1))
+       #:cargo-development-inputs
+       (("rust-docmatic" ,rust-docmatic-0.1))))))
+
 (define-public rust-assert-fs-0.11
   (package
     (name "rust-assert-fs")

@@ -4629,6 +4629,33 @@ git repository.")
      "This package provides a terminal and console abstraction for Rust.")
     (license license:expat)))
 
+(define-public rust-console-0.6
+  (package
+    (inherit rust-console-0.7)
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "console" version))
+       (file-name
+        (string-append (package-name rust-console-0.7)
+                       "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1rhkrdplqhdadn7d0yyfbv4d7h1wqjsc6nz196drfcv72ggqmm7c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-clicolors-control" ,rust-clicolors-control-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-parking-lot" ,rust-parking-lot-0.8)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-termios" ,rust-termios-0.3)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-console-error-panic-hook-0.1
   (package
     (name "rust-console-error-panic-hook")

@@ -6310,6 +6310,41 @@ Transparency logs for use with sct crate.")
 use with bindgen.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-curl-0.4
+  (package
+    (name "rust-curl")
+    (version "0.4.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "curl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0bmmy3nk9d53cp2wjnc7vd9kjgqf7wll12l1hifkdwxc7k0c18gd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-curl-sys" ,rust-curl-sys-0.4)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-schannel" ,rust-schannel-0.1)
+        ("rust-socket2" ,rust-socket2-0.3)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-mio" ,rust-mio-0.6)
+        ("rust-mio-extras" ,rust-mio-extras-2))))
+    (home-page
+     "https://github.com/alexcrichton/curl-rust")
+    (synopsis
+     "Rust bindings to libcurl for making HTTP requests")
+    (description
+     "This package provides Rust bindings to libcurl for making HTTP
+requests.")
+    (license license:expat)))
+
 (define-public rust-curl-sys-0.4
   (package
     (name "rust-curl-sys")

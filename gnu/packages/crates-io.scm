@@ -28226,12 +28226,7 @@ the application/x-www-form-urlencoded format.")
     (home-page
      "https://github.com/palfrey/serial_test/")
     (synopsis "Serialising Rust tests")
-    (description "Serialising Rust tests")
-    (license license:expat)))
-    (home-page
-     "https://github.com/palfrey/serial_test/")
-    (synopsis "Serialising Rust tests")
-    (description "Serialising Rust tests")
+    (description "This package provides serialisation for Rust tests.")
     (license license:expat)))
 
 (define-public rust-serial-test-0.1

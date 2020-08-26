@@ -4031,6 +4031,27 @@ Command Line Argument Parser.")
 colorization.")
     (license license:expat)))
 
+(define-public rust-clicolors-control-0.2
+  (package
+    (inherit rust-clicolors-control-1.0)
+    (version "0.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "clicolors-control" version))
+        (file-name (string-append (package-name rust-clicolors-control-1.0)
+                                  "-" version ".crate"))
+        (sha256
+         (base32
+          "1lfmk9sfw55cy15qvgsldzd67lwbz5d31k88758f4g08pk4xx10z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-clipboard-win-2.1
   (package
     (name "rust-clipboard-win")

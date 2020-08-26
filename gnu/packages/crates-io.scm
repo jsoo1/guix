@@ -27514,8 +27514,27 @@ format.")
     (description "This package provides serialisation for Rust tests.")
     (license license:expat)))
 
+(define-public rust-serial-test-0.2
+  (package
+    (inherit rust-serial-test-0.4)
+    (name "rust-serial-test")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial_test" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1gpcyfbxffgdqzdif9s3fzflhgnlivrpg7c6jy6n2i9m6hwvrgsh"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1))))))
+
 (define-public rust-serial-test-0.1
   (package
+    (inherit rust-serial-test-0.2)
     (name "rust-serial-test")
     (version "0.1.0")
     (source
@@ -27526,16 +27545,7 @@ format.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0qywhzjc4jh6dqqng90maai0mjlmafk9aa5rrl9g3d2g01wdn8ms"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1))))
-    (home-page "https://github.com/palfrey/serial_test/")
-    (synopsis "Serialised Rust tests")
-    (description
-     "Allows for the creation of serialised Rust tests.")
-    (license license:expat)))
+          "0qywhzjc4jh6dqqng90maai0mjlmafk9aa5rrl9g3d2g01wdn8ms"))))))
 
 (define-public rust-serial-test-derive-0.4
   (package

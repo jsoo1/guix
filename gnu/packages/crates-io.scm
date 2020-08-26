@@ -27835,6 +27835,37 @@ for the serde framework.")
         ("rust-serde-codegen-internals" ,rust-serde-codegen-internals-0.14)
         ("rust-syn" ,rust-syn-0.11))))))
 
+(define-public rust-serde-ignored-0.0
+  (package
+    (name "rust-serde-ignored")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-ignored" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0hmi3z05scaadrrh98qnl1qv1qy70sh962bf7gk6pdgdvijrf3hr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/dtolnay/serde-ignored")
+    (synopsis
+     "Find out about keys that are ignored when deserializing data")
+    (description
+     "This crate provides a wrapper that works with any existing Serde
+Deserializer and invokes a callback on every ignored field.
+
+You can use this to warn users about extraneous keys in a config file, for
+example.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-json-1
   (package
     (name "rust-serde-json")

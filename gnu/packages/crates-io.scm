@@ -5963,7 +5963,7 @@ Transparency logs for use with sct crate.")
 (define-public rust-curl-0.4
   (package
     (name "rust-curl")
-    (version "0.4.29")
+    (version "0.4.28")
     (source
      (origin
        (method url-fetch)
@@ -5972,7 +5972,7 @@ Transparency logs for use with sct crate.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1zb6shzrx9vg1m6f061gvdbx1pagjjz754570sjk6lid3mhk8bkn"))))
+         "0bmmy3nk9d53cp2wjnc7vd9kjgqf7wll12l1hifkdwxc7k0c18gd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs

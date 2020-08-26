@@ -8234,6 +8234,28 @@ variables.")
     (description "Cargo API written in Paris.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-escargot-0.4
+  (package
+    (inherit rust-escargot-0.5)
+    (name "rust-escargot")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "escargot" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "15s5x2z3i5ygwy7wkj955cjqh6dp4afp7ig4nlld1mblk2zsvfff"))))
+    (arguments
+     `(#:tests? #f      ; not all test files included
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-euclid-0.20
   (package
     (name "rust-euclid")

@@ -217,32 +217,6 @@ safety and thread safety guarantees.")
       ;; Dual licensed.
       (license (list license:asl2.0 license:expat)))))
 
-(define-public (rust-wasm32-unknown-unknown rust-version hash)
-  (package
-    (name "rust-wasm32-unknown-unknown")
-    (version rust-version)
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://static.rust-lang.org/dist/rust-std-"
-                           rust-version "-wasm32-unknown-unknown.tar.gz"))
-       (sha256 (base32 hash))))
-    (build-system copy-build-system)
-    (home-page "https://github.com/rust-lang/rust")
-    (synopsis "Wasm target component of the Rust compiler")
-    (description
-     "This package provides the Wasm target component of the Rust
-compiler.")
-    (license (list license:asl2.0 license:expat))))
-
-(define-public rust-wasm32-unknown-unknown-1.44
-  (rust-wasm32-unknown-unknown
-   "1.44.1" "1l1qf4w655p69ypgn9ag30x9az1a9k81nknfqa9sym3jvhv4v56h"))
-
-(define-public rust-wasm32-unknown-unknown-1.45
-  (rust-wasm32-unknown-unknown
-   "1.45.2" "1sr4a8ylkqizqcyvxm3swacjd13m84414nfdl28qiphz6bjmxird"))
-
 (define rust-1.19
   (package
     (name "rust")
@@ -1380,28 +1354,16 @@ move around."
           "0ww4z2v3gxgn3zddqzwqya1gln04p91ykbrflnpdbmcd575n8bky")))
     (package
       (inherit base-rust)
-      (inputs
-       `(("rust-wasm32-unknown-unknown" ,rust-wasm32-unknown-unknown-1.44)
-         ,@(package-inputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
-             (add-after 'install 'install-wasm32-unknown-unknown
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((wasm-out (assoc-ref inputs "rust-wasm32-unknown-unknown"))
-                        (wasm-component
-                         (string-append
-                          wasm-out
-                          "/rust-std-wasm32-unknown-unknown"
-                          "/lib/rustlib/wasm32-unknown-unknown"))
-                        (out (assoc-ref outputs "out"))
-                        (out-component
-                         (string-append
-                          out "/lib/rustlib/wasm32-unknown-unknown")))
-                   (mkdir-p out-component)
-                   (copy-recursively wasm-component out-component)
-                   #t))))))))))
+             (add-after 'override-jemalloc 'enable-wasm32-unknown-unknown
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (substitute* "config.toml"
+                   (("[[]build[]]")
+                    "\n[build]\ntarget=[\"x86_64-unknown-linux-gnu\", \"wasm32-unknown-unknown\"]\n"))
+                 #t)))))))))
 
 (define-public rust-1.45
   (let ((base-rust
@@ -1414,10 +1376,8 @@ move around."
           (inherit (package-source base-rust))
           (patches (search-patches "rust-1.45-linker-locale.patch"))))
       (inputs
-       (alist-replace
-        "rust-wasm32-unknown-unknown" (list rust-wasm32-unknown-unknown-1.45)
-        (alist-replace "llvm" (list llvm-10)
-                       (package-inputs base-rust))))
+       (alist-replace "llvm" (list llvm-10)
+                      (package-inputs base-rust)))
       (arguments
         (substitute-keyword-arguments (package-arguments base-rust)
           ((#:phases phases)

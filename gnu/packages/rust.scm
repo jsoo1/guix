@@ -45,6 +45,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -215,6 +216,28 @@ safety and thread safety guarantees.")
       (home-page "https://github.com/thepowersgang/mrustc")
       ;; Dual licensed.
       (license (list license:asl2.0 license:expat)))))
+
+(define-public (rust-wasm32-unknown-unknown rust-version hash)
+  (package
+    (name "rust-wasm32-unknown-unknown")
+    (version rust-version)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://static.rust-lang.org/dist/rust-std-"
+                           rust-version "-wasm32-unknown-unknown.tar.gz"))
+       (sha256 (base32 hash))))
+    (build-system copy-build-system)
+    (home-page "https://github.com/rust-lang/rust")
+    (synopsis "Wasm target component of the Rust compiler")
+    (description
+     "This package provides the Wasm target component of the Rust
+compiler.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public rust-wasm32-unknown-unknown-1.44
+  (rust-wasm32-unknown-unknown
+   "1.44.1" "1l1qf4w655p69ypgn9ag30x9az1a9k81nknfqa9sym3jvhv4v56h"))
 
 (define rust-1.19
   (package

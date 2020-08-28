@@ -35,6 +35,7 @@
 (define-module (gnu packages llvm)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -583,6 +584,21 @@ output), and Binutils.")
     (description "LLD is a high-performance linker, built as a set of reusable
 components which highly leverage existing libraries in the larger LLVM Project.")
     (license license:asl2.0))) ; With LLVM exception
+
+(define-public lld-9
+  (package
+    (inherit lld)
+    (name "lld")
+    (version (package-version llvm-9))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-download-uri "lld" version))
+              (sha256
+               (base32
+                "10hckfxpapfnh6y9apjiya2jpw9nmbbmh8ayijx89mrg7snjn9l6"))))
+    (inputs
+     (alist-replace "llvm" (list llvm-9)
+                    (package-inputs lld)))))
 
 (define-public llvm-8
   (package

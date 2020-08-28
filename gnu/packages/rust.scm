@@ -1362,6 +1362,7 @@ move around."
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
+             (delete 'check)
              (add-after 'override-jemalloc 'enable-wasm32-unknown-unknown
                (lambda* (#:key inputs #:allow-other-keys)
                  (substitute* "config.toml"

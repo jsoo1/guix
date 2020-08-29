@@ -1357,6 +1357,7 @@ move around."
       (inherit base-rust)
       (native-inputs
        `(("node" ,node)
+         ("lld" ,lld-9)
          ,@(package-native-inputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
@@ -1365,9 +1366,16 @@ move around."
              (delete 'check)
              (add-after 'override-jemalloc 'enable-wasm32-unknown-unknown
                (lambda* (#:key inputs #:allow-other-keys)
-                 (substitute* "config.toml"
-                   (("[[]build[]]")
-                    "\n[build]\ntarget=[\"x86_64-unknown-linux-gnu\", \"wasm32-unknown-unknown\"]\n"))
+                 (let ((lld
+                        (string-append (assoc-ref inputs "lld") "/bin/lld")))
+                   (substitute* "config.toml"
+                     (("[[]build[]]")
+                      "\n[build]\ntarget = [\"x86_64-unknown-linux-gnu\", "
+                      "\"wasm32-unknown-unknown\"]\n")
+                     (("[[]llvm[]]" match)
+                      (string-append
+                       match
+                       "\n[target.wasm32-unknown-unknown]\nlinker = \"" lld "\""))))
                  #t)))))))))
 
 (define-public rust-1.45
@@ -1380,6 +1388,9 @@ move around."
         (origin
           (inherit (package-source base-rust))
           (patches (search-patches "rust-1.45-linker-locale.patch"))))
+      (native-inputs
+       (alist-replace "lld" (list lld)
+                      (package-native-inputs base-rust)))
       (inputs
        (alist-replace "llvm" (list llvm-10)
                       (package-inputs base-rust)))

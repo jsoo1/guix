@@ -31,6 +31,7 @@
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
@@ -1360,23 +1361,94 @@ move around."
          ("lld" ,lld-9)
          ,@(package-native-inputs base-rust)))
       (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (delete 'check)
-             (add-after 'override-jemalloc 'enable-wasm32-unknown-unknown
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((lld
-                        (string-append (assoc-ref inputs "lld") "/bin/lld")))
-                   (substitute* "config.toml"
-                     (("[[]build[]]")
-                      "\n[build]\ntarget = [\"x86_64-unknown-linux-gnu\", "
-                      "\"wasm32-unknown-unknown\"]\n")
-                     (("[[]llvm[]]" match)
-                      (string-append
-                       match
-                       "\n[target.wasm32-unknown-unknown]\nlinker = \"" lld "\""))))
-                 #t)))))))))
+       `(#:cargo-inputs
+         (("rust-bitflags" ,rust-bitflags-0.5)
+          ("rust-cmake" ,rust-cmake-0.1)
+          ("rust-cc" ,rust-cc-1)
+          ("rust-filetime" ,rust-filetime-0.2)
+          ("rust-getopts" ,rust-getopts-0.2)
+          ("rust-lazy-static" ,rust-lazy-static-1.3)
+          ("rust-libc" ,rust-libc-0.2)
+          ("rust-log" ,rust-log-0.4)
+          ("rust-num-cpus" ,rust-num-cpus-1)
+          ("rust-serde" ,rust-serde-1)
+          ("rust-serde-json" ,rust-serde-json-1)
+          ("rust-toml" ,rust-toml-0.5)
+          ("rust-time" ,rust-time-0.1)
+          ("rust-ignore" ,rust-ignore-0.4))
+         ,@(substitute-keyword-arguments (package-arguments base-rust)
+             ((#:phases phases)
+              `(modify-phases ,phases
+                 (add-after 'configure
+                     (lambda* (#:key inputs (vendor-dir "guix-vendor") #:allow-other-keys)
+                       "Vendor Cargo.toml dependencies as guix inputs."
+                       (chmod "." #o755)
+                       ;; Prepare one new directory with all the required dependencies.
+                       ;; It's necessary to do this (instead of just using /gnu/store as the
+                       ;; directory) because we want to hide the libraries in subdirectories
+                       ;; share/rust-source/... instead of polluting the user's profile root.
+                       (mkdir-p vendor-dir)
+                       (for-each
+                        (match-lambda
+                          ((name . path)
+                           (let* ((basepath (strip-store-file-name path))
+                                  (crate-dir (string-append vendor-dir "/" basepath)))
+                             (and (crate-src? path)
+                                  ;; Gracefully handle duplicate inputs
+                                  (not (file-exists? crate-dir))
+                                  (mkdir-p crate-dir)
+                                  ;; Cargo crates are simply gzipped tarballs but with a .crate
+                                  ;; extension. We expand the source to a directory name we control
+                                  ;; so that we can generate any cargo checksums.
+                                  ;; The --strip-components argument is needed to prevent creating
+                                  ;; an extra directory within `crate-dir`.
+                                  (invoke "tar" "xvf" path "-C" crate-dir "--strip-components" "1")))))
+                        inputs)
+
+                       ;; Configure cargo to actually use this new directory.
+                       (setenv "CARGO_HOME" (string-append (getcwd) "/.cargo"))
+                       (mkdir-p ".cargo")
+                       (let ((port (open-file ".cargo/config" "w" #:encoding "utf-8")))
+                         (display "
+[source.crates-io]
+replace-with = 'vendored-sources'
+
+[source.vendored-sources]
+directory = '" port)
+                         (display (string-append (getcwd) "/" vendor-dir) port)
+                         (display "'
+" port)
+                         (close-port port))
+
+                       ;; Lift restriction on any lints: a crate author may have decided to opt
+                       ;; into stricter lints (e.g. #![deny(warnings)]) during their own builds
+                       ;; but we don't want any build failures that could be caused later by
+                       ;; upgrading the compiler for example.
+                       (setenv "RUSTFLAGS" "--cap-lints allow")
+                       (setenv "CC" (string-append (assoc-ref inputs "gcc") "/bin/gcc"))
+                       (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
+                       (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
+
+                       ;; We don't use the Cargo.lock file to determine the package versions we use
+                       ;; during building, and in any case if one is not present it is created
+                       ;; during the 'build phase by cargo.
+                       (when (file-exists? "Cargo.lock")
+                         (delete-file "Cargo.lock"))
+                       #t))
+                 (delete 'check)
+                 (add-after 'override-jemalloc 'enable-wasm32-unknown-unknown
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((lld
+                            (string-append (assoc-ref inputs "lld") "/bin/lld")))
+                       (substitute* "config.toml"
+                         (("[[]build[]]")
+                          "\n[build]\ntarget = [\"x86_64-unknown-linux-gnu\", "
+                          "\"wasm32-unknown-unknown\"]\n")
+                         (("[[]llvm[]]" match)
+                          (string-append
+                           match
+                           "\n[target.wasm32-unknown-unknown]\nlinker = \"" lld "\""))))
+                     #t))))))))))
 
 (define-public rust-1.45
   (let ((base-rust

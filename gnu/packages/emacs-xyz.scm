@@ -20958,7 +20958,7 @@ files.  It focuses on highlighting the document to improve readability.")
        (sha256
         (base32 "0xj5iki10cg8j8vvqjlw6lfx97k3agwirhchcjnzbnkry48x9qi6"))))
     (arguments
-     `(#:tests? #t
+     `(#:tests? #f
        #:test-command '("make" "test")
        #:phases
        (modify-phases %standard-phases

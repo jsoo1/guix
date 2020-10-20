@@ -29884,6 +29884,36 @@ using Rustls.")
         ("rust-webpki-roots" ,rust-webpki-roots-0.18))))
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tokio-rustls-0.10
+  (package
+    (inherit rust-tokio-rustls-0.12)
+    (name "rust-tokio-rustls")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xh6gxilm7waj55rxfgqmvl8abynzr3ang57qvbap400k67z0z1d"))))
+    (arguments
+     `(;; These tests require network access.
+       #:cargo-test-flags
+       '("--release"
+         "--" "--skip=test_badssl" "--skip=tls12" "--skip=modern")
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
+
 (define-public rust-tokio-signal-0.2
   (package
     (name "rust-tokio-signal")

@@ -31518,6 +31518,20 @@ other queries.")
      "This package provides a lightweight atomic lock.")
     (license license:expat)))
 
+(define-public rust-try-lock-0.1
+  (package
+    (inherit rust-try-lock-0.2)
+    (name "rust-try-lock")
+    (version "0.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "try-lock" version))
+        (file-name (string-append name "-" version ".crate"))
+        (sha256
+         (base32
+          "1hp76pyzyxhcxxjacf083gpp6gf8cqwkg188yy02i2a3axqs8apf"))))))
+
 (define-public rust-trybuild-1
   (package
     (name "rust-trybuild")

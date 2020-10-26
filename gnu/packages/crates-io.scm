@@ -31661,36 +31661,6 @@ and AsyncResolver for supported resolution types.  The Client can be used for
 other queries.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-trust-dns-rustls-0.19
-  (package
-    (name "rust-trust-dns-rustls")
-    (version "0.19.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "trust-dns-rustls" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1hj4fx2x4ncj7v8pf6bbn7634zq76hjigm1s2h6b6yjzzmz4yprn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-futures" ,rust-futures-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-rustls" ,rust-rustls-0.17)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.13)
-        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.19)
-        ("rust-webpki" ,rust-webpki-0.21))
-       #:cargo-development-inputs
-       (("rust-openssl" ,rust-openssl-0.10))))
-    (home-page "http://www.trust-dns.org/index.html")
-    (synopsis "rustls extension for the Trust-DNS client")
-    (description "Trust-DNS is a safe and secure DNS library.  This is an
-extension for the Trust-DNS client to use rustls for TLS.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-trust-dns-resolver-0.11
   (package
     (inherit rust-trust-dns-resolver-0.19)
@@ -31730,16 +31700,36 @@ extension for the Trust-DNS client to use rustls for TLS.")
        (("rust-env-logger" ,rust-env-logger-0.6)
         ("rust-tokio" ,rust-tokio-0.1)
         ("rust-tokio-io" ,rust-tokio-io-0.1))))))
+
+(define-public rust-trust-dns-rustls-0.19
+  (package
+    (name "rust-trust-dns-rustls")
+    (version "0.19.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1hj4fx2x4ncj7v8pf6bbn7634zq76hjigm1s2h6b6yjzzmz4yprn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.17)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.13)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.19)
+        ("rust-webpki" ,rust-webpki-0.21))
+       #:cargo-development-inputs
+       (("rust-openssl" ,rust-openssl-0.10))))
     (home-page "http://www.trust-dns.org/index.html")
-    (synopsis
-     "Trust-DNS is a safe and secure DNS library")
-    (description
-     "Trust-DNS is a safe and secure DNS library.  This Resolver library uses
-the Client library to perform all DNS queries.  The Resolver is intended to be
-a high-level library for any DNS record resolution see Resolver and
-AsyncResolver for supported resolution types.  The Client can be used for
-other queries.")
-    (license (list license:asl2.0 license:expat))))
+    (synopsis "Rustls extension for the Trust-DNS client")
+    (description "Trust-DNS is a safe and secure DNS library.  This is an
+extension for the Trust-DNS client to use rustls for TLS.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-trust-dns-rustls-0.6
   (package

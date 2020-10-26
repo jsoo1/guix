@@ -26795,6 +26795,26 @@ initializers are available.")
     (description "Simple SPMC channel")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-spmc-0.2
+  (package
+    (inherit rust-spmc-0.3)
+    (name "rust-spmc")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spmc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nhbjc65avbb4nffk6b49spbv7rsmmnrppj2qnx39mhwi57spgiw"))))
+    (arguments
+     `(#:tests? #f ;; tests hang
+       #:cargo-development-inputs
+       (("rust-loom" ,rust-loom-0.2))))
+    ;; This package is broken before 0.3
+    ;; Only included for pijul@1
+    (properties `((hidden? . #t)))))
+
 (define-public rust-spsc-buffer-0.1
   (package
     (name "rust-spsc-buffer")

@@ -30637,6 +30637,39 @@ pool.")
 implementation of TLS for nonblocking I/O streams.")
     (license license:expat)))
 
+(define-public rust-tokio-tls-0.1
+  (package
+    (inherit rust-tokio-tls-0.3)
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-tls" version))
+       (file-name
+        (string-append
+         (package-name rust-tokio-tls-0.3) "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04yrdscn8m9qza8ms09pqipbmj6x2q64jgm5n3ipy4b0wl24nbvp"))))
+    (arguments
+     `(#:skip-build? #t ; openssl?
+       #:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-native-tls" ,rust-native-tls-0.1)
+        ("rust-tokio-core" ,rust-tokio-core-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1)
+        ("rust-tokio-proto" ,rust-tokio-proto-0.1))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.4)
+        ("rust-hyper" ,rust-hyper-0.11)
+        ("rust-openssl" ,rust-openssl-0.9)
+        ("rust-schannel" ,rust-schannel-0.1)
+        ("rust-security-framework"
+         ,rust-security-framework-0.1)
+        ("rust-tokio-service" ,rust-tokio-service-0.1)
+        ("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-tokio-trace-core-0.2
   (package
     (name "rust-tokio-trace-core")

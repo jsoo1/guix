@@ -32966,6 +32966,30 @@ result.")
     (description "Detect when another Future wants a result.")
     (license license:expat)))
 
+(define-public rust-want-0.0
+  (package
+    (inherit rust-want-0.2)
+    (name "rust-want")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "want" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l9mbh4a0r2m3s8nckhy1vz9qm6lxsswlgxpimf4pyjkcyb9spd0"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release"
+         "--"
+         "--skip=tests::want_notify_0"
+         "--skip=tests::want_notify_moving_tasks"
+         "--skip=tests::stress")
+       #:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-try-lock" ,rust-try-lock-0.1))))))
+
 (define-public rust-wasi-0.9
   (package
     (name "rust-wasi")

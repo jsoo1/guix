@@ -22625,6 +22625,77 @@ is not meant for sending across threads, it performs about twice as fast.")
     (description "This package provides a high level HTTP client library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-reqwest-0.9
+  (package
+    (inherit rust-reqwest-0.10)
+    (name "rust-reqwest")
+    (version "0.9.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reqwest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1aql4wpmf1cfl09xddlxnmd7y1nj7fcbzmsh9603qd61lfp471pq"))))
+    (native-inputs
+     `(("openssl" ,openssl)
+       ("pkg-config" ,pkg-config)))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release"
+         "--"
+         ;; Skip network tests
+         "--skip=test_badssl_modern"
+         "--skip=test_badssl_self_signed"
+         "--skip=test_badssl_wrong_host")
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-bytes" ,rust-bytes-0.4)
+        ("rust-cookie" ,rust-cookie-0.12)
+        ("rust-cookie-store" ,rust-cookie-store-0.7)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-hyper" ,rust-hyper-0.12)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mime" ,rust-mime-0.3)
+        ("rust-mime-guess" ,rust-mime-guess-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-urlencoded" ,rust-serde-urlencoded-0.5)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-threadpool" ,rust-tokio-threadpool-0.1)
+        ("rust-tokio-timer" ,rust-tokio-timer-0.2)
+        ("rust-url" ,rust-url-1)
+        ("rust-uuid" ,rust-uuid-0.7)
+        ("rust-winreg" ,rust-winreg-0.6)
+        ("rust-hyper-old-types" ,rust-hyper-old-types-0.11)
+        ("rust-hyper-rustls" ,rust-hyper-rustls-0.17)
+        ("rust-hyper-tls" ,rust-hyper-tls-0.3)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-rustls" ,rust-rustls-0.16)
+        ("rust-socks" ,rust-socks-0.3)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.14)
+        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.11))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-libflate" ,rust-libflate-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'find-openssl
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((openssl (assoc-ref inputs "openssl")))
+               (setenv "OPENSSL_DIR" openssl))
+             #t)))))))
+
 (define-public rust-resolv-conf-0.6
   (package
     (name "rust-resolv-conf")

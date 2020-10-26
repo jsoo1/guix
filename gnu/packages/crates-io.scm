@@ -26528,6 +26528,24 @@ stack.")
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1))))))
 
+(define-public rust-smallvec-0.2
+  (package
+    (inherit rust-smallvec-0.6)
+    (name "rust-smallvec")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smallvec" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04z0bv5pcnwnvij8kfzw56lnib9mjq8bafp120i7q48yvzbbr32c"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" "--skip=tests::test_truncate")))))
+
 (define-public rust-socket2-0.3
   (package
     (name "rust-socket2")

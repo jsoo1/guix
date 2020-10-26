@@ -26381,6 +26381,23 @@ variants in pure Rust.")
 data type.")
     (license license:expat)))
 
+(define-public rust-slab-0.3
+  (package
+    (inherit rust-slab-0.4)
+    (name "rust-slab")
+    (version "0.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "slab" version))
+        (file-name (string-append name "-" version ".crate"))
+        (sha256
+         (base32
+          "08xw8w61zdfn1094qkq1d554vh5wmm9bqdys8gqqxc4sv2pgrd0p"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" "--skip=test_capacity_too_large1")))))
+
 (define-public rust-sleef-sys-0.1
   (package
     (name "rust-sleef-sys")

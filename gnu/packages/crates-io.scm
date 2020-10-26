@@ -33851,8 +33851,28 @@ attribute that is not in the shared backend crate.")
 Verification.")
     (license license:isc)))
 
-(define-public rust-webpki-0.18
+(define-public rust-webpki-0.19
   (package/inherit rust-webpki-0.21
+    (name "rust-webpki")
+    (version "0.19.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webpki" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10nhyxlqsa4caxlxrijm5h79rdg6ld8hqy78ldjnnfhaj3biqzjg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; Missing some test files
+       #:cargo-inputs
+       (("rust-ring" ,rust-ring-0.14)
+        ("rust-untrusted" ,rust-untrusted-0.6))
+       #:cargo-development-inputs
+       (("rust-base64" ,rust-base64-0.9))))))
+
+(define-public rust-webpki-0.18
+  (package/inherit rust-webpki-0.19
     (name "rust-webpki")
     (version "0.18.1")
     (source
@@ -33862,10 +33882,9 @@ Verification.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0zx1v8afa4ig97dyqfrnlj5i7pib6dnfw88qn2iiqhfq2rrrdmqp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-ring" ,rust-ring-0.13)
+       (("rust-ring" ,rust-ring-0.14)
         ("rust-untrusted" ,rust-untrusted-0.6))
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.9))))))

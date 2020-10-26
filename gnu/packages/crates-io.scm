@@ -22415,6 +22415,34 @@ uses finite automata and guarantees linear time matching on all inputs.")
     (description "This package provides portable, relative paths for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-relay-0.1
+  (package
+    (name "rust-relay")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "relay" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "16j8y57rjrfy3h5xfi9fwfbjs1nka3iifi52rvp9szldd21f6xhm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1))))
+    (home-page "https://github.com/seanmonstar/relay")
+    (synopsis "Lightweight Future channel for passing data among tasks")
+    (description
+     "This package provides a lightweight channel using @code{Future}.  A
+relay channel does not implement @code{Send}, and so is not meant for
+synchronizing between threads.  Instead, its used to send message between
+tasks that live in the same thread.
+
+It is similar to the @code{oneshot} channel in the futures crate, but since it
+is not meant for sending across threads, it performs about twice as fast.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-remove-dir-all-0.5
   (package
     (name "rust-remove-dir-all")

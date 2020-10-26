@@ -30033,6 +30033,45 @@ backed by OpenSSL.")
 futures.")
     (license license:expat)))
 
+(define-public rust-tokio-proto-0.1
+  (package
+    (name "rust-tokio-proto")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-proto" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "12833cckniq3y83zjhk2ayv6qpr99d4mj1h3hz266g1mh6p4gfwg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-log" ,rust-log-0.3)
+        ("rust-net2" ,rust-net2-0.2)
+        ("rust-rand" ,rust-rand-0.3)
+        ("rust-slab" ,rust-slab-0.3)
+        ("rust-smallvec" ,rust-smallvec-0.2)
+        ("rust-take" ,rust-take-0.1)
+        ("rust-tokio-core" ,rust-tokio-core-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1)
+        ("rust-tokio-service" ,rust-tokio-service-0.1))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-env-logger" ,rust-env-logger-0.3)
+        ("rust-lazycell" ,rust-lazycell-0.4)
+        ("rust-mio" ,rust-mio-0.6))))
+    (home-page "https://tokio.rs")
+    (synopsis "Clients and servers for the Tokio platform")
+    (description
+     "This package makes it easy to implement clients and servers for
+request/response oriented protocols.  It takes a transport and provides the
+request/response API.  It is a part of the Tokio platform.")
+    (license `(,license:asl2.0 ,license:expat))))
+
 (define-public rust-tokio-reactor-0.1
   (package
     (name "rust-tokio-reactor")

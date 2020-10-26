@@ -31396,6 +31396,41 @@ extension for the Trust-DNS client to use DNS over HTTPS.")
 extension for the Trust-DNS client to use native-tls for TLS.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-trust-dns-native-tls-0.6
+  (package
+    (inherit rust-trust-dns-native-tls-0.19)
+    (name "rust-trust-dns-native-tls")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-native-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0v18xwcy2vz57gnp1a6wx52c4zpwlakpr75ydmai8gc0h2kfzd7l"))))
+    (native-inputs
+     `(("openssl" ,openssl)
+       ("pkg-config" ,pkg-config)))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release"
+         "--" "--skip=tests::test_tls_client_stream_ipv4")
+       #:cargo-inputs
+       (("rust-futures" ,rust-futures-0.1)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-tokio-tls" ,rust-tokio-tls-0.2)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.7))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'find-openssl
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((openssl (assoc-ref inputs "openssl")))
+               (setenv "OPENSSL_DIR" openssl))
+             #t)))))))
+
 (define-public rust-trust-dns-openssl-0.19
   (package
     (name "rust-trust-dns-openssl")

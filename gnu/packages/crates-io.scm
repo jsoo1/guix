@@ -29627,7 +29627,7 @@ backed applications.")
 (define-public rust-tokio-0.1
   (package
     (name "rust-tokio")
-    (version "0.1.21")
+    (version "0.1.22")
     (source
      (origin
        (method url-fetch)
@@ -29636,14 +29636,13 @@ backed applications.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "11ra8jp3fj70a2zrqmd6as7wgpwiiyzjf50gz89i8r7wpksgqbzc"))))
+         "1xhaadfmm6m37f79xv5020gc3np9wqza3bq95ymp522qpfsw02as"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-mio" ,rust-mio-0.6)
-        ("rust-miow" ,rust-miow-0.3)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-tokio-codec" ,rust-tokio-codec-0.1)
         ("rust-tokio-current-thread" ,rust-tokio-current-thread-0.1)
@@ -29655,9 +29654,9 @@ backed applications.")
         ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
         ("rust-tokio-threadpool" ,rust-tokio-threadpool-0.1)
         ("rust-tokio-timer" ,rust-tokio-timer-0.2)
-        ("rust-tokio-trace-core" ,rust-tokio-trace-core-0.2)
         ("rust-tokio-udp" ,rust-tokio-udp-0.1)
-        ("rust-tokio-uds" ,rust-tokio-uds-0.2))
+        ("rust-tokio-uds" ,rust-tokio-uds-0.2)
+        ("rust-tracing-core" ,rust-tracing-core-0.1))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.5)
         ("rust-flate2" ,rust-flate2-1)

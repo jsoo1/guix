@@ -17639,9 +17639,38 @@ You probably don't want to link to this crate directly; instead check out the
     (description "OpenSSL bindings.")
     (license license:asl2.0)))
 
-(define-public rust-openssl-0.7
+(define-public rust-openssl-0.9
   (package
     (inherit rust-openssl-0.10)
+    (name "rust-openssl")
+    (version "0.9.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "openssl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "11br5b8x1kc5klsn50ihiml82ajyzcwi3lljvrlsm8vlhhlmqq53"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-0.9)
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9))
+       #:cargo-development-inputs
+       (("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-hex" ,rust-hex-0.2)
+        ("rust-tempdir" ,rust-tempdir-0.3)
+        ("rust-winapi" ,rust-winapi-0.2)
+        ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))))))
+
+(define-public rust-openssl-0.7
+  (package
+    (inherit rust-openssl-0.9)
     (name "rust-openssl")
     (version "0.7.14")
     (source

@@ -28283,6 +28283,30 @@ syntax extension expansion.")
     (description "Send log messages to syslog.")
     (license license:expat)))
 
+(define-public rust-take-0.1
+  (package
+    (name "rust-take")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "take" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1i8p579k9kq21k7pcm4yzbc12xpshl39jfa5c1j6pxf1ia6qcmxi"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/carllerche/take")
+    (synopsis "Container utility for Rust")
+    (description
+     "This package provides the @code{Take} datatype. @code{Take} is a
+@code{Cell} allowing the inner value to be consumed without a mutable
+reference.
+
+In order to maintain safety, it is not possible to get access to the inner
+value without consuming it.")
+    (license `(,license:asl2.0 ,license:expat))))
+
 (define-public rust-take-mut-0.2
   (package
     (name "rust-take-mut")

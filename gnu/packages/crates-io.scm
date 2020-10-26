@@ -20047,6 +20047,28 @@ replacements, adding colorful diffs.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-env-logger" ,rust-env-logger-0.6))))))
 
+(define-public rust-pretty-env-logger-0.2
+  (package
+    (inherit rust-pretty-env-logger-0.3)
+    (name "rust-pretty-env-logger")
+    (version "0.2.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pretty_env_logger" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0a0c53plsr4abw0y1iyjxs0d64f0a6dn48464a2rp21f0iiix3gd"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.11)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-env-logger" ,rust-env-logger-0.5)
+        ("rust-log" ,rust-log-0.4))))))
+
 (define-public rust-prettytable-rs-0.8
   (package
     (name "rust-prettytable-rs")

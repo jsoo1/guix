@@ -24828,7 +24828,7 @@ proven statistical guarantees.")
        #:cargo-development-inputs
        (("rust-hex" ,rust-hex-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3))))
-    (home-page "https://lib.rs/crates/security_framework")
+    (home-page "https://github.com/kornelski/rust-security-framework")
     (synopsis "@code{Security.framework} bindings for macOS and iOS")
     (description "This package provides @code{Security.framework} bindings for
 macOS and iOS.")

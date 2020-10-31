@@ -31532,7 +31532,7 @@ application authors using tracing to instrument their applications.")
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.7)
         ("rust-futures" ,rust-futures-0.3))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "http://trust-dns.org/index.html")
     (synopsis "DNS over HTTPS extension for the Trust-DNS client")
     (description "Trust-DNS is a safe and secure DNS library.  This is an
 extension for the Trust-DNS client to use DNS over HTTPS.")

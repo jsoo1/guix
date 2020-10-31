@@ -31904,7 +31904,7 @@ other queries.")
         ("rust-webpki" ,rust-webpki-0.21))
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.10))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "http://trust-dns.org/index.html")
     (synopsis "Rustls extension for the Trust-DNS client")
     (description "Trust-DNS is a safe and secure DNS library.  This is an
 extension for the Trust-DNS client to use rustls for TLS.")

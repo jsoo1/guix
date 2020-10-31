@@ -23915,7 +23915,7 @@ rustc compiler.")
         ("rust-log" ,rust-log-0.4)
         ("rust-webpki-roots" ,rust-webpki-roots-0.20))))
     (home-page "https://github.com/ctz/rustls")
-    (synopsis "Modern TLS library written in Rust.")
+    (synopsis "Modern TLS library written in Rust")
     (description "This package provides a modern TLS library written in
 Rust.")
     (license

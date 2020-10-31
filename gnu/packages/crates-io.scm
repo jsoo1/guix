@@ -25752,8 +25752,12 @@ for the serde framework.")
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/nox/serde_urlencoded")
-    (synopsis "x-www-form-urlencoded meets serde")
-    (description "x-www-form-urlencoded meets serde.")
+    (synopsis "@code{x-www-form-urlencoded} meets serde")
+    (description
+     "This package is a Rust library for serialising to and deserialising from
+the @code{application/x-www-form-urlencoded} format.  It is built upon Serde,
+a high performance generic serialization framework and rust-url, a URL parser
+for Rust.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-serde-urlencoded-0.5

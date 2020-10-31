@@ -31831,7 +31831,7 @@ foundational DNS protocol library for all Trust-DNS projects.")
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.7)
         ("rust-futures" ,rust-futures-0.3))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "http://trust-dns.org/index.html")
     (synopsis "Safe and secure DNS library")
     (description "Trust-DNS is a safe and secure DNS library.  This Resolver
 library uses the Client library to perform all DNS queries.  The Resolver is

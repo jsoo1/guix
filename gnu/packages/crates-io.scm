@@ -11963,7 +11963,7 @@ SystemTime}}.")
         ("rust-tower-util" ,rust-tower-util-0.3)
         ("rust-url" ,rust-url-1))))
     (home-page "https://hyper.rs")
-    (synopsis "Fast and correct HTTP library.")
+    (synopsis "Fast and correct HTTP library")
     (description "This package provides a fast and correct HTTP library.")
     (license license:expat)))
 

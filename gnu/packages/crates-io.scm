@@ -30263,7 +30263,7 @@ Tokio.")
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-tokio" ,rust-tokio-0.2))))
-    (home-page "https://github.com/alexcrichton/tokio-openssl")
+    (home-page "https://github.com/sfackler/tokio-openssl")
     (synopsis "SSL streams for Tokio backed by OpenSSL")
     (description "This package is an implementation of SSL streams for Tokio
 backed by OpenSSL.")

@@ -14710,6 +14710,22 @@ requires non-const function calls to be computed.")
     (arguments
      `(#:cargo-inputs (("rust-spin" ,rust-spin-0.5))))))
 
+(define-public rust-lazy-static-1.2
+  (package
+    (inherit rust-lazy-static-1.3)
+    (name "rust-lazy-static")
+    (version "1.2.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "lazy_static" version))
+        (file-name (string-append name "-" version ".crate"))
+        (sha256
+         (base32
+          "18fy414dxmg92qjsh1dl045yrpnrc64f7hbl792ran5mkndwhx53"))))
+    (arguments
+     `(#:cargo-inputs (("rust-spin" ,rust-spin-0.4))))))
+
 (define-public rust-lazy-static-0.2
   (package
     (inherit rust-lazy-static-1.4)

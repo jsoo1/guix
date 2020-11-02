@@ -34871,6 +34871,45 @@ extension for the Trust-DNS client to use rustls for TLS.")
      "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tuikit-0.4
+  (package
+    (name "rust-tuikit")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tuikit" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01x99x184k3p3knbzvr263has5rhpgkv81ijiqa8aqm1fl2azzfz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-lazy-static" ,rust-lazy-static-1.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.14)
+        ("rust-term" ,rust-term-0.6)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.6))))
+    (home-page "https://github.com/lotabout/tuikit")
+    (synopsis "Toolkit for writing TUI applications")
+    (description
+     "Tuikit is a TUI library for writing terminal UI applications.
+Highlights:
+@itemize
+@item Thread safe.
+@item Support non-fullscreen mode as well as fullscreen mode.
+@item Support Alt keys, mouse events, etc.
+@item Buffering for efficient rendering.
+@end itemize
+Tuikit is modeld after termbox which views the terminal as a table of
+fixed-size cells and input being a stream of structured messages.")
+    (license license:expat)))
+
 (define-public rust-typeable-0.1
   (package
     (name "rust-typeable")

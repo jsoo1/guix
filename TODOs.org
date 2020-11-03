@@ -35,3 +35,18 @@
    #+BEGIN_SRC fish
    while git commit --amend --no-edit -S; if not git rebase --continue; break; end; end
    #+END_SRC
+** Pause/resume builds
+   Swap SIGCONT (resume) for SIGSTOP (pause) and replace "guix build" with
+   your command.
+
+   It would be cool if this worked from org-babel.
+#+BEGIN_SRC fish
+guix processes --format=recutils-normalized \
+  | recsel \
+    --type=ChildProcess \
+    --join=Session \
+    --expression='Session.ClientCommand ~ "guix build"' \
+    --print=Session.PID,PID \
+  | recfmt -- '-{{PID}} -{{Session.PID}} ' \
+  | xargs echo sudo kill --signal SIGCONT
+#+END_SRC

@@ -38,16 +38,21 @@
 
 (define-module (gnu packages haskell)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
+  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages version-control)
+  #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -302,6 +307,20 @@ top of CLISP.")
 interactive environment for the functional language Haskell.")
     (license license:bsd-3)))
 
+(define (ghc-cross-build-system target)
+  (build-system
+    (name 'gnu-for-cross-ghc)
+    (description
+     "The GNU Build System—i.e., ./configure && make && make install.
+GHC is compiled in 3 stages: boot, stage1 and stage2.  During
+cross-compilation stage2 is compiled to run on the target system.  This
+build-system adjusts the target accordingly.")
+    (lower
+     (lambda x
+       (bag
+         (inherit (apply lower x))
+         (system (gnu-triplet->nix-system target)))))))
+
 (define-public ghc-8.0
   (package
     (name "ghc")
@@ -314,24 +333,46 @@ interactive environment for the functional language Haskell.")
       (sha256
        (base32 "1c8qc4fhkycynk4g1f9hvk53dj6a1vvqi6bklqznns6hw59m8qhi"))
       (patches
-       (search-patches "ghc-8.0-fall-back-to-madv_dontneed.patch"))))
-    (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (outputs '("out" "doc"))
+       (search-patches "ghc-8.0-fall-back-to-madv_dontneed.patch"
+                       "ghc-8.0-no-cpp-warnings-when-cross-compiling.patch"))))
+    (build-system (if (%current-target-system)
+                      (ghc-cross-build-system (%current-target-system))
+                      gnu-build-system))
+    (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))
+    ;; Haddocks are not built when cross-compiling
+    (outputs `("out" ,@(if (%current-target-system) '() '("doc"))))
     (inputs
      `(("gmp" ,gmp)
        ("ncurses" ,ncurses)
        ("libffi" ,libffi)
        ("ghc-testsuite"
         ,(origin
-           (method url-fetch)
-           (uri (string-append
-                 "https://www.haskell.org/ghc/dist/"
-                 version "/" name "-" version "-testsuite.tar.xz"))
-           (sha256
-            (base32 "1wjc3x68l305bl1h1ijd3yhqp2vqj83lkp3kqbr94qmmkqlms8sj"))))))
+          (method url-fetch)
+          (uri (string-append
+                "https://www.haskell.org/ghc/dist/"
+                version "/" name "-" version "-testsuite.tar.xz"))
+          (sha256
+           (base32 "1wjc3x68l305bl1h1ijd3yhqp2vqj83lkp3kqbr94qmmkqlms8sj"))))))
     (native-inputs
-     `(("perl" ,perl)
+     `(,@(if (%current-target-system)
+             (let* ((xbinutils (cross-binutils (%current-target-system)
+                                               (canonical-package binutils-gold)))
+                    (xgcc (cross-gcc (%current-target-system)
+                                     #:xgcc gcc-5
+                                     #:libc (cross-libc (%current-target-system))
+                                     #:xbinutils xbinutils)))
+               `(("cross-binutils-gold" ,xbinutils)
+                 ;; GHC has some c that fails with would-fallthrough
+                 ;; which was changed in gcc versions > 6.
+                 ;; Glibc is required as there are some references to
+                 ;; linux-ld. An old version is here for compatibility.
+                 ("cross-gcc-5" ,xgcc)
+                 ;; Use the llvm codegen in cross-compiling.
+                 ;; It may be possible to use "perf-ngc-cross" instead
+                 ("llvm" ,llvm-3.7)
+                 ("ncurses" ,ncurses)))
+             '())
+       ("perl" ,perl)
        ("python" ,python-2)                ; for tests
        ("ghostscript" ,ghostscript)        ; for tests
        ;; GHC is built with GHC.
@@ -342,26 +383,42 @@ interactive environment for the functional language Haskell.")
        ;; execution.
        #:parallel-tests? #f
 
-       ;; Don't pass --build=<triplet>, because the configure script
-       ;; auto-detects slightly different triplets for --host and --target and
-       ;; then complains that they don't match.
-       #:build #f
-
        #:configure-flags
-       (list
-        (string-append "--with-gmp-libraries="
-                       (assoc-ref %build-inputs "gmp") "/lib")
-        (string-append "--with-gmp-includes="
-                       (assoc-ref %build-inputs "gmp") "/include")
-        "--with-system-libffi"
-        (string-append "--with-ffi-libraries="
-                       (assoc-ref %build-inputs "libffi") "/lib")
-        (string-append "--with-ffi-includes="
-                       (assoc-ref %build-inputs "libffi") "/include")
-        (string-append "--with-curses-libraries="
-                       (assoc-ref %build-inputs "ncurses") "/lib")
-        (string-append "--with-curses-includes="
-                       (assoc-ref %build-inputs "ncurses") "/include"))
+       (append
+        (list
+         (string-append "--with-gmp-libraries="
+                        (assoc-ref %build-inputs "gmp") "/lib")
+         (string-append "--with-gmp-includes="
+                        (assoc-ref %build-inputs "gmp") "/include")
+         "--with-system-libffi"
+         (string-append "--with-ffi-libraries="
+                        (assoc-ref %build-inputs "libffi") "/lib")
+         (string-append "--with-ffi-includes="
+                        (assoc-ref %build-inputs "libffi") "/include"))
+        (let* ((ncurses (assoc-ref %build-inputs "ncurses"))
+               (ncurses-host (assoc-ref %build-host-inputs "ncurses"))
+               (ncurses-libraries (if ncurses-host
+                                      (string-append
+                                       ncurses "/lib:" ncurses-host "/lib")
+                                      (string-append ncurses "/lib")))
+               (ncurses-includes (if ncurses-host
+                                     (string-append
+                                      ncurses "/include:" ncurses-host "/include")
+                                     (string-append ncurses "/include"))))
+          (list
+           (string-append "--with-curses-libraries=" ncurses-libraries)
+           (string-append "--with-curses-includes=" ncurses-includes)))
+        (if ,(%current-target-system)
+            (let ((xgcc (assoc-ref %build-host-inputs "cross-gcc-5"))
+                  (xbinutils (assoc-ref %build-host-inputs "cross-binutils-gold"))
+                  (target ,(%current-target-system)))
+              (list
+               (string-append "--target=" target)
+               (string-append "--with-gcc=" xgcc "/bin/" target "-gcc")
+               (string-append "--with-ld=" xbinutils "/bin/" target "-ld")
+               (string-append "--with-nm=" xbinutils "/bin/" target "-nm")
+               (string-append "--with-objdump=" xbinutils "/bin/" target "-objdump")))
+            '()))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-testsuite
@@ -370,6 +427,99 @@ interactive environment for the functional language Haskell.")
                (copy-file (assoc-ref inputs "ghc-testsuite")
                           "ghc-testsuite.tar.xz")
                (zero? (system* "tar" "xvf" "ghc-testsuite.tar.xz")))))
+         ;; Copy-pasted from gnu-build-system to remove the --host
+         ;; flag since only --target is accepted.
+         (replace 'configure
+           (lambda* (#:key target native-inputs inputs outputs
+                     (configure-flags '()) out-of-source?
+                     #:allow-other-keys)
+             (define (package-name)
+               (let* ((out  (assoc-ref outputs "out"))
+                      (base (basename out))
+                      (dash (string-rindex base #\-)))
+                 ;; XXX: We'd rather use `package-name->name+version' or similar.
+                 (string-drop (if dash
+                                  (substring base 0 dash)
+                                  base)
+                              (+ 1 (string-index base #\-)))))
+
+             (let* ((prefix     (assoc-ref outputs "out"))
+                    (bindir     (assoc-ref outputs "bin"))
+                    (libdir     (assoc-ref outputs "lib"))
+                    (includedir (assoc-ref outputs "include"))
+                    (docdir     (assoc-ref outputs "doc"))
+                    (bash       (or (and=> (assoc-ref (or native-inputs inputs) "bash")
+                                           (lambda (x) (string-append x "/bin/bash")))
+                                    "/bin/sh"))
+                    (flags      `(,@(if target
+                                        (let ((xgcc (assoc-ref native-inputs "cross-gcc-5")))
+                                          `(,(string-append "LDFLAGS=-L" xgcc "/" target "/lib")
+                                            ,(string-append "CPPFLAGS=-I" xgcc "/include")))
+                                        '())
+                                  ,(string-append "CONFIG_SHELL=" bash)
+                                  ,(string-append "SHELL=" bash)
+                                  ,(string-append "--prefix=" prefix)
+                                  "--enable-fast-install"    ; when using Libtool
+
+                                  ;; Produce multiple outputs when specific output names
+                                  ;; are recognized.
+                                  ,@(if bindir
+                                        (list (string-append "--bindir=" bindir "/bin"))
+                                        '())
+                                  ,@(if libdir
+                                        (cons (string-append "--libdir=" libdir "/lib")
+                                              (if includedir
+                                                  '()
+                                                  (list
+                                                   (string-append "--includedir="
+                                                                  libdir "/include"))))
+                                        '())
+                                  ,@(if includedir
+                                        (list (string-append "--includedir="
+                                                             includedir "/include"))
+                                        '())
+                                  ,@(if docdir
+                                        (list (string-append "--docdir=" docdir
+                                                             "/share/doc/" (package-name)))
+                                        '())
+                                  ,@configure-flags))
+                    (abs-srcdir (getcwd))
+                    (srcdir     (if out-of-source?
+                                    (string-append "../" (basename abs-srcdir))
+                                    ".")))
+               (format #t "source directory: ~s (relative from build: ~s)~%"
+                       abs-srcdir srcdir)
+               (if out-of-source?
+                   (begin
+                     (mkdir "../build")
+                     (chdir "../build")))
+               (format #t "build directory: ~s~%" (getcwd))
+               (format #t "configure flags: ~s~%" flags)
+
+               (when target
+                 (call-with-output-file "mk/build.mk"
+                   (lambda (p)
+                     ;; Docs not built when cross compiling.
+                     ;; strip must know about target symbols
+                     (format p "
+HADDOCK_DOCS=NO
+STRIP_CMD = ~A
+"
+                             (string-append
+                              (assoc-ref native-inputs "cross-binutils-gold")
+                              "/bin/" target "-strip")))))
+
+               ;; Use BASH to reduce reliance on /bin/sh since it may not always be
+               ;; reliable (see
+               ;; <http://thread.gmane.org/gmane.linux.distributions.nixos/9748>
+               ;; for a summary of the situation.)
+               ;;
+               ;; Call `configure' with a relative path.  Otherwise, GCC's build system
+               ;; (for instance) records absolute source file names, which typically
+               ;; contain the hash part of the `.drv' file, leading to a reference leak.
+               (apply invoke bash
+                      (string-append srcdir "/configure")
+                      flags))))
          (add-before 'build 'fix-lib-paths
            (lambda _
              (substitute*

@@ -30515,7 +30515,7 @@ and Jaro-Winkler.")
 (define-public rust-structopt-0.3
   (package
     (name "rust-structopt")
-    (version "0.3.12")
+    (version "0.3.20")
     (source
       (origin
         (method url-fetch)
@@ -30524,7 +30524,7 @@ and Jaro-Winkler.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "178m7wxnjyy9a8a961z74nazjsg79rfv3gv9g3bykfrrjmqs5yn8"))))
+          "1f1f26rzf1drx5za3p591na4zizkbgin9y8n1fp9yi7cjh166v8j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t

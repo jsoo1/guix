@@ -1150,6 +1150,41 @@ library and a dynamic library, and a C header to be used by any C (and
 C-compatible) software.")
     (license license:expat)))
 
+(define-public sd
+  (package
+   (name "sd")
+   (version "0.7.6")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "sd" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "1x3vj0ravvivmkshh7cbhzc16lwqyndc3iv2z16amwxcmivxmmib"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-memmap" ,rust-memmap-0.7)
+       ("rust-rayon" ,rust-rayon-1)
+       ("rust-regex" ,rust-regex-1)
+       ("rust-structopt" ,rust-structopt-0.3)
+       ("rust-tempfile" ,rust-tempfile-3)
+       ("rust-thiserror" ,rust-thiserror-1)
+       ("rust-unescape" ,rust-unescape-0.1))
+      #:cargo-development-inputs
+      (("rust-anyhow" ,rust-anyhow-1)
+       ("rust-assert-cmd" ,rust-assert-cmd-1)
+       ("rust-man" ,rust-man-0.3)
+       ("rust-structopt" ,rust-structopt-0.3))))
+   (home-page "https://github.com/chmln/sd")
+   (synopsis "Intuitive find and replace CLI")
+   (description "This package provides sed-like find and replace.  It
+uses regex syntax from JavaScript and Python.  It also provides
+non-regex find and replace.")
+   (license license:expat)))
+
 (define-public zoxide
   (package
     (name "zoxide")

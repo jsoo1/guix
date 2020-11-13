@@ -17394,6 +17394,57 @@ which defines a default trait implementation, and @code{trait_impl} which uses
 a default trait implementation you've defined.")
     (license license:lgpl2.1+)))
 
+(define-public rust-mutagen
+  (let ((commit "c7abc956a10e8a3e2cc71f21279ea0a42f7b7c10"))
+    (package
+     (name "rust-mutagen")
+     (version "0.2.0")
+     (source
+      (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/llogiq/mutagen.git")
+         (commit commit)))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0fjii2ac1phrlhq5xwbp9qjiiiz25wxv5b97xhbymdrxz080azfg"))))
+     (build-system cargo-build-system)
+     (arguments
+      `(#:cargo-inputs
+        (("rust-console" ,rust-console-0.13)
+         ("rust-failure" ,rust-failure-0.1)
+         ("rust-humantime" ,rust-humantime-2)
+         ("rust-json" ,rust-json-0.12)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-structopt" ,rust-structopt-0.3)
+         ("rust-syn" ,rust-syn-1)
+         ("rust-wait-timeout" ,rust-wait-timeout-0.2))
+        #:phases
+        (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+          (lambda _ (chdir "mutagen") #t))
+         (add-after 'chdir 'set-bootstrap-env
+          (lambda _ (setenv "RUSTC_BOOTSTRAP" "1") #t)))))
+     (home-page "https://github.com/llogiq/mutagen/tree/master/mutagen")
+     (synopsis "Breaking your Rust code for fun and profit")
+     (description
+      "This package provides a mutation testing framework for Rust
+code.
+
+A change (mutation) in the program source code is most likely a bug of
+some kind. A good test suite can detect changes in the source code by
+failing (\"killing\" the mutant). If the test suite is green even if
+the program is mutated (the mutant survives), the tests fail to detect
+this bug.")
+     (license (list license:asl2.0 license:expat)))))
+
 (define-public rust-mysqlclient-sys-0.2
   (package
     (name "rust-mysqlclient-sys")

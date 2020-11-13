@@ -27,6 +27,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
@@ -34,6 +35,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages nettle)
@@ -92,6 +94,106 @@
 highlighting for a large number of languages, git integration, and automatic
 paging.")
     (license (list license:expat license:asl2.0))))
+
+(define-public dog
+  (let ((commit "e9f557777601e0033f6ad9dd24691bda91a0ed61"))
+    (package
+     (name "dog")
+     (version "0.1.0")
+     (source
+      (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/ogham/dog.git")
+         (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0wdph6dmg83z7539abg0yy7mpns2by9fg2aw6jl4s9mbqlmrx5y7"))))
+     (build-system cargo-build-system)
+     (native-inputs
+      `(("pkg-config" ,pkg-config)
+        ("openssl" ,openssl)
+        ("pandoc" ,pandoc)))
+     (arguments
+      `(#:cargo-inputs
+        (("rust-ansi-term" ,rust-ansi-term-0.12)
+         ("rust-atty" ,rust-atty-0.2)
+         ("rust-byteorder" ,rust-byteorder-1)
+         ("rust-datetime" ,rust-datetime-0.5)
+         ("rust-getopts" ,rust-getopts-0.2)
+         ("rust-httparse" ,rust-httparse-1)
+         ("rust-ipconfig" ,rust-ipconfig-0.2)
+         ;; FIXME
+         ;; ("rust-mutagen" ,rust-mutagen)
+         ("rust-native-tls" ,rust-native-tls-0.2)
+         ("rust-rand" ,rust-rand-0.7)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-log" ,rust-log-0.4))
+        #:cargo-development-inputs
+        (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))
+        #:phases
+        (modify-phases %standard-phases
+         (add-after 'unpack 'set-rustc-bootstrap
+           (lambda _ (setenv "RUSTC_BOOTSTRAP" "1") #t))
+         (add-after 'set-rustc-bootstrap 'fixup-git-dependencies
+           (lambda _
+             (substitute* "dns/Cargo.toml"
+               (("(mutagen = \\{ )git = \".*\"(.*)" all mutagen rest)
+                ""
+                ;; (string-append mutagen "version = \"0.2\"" rest)
+                )
+               (("with_mutagen = .*") ""))))
+         (add-after 'configure 'set-openssl-dir
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((openssl (assoc-ref inputs "openssl")))
+               (setenv "OPENSSL_DIR" openssl))
+             #t))
+         (add-after 'patch-cargo-checksums 'patch-more-checksums
+           (lambda _
+             (use-modules (guix build cargo-utils))
+             (with-directory-excursion "dns-transport"
+               (generate-all-checksums "../guix-vendor"))
+             (with-directory-excursion "dns"
+               (generate-all-checksums "../guix-vendor"))
+             #t))
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (use-modules (ice-9 popen)
+                          (ice-9 binary-ports))
+             (let* ((out   (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (man1  (string-append share "/man/man1")))
+               (mkdir-p man1)
+               (call-with-output-file (string-append man1 "/dog.1")
+                 (lambda (dog1)
+                   (let* ((cmd (string-append
+                                "pandoc --standalone "
+                                "-f markdown -t man man/dog.1.md"))
+                          (pipe (open-input-pipe cmd)))
+                     (put-bytevector dog1 (get-bytevector-all pipe))
+                     (close-pipe pipe))))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (copy-file "completions/dog.bash"
+                          (string-append out "/etc/bash_completion.d/dog.bash"))
+               (copy-file "completions/dog.fish"
+                          (string-append share "/fish/vendor_completions.d/dog.fish"))
+               (copy-file "completions/dog.zsh"
+                          (string-append share "/zsh/site-functions/_dog"))
+               #t))))))
+     (home-page "https://github.com/ogham/dog")
+     (synopsis "Command-line DNS client")
+     (description
+      "This package provides a command-line DNS client, like dig. It
+has colourful output, understands normal command-line argument syntax,
+supports the DNS-over-TLS and DNS-over-HTTPS protocols, and can emit
+JSON.")
+     (license license:eupl1.2))))
 
 (define-public exa
   (package

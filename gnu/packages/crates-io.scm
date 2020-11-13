@@ -35380,6 +35380,28 @@ panic-free alternative to @code{core::fmt}.")
      "Unchecked indexing wrapper using regular index syntax.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-unescape-0.1
+  (package
+   (name "rust-unescape")
+   (version "0.1.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "unescape" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "0vlgws15n4kz8xq4igzr1f80nbiyr838k687hn6ly8a36an7vffc"))))
+   (build-system cargo-build-system)
+   (home-page "https://github.com/saghm/unescape-rs")
+   (synopsis
+    "Unescape strings")
+   (description
+    "Unescapes (JavaScript) strings with escape sequences written out
+as literal characters.")
+   (license license:expat)))
+
 (define-public rust-unicase-2
   (package
     (name "rust-unicase")

@@ -25225,6 +25225,32 @@ Rust Language Server.")
     (description "This package provides a typed key-value storage solution.")
     (license license:asl2.0)))
 
+(define-public rust-roff-0.1
+  (package
+   (name "rust-roff")
+   (version "0.1.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "roff" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "0pk76fw9hqnvr8qbd5r8yq08zpgymk14wgkn5h2qhs54gfrlygp3"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-development-inputs
+      (("rust-duct" ,rust-duct-0.13)
+       ("rust-pretty-assertions" ,rust-pretty-assertions-0.5))))
+   (home-page "https://github.com/killercup/roff-rs")
+   (synopsis
+    "ROFF generation library")
+   (description
+    "This package provides Rust structures and builders for the ROFF
+format.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-ron-0.5
   (package
     (name "rust-ron")

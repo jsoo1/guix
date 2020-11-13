@@ -18194,7 +18194,7 @@ combinators library.")
         (base32
          "1mkvby8b4m61p4g1px0pwr58yfkphyp1jcfbp4qfp7l6iqdaklia"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t ; Build fails
        #:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-memchr" ,rust-memchr-2)
@@ -18203,6 +18203,27 @@ combinators library.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.2)
         ("rust-jemallocator" ,rust-jemallocator-0.1))))))
+
+(define-public rust-nom-4.0
+  (package
+    (inherit rust-nom-4.2)
+    (name "rust-nom")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nom" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "056inskpv4xpwixyklqrds9y3i7pwx3bxgxgnmgcxhxm1rsrd1l9"))))
+    (arguments
+     `(#:tests? #f ; Tests fail to compile
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-nom-3
   (package

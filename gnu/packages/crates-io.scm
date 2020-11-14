@@ -20103,6 +20103,31 @@ under its new name.")
      "A cross-platform library for opening OS pipes.")
     (license license:expat)))
 
+(define-public rust-os-str-bytes-2
+  (package
+   (name "rust-os-str-bytes")
+   (version "2.4.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "os-str-bytes" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "11agh8n3x2l4sr3sxvx6byc1j3ryb1g6flb1ywn0qhq7xv1y3cmg"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-development-inputs
+      (("rust-getrandom" ,rust-getrandom-0.1))))
+   (home-page "")
+   (synopsis
+    "Convert between byte sequences and platform-native strings")
+   (description
+    "This package provides traits for converting between byte
+sequences and platform-native strings.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-os-type-2
   (package
     (name "rust-os-type")

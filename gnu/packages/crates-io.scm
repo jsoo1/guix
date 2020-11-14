@@ -36467,8 +36467,40 @@ If that fails, no determination is made, and calls return None.")
 numbers, and test them against various comparison operators.")
     (license license:expat)))
 
+(define-public rust-version-sync-0.9
+  (package
+    (name "rust-version-sync")
+    (version "0.9.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "version-sync" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1qp0h7v624zsgs52jn2b6zkz8gcnmdrzw0j1nmxqz62ndwm7vdy7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.7)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-semver-parser" ,rust-semver-parser-0.9)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/mgeisler/version-sync")
+    (synopsis
+     "Ensure that version numbers are updated when the crate version changes")
+    (description
+     "Simple crate for ensuring that version numbers in README files are
+updated when the crate version changes.")
+    (license license:expat)))
+
 (define-public rust-version-sync-0.8
   (package
+    (inherit rust-version-sync-0.9)
     (name "rust-version-sync")
     (version "0.8.1")
     (source
@@ -36480,7 +36512,6 @@ numbers, and test them against various comparison operators.")
         (sha256
          (base32
           "01pq0ia7ak7d69c3chjgdmaaq271yrspgbzmk6wmrwb74hx3skw4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -36491,14 +36522,7 @@ numbers, and test them against various comparison operators.")
         ("rust-semver-parser" ,rust-semver-parser-0.9)
         ("rust-syn" ,rust-syn-0.15)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-url" ,rust-url-1))))
-    (home-page "https://github.com/mgeisler/version-sync")
-    (synopsis
-     "Ensure that version numbers are updated when the crate version changes")
-    (description
-     "Simple crate for ensuring that version numbers in README files are
-updated when the crate version changes.")
-    (license license:expat)))
+        ("rust-url" ,rust-url-1))))))
 
 (define-public rust-version-sync-0.6
   (package

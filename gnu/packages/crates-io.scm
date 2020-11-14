@@ -1078,6 +1078,41 @@ from Askama.  Askama implements a template rendering engine based on
 Jinja.")
    (license (list license:expat license:asl2.0))))
 
+(define-public rust-askama-shared-0.10
+  (package
+   (name "rust-askama-shared")
+   (version "0.10.4")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "askama_shared" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "1dbbvrxjaakp4yrrpp2pn3w3g0h2knfjak0f0gf8qp1lccijgz32"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-askama-escape" ,rust-askama-escape-0.10)
+       ("rust-humansize" ,rust-humansize-1)
+       ("rust-nom" ,rust-nom-5)
+       ("rust-num-traits" ,rust-num-traits-0.2)
+       ("rust-percent-encoding" ,rust-percent-encoding-2)
+       ("rust-proc-macro2" ,rust-proc-macro2-1)
+       ("rust-quote" ,rust-quote-1)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-serde-derive" ,rust-serde-derive-1)
+       ("rust-serde-json" ,rust-serde-json-1)
+       ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+       ("rust-syn" ,rust-syn-1)
+       ("rust-toml" ,rust-toml-0.5))))
+   (home-page "https://github.com/djc/askama")
+   (synopsis "Shared code for Askama")
+   (description "This package provides shared code for Askama.  Askama
+implements a template rendering engine based on Jinja.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-assert-cli-0.6
   (package
     (name "rust-assert-cli")

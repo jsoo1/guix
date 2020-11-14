@@ -20086,10 +20086,10 @@ system for OpenSSL.")
 PartialOrd types, like floats.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ordered-float-1.0
+(define-public rust-ordered-float-2
   (package
     (name "rust-ordered-float")
-    (version "1.0.2")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
@@ -20098,7 +20098,7 @@ PartialOrd types, like floats.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0625x96987kspdxbikry5mb7hsf5pdc5bbanxd8wjwqlx0ar71hq"))))
+         "198l2g8dy8s7ca69khm6xjah0aqszaifjjmw5093n0npcmqh7scz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -20111,6 +20111,21 @@ PartialOrd types, like floats.")
     (description
      "This package provides wrappers for total ordering on floats in Rust.")
     (license license:expat)))
+
+(define-public rust-ordered-float-1.0
+  (package
+    (inherit rust-ordered-float-2)
+    (name "rust-ordered-float")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ordered-float" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0625x96987kspdxbikry5mb7hsf5pdc5bbanxd8wjwqlx0ar71hq"))))))
 
 (define-public rust-ordermap-0.3
   (package

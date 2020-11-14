@@ -1053,6 +1053,31 @@ standard library.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-askama-escape-0.10
+  (package
+   (name "rust-askama-escape")
+   (version "0.10.1")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "askama_escape" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "1ys6wcrkpzygk6r93zd0rhinhy89rraarl0m4afwi023m70hihch"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-development-inputs
+      (("rust-criterion" ,rust-criterion-0.3))))
+   (home-page "https://github.com/djc/askama")
+   (synopsis "Optimized HTML escaping code")
+   (description
+    "This package escapes HTML code.  It is a component extracted
+from Askama.  Askama implements a template rendering engine based on
+Jinja.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-assert-cli-0.6
   (package
     (name "rust-assert-cli")

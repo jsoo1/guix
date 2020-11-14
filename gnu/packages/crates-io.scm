@@ -4296,10 +4296,10 @@ chain, the first matching branch is the item that gets emitted.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libloading" ,rust-libloading-0.3))))))
 
-(define-public rust-clap-2
+(define-public rust-clap-3
   (package
     (name "rust-clap")
-    (version "2.33.3")
+    (version "3.0.0-beta.2")
     (source
       (origin
         (method url-fetch)
@@ -4307,23 +4307,27 @@ chain, the first matching branch is the item that gets emitted.")
         (file-name (string-append name "-" version ".crate"))
         (sha256
          (base32
-          "00i065a58987k1sbzqmlz721rw521zcg08jmsh40gi3khp3qmr9p"))))
+          "0hm1kivw6190rxbfqhdr4hqwlrijvwh90i3d9dyyw0d5k0chdlab"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.11)
-        ("rust-atty" ,rust-atty-0.2)
+       (("rust-atty" ,rust-atty-0.2)
         ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-clippy" ,rust-clippy-0.0)
-        ("rust-strsim" ,rust-strsim-0.8)
+        ("rust-clap-derive" ,rust-clap-derive-3)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-os-str-bytes" ,rust-os-str-bytes-2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-strsim" ,rust-strsim-0.10)
         ("rust-term-size" ,rust-term-size-0.3)
-        ("rust-textwrap" ,rust-textwrap-0.11)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-terminal-size" ,rust-terminal-size-0.1)
+        ("rust-textwrap" ,rust-textwrap-0.12)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-vec-map" ,rust-vec-map-0.8)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.3))
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
        #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1)
+       (("rust-criterion" ,rust-criterion-0.3)
         ("rust-version-sync" ,rust-version-sync-0.8))))
     (home-page "https://clap.rs/")
     (synopsis "Command Line Argument Parser")
@@ -4331,6 +4335,36 @@ chain, the first matching branch is the item that gets emitted.")
      "This package provides a simple to use, efficient, and full-featured
 Command Line Argument Parser.")
     (license license:expat)))
+
+(define-public rust-clap-2
+  (package
+   (inherit rust-clap-3)
+   (name "rust-clap")
+   (version "2.33.1")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "clap" version))
+     (file-name (string-append name "-" version ".crate"))
+     (sha256
+      (base32
+       "0a91g4m6rcqpf6gzxh43cj6mnj9g8ahpr634baim6kcmgza81ymx"))))
+   (arguments
+    `(#:cargo-inputs
+      (("rust-ansi-term" ,rust-ansi-term-0.11)
+       ("rust-atty" ,rust-atty-0.2)
+       ("rust-bitflags" ,rust-bitflags-1)
+       ("rust-clippy" ,rust-clippy-0.0)
+       ("rust-strsim" ,rust-strsim-0.8)
+       ("rust-term-size" ,rust-term-size-0.3)
+       ("rust-textwrap" ,rust-textwrap-0.11)
+       ("rust-unicode-width" ,rust-unicode-width-0.1)
+       ("rust-vec-map" ,rust-vec-map-0.8)
+       ("rust-yaml-rust" ,rust-yaml-rust-0.3))
+      #:cargo-development-inputs
+      (("rust-lazy-static" ,rust-lazy-static-1)
+       ("rust-regex" ,rust-regex-1)
+       ("rust-version-sync" ,rust-version-sync-0.8))))))
 
 (define-public rust-clap-derive-3
   (package

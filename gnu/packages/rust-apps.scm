@@ -959,3 +959,52 @@ as webpack or greenkeeper.")
 uses regex syntax from JavaScript and Python.  It also provides
 non-regex find and replace.")
    (license license:expat)))
+
+(define-public zoxide
+  (package
+   (name "zoxide")
+   (version "0.5.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "zoxide" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "0jia0rsjylziy2amiv525fprsi8n4n0df56i47xnpij1vqdqryli"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-anyhow" ,rust-anyhow-1.0)
+       ("rust-askama" ,rust-askama-0.10)
+       ("rust-bincode" ,rust-bincode-1)
+       ("rust-clap" ,rust-clap-3)
+       ("rust-dirs-next" ,rust-dirs-next-1)
+       ("rust-dunce" ,rust-dunce-1)
+       ("rust-glob" ,rust-glob-0.3)
+       ("rust-once-cell" ,rust-once-cell-1)
+       ("rust-ordered-float" ,rust-ordered-float-2)
+       ("rust-rand" ,rust-rand-0.7)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-tempfile" ,rust-tempfile-3))
+      #:cargo-development-inputs
+      (("rust-assert-cmd" ,rust-assert-cmd-1))
+      #:cargo-test-flags
+      '("--release" "--"
+        "--skip=shell::tests::test_fish"
+        "--skip=shell::tests::test_pwsh"
+        "--skip=shell::tests::test_shellcheck_bash"
+        "--skip=shell::tests::test_shellcheck_sh"
+        "--skip=shell::tests::test_shfmt_bash"
+        "--skip=shell::tests::test_shfmt_posix"
+        "--skip=shell::tests::test_xonsh"
+        "--skip=shell::tests::test_zsh")))
+   (home-page "")
+   (synopsis
+    "Faster way to navigate your filesystem")
+   (description
+    "This package provides an alternative to cd, inspired by z and
+z.lua.  It keeps track of the directories you use most frequently, and
+uses a ranking algorithm to navigate to the best match.")
+   (license license:expat)))

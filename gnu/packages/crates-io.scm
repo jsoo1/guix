@@ -1053,6 +1053,37 @@ standard library.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-askama-0.10
+  (package
+   (name "rust-askama")
+   (version "0.10.3")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "askama" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "04kxxx3mq53hl4fh0zyqp73sq51jrp2q6v1093ylf02dskmyg9kh"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-askama-derive" ,rust-askama-derive-0.10)
+       ("rust-askama-escape" ,rust-askama-escape-0.10)
+       ("rust-askama-shared" ,rust-askama-shared-0.10)
+       ("rust-mime" ,rust-mime-0.3)
+       ("rust-mime-guess" ,rust-mime-guess-2))))
+   (home-page "https://github.com/djc/askama")
+   (synopsis
+    "Type-safe, compiled Jinja-like templates for Rust")
+   (description
+    "This package implements a template rendering engine based on
+Jinja.  It generates Rust code from your templates at compile time
+based on a user-defined struct to hold the template's context.  Read
+the book at @url{https://djc.github.io/askama/}.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-askama-derive-0.10
   (package
    (name "rust-askama-derive")

@@ -4332,6 +4332,41 @@ chain, the first matching branch is the item that gets emitted.")
 Command Line Argument Parser.")
     (license license:expat)))
 
+(define-public rust-clap-derive-3
+  (package
+   (name "rust-clap-derive")
+   (version "3.0.0-beta.2")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "clap-derive" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "18cn82jhcha7m0nkpi1a03jx8k7aaq5kxfcxnsqpaa8ih5dp23rp"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-heck" ,rust-heck-0.3)
+       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+       ("rust-proc-macro2" ,rust-proc-macro2-1)
+       ("rust-quote" ,rust-quote-1)
+       ("rust-syn" ,rust-syn-1))
+      #:cargo-development-inputs
+      (("rust-rustversion" ,rust-rustversion-1)
+       ("rust-trybuild" ,rust-trybuild-1)
+       ("rust-version-sync" ,rust-version-sync-0.8))))
+   (home-page "https://clap.rs/")
+   (synopsis
+    "Parse command line argument by defining a struct, derive crate")
+   (description
+    "This package provides parsing command line argument by defining a
+struct.  It combines structopt and clap into a single experience.
+This crate is used by clap, and not meant to be used directly by
+consumers.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-clicolors-control-1.0
   (package
     (name "rust-clicolors-control")

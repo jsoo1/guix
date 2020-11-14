@@ -32296,8 +32296,42 @@ streams.")
 unstable language features.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-textwrap-0.12
+  (package
+    (name "rust-textwrap")
+    (version "0.12.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "textwrap" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "12978qmkl5gcp94lxndpvp9qxq8mxp7hm9xbrw3422dgikchhc10"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (; ("rust-hyphenation" ,rust-hyphenation-0.8)
+        ("rust-terminal-size" ,rust-terminal-size-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (; ("rust-lipsum" ,rust-lipsum-0.6)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.1)
+        ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/mgeisler/textwrap")
+    (synopsis "Library for word wrapping, indenting, and dedenting strings")
+    (description
+     "Textwrap is a small library for word wrapping, indenting, and dedenting
+strings.  You can use it to format strings (such as help and error messages)
+for display in commandline applications.  It is designed to be efficient and
+handle Unicode characters correctly.")
+    (license license:expat)))
+
 (define-public rust-textwrap-0.11
   (package
+    (inherit rust-textwrap-0.12)
     (name "rust-textwrap")
     (version "0.11.0")
     (source
@@ -32308,7 +32342,6 @@ unstable language features.")
         (sha256
          (base32
           "0q5hky03ik3y50s9sz25r438bc4nwhqc6dqwynv4wylc807n29nk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -32319,15 +32352,7 @@ unstable language features.")
        (;("rust-lipsum" ,rust-lipsum-0.6)
         ("rust-rand" ,rust-rand-0.6)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.1)
-        ("rust-version-sync" ,rust-version-sync-0.6))))
-    (home-page "https://github.com/mgeisler/textwrap")
-    (synopsis "Library for word wrapping, indenting, and dedenting strings")
-    (description
-     "Textwrap is a small library for word wrapping, indenting, and dedenting
-strings.  You can use it to format strings (such as help and error messages)
-for display in commandline applications.  It is designed to be efficient and
-handle Unicode characters correctly.")
-    (license license:expat)))
+        ("rust-version-sync" ,rust-version-sync-0.6))))))
 
 (define-public rust-thin-slice-0.1
   (package

@@ -1053,6 +1053,33 @@ standard library.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-askama-derive-0.10
+  (package
+   (name "rust-askama-derive")
+   (version "0.10.3")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "askama_derive" version))
+     (file-name
+      (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "109q3ig5sxyp9yl1jak6l9q2b8kj961sn8fqvi1n7xf4j2b1dmz1"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-askama-shared" ,rust-askama-shared-0.10)
+       ("rust-proc-macro2" ,rust-proc-macro2-1)
+       ("rust-quote" ,rust-quote-1)
+       ("rust-syn" ,rust-syn-1))))
+   (home-page "https://github.com/djc/askama")
+   (synopsis "Procedural macro package for Askama")
+   (description
+    "This package provides procedural macros for Askama.  Askama
+implements a template rendering engine based on Jinja.")
+   (license (list license:expat license:asl2.0))))
+
 (define-public rust-askama-escape-0.10
   (package
    (name "rust-askama-escape")

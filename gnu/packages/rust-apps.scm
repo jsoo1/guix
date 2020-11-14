@@ -960,6 +960,53 @@ uses regex syntax from JavaScript and Python.  It also provides
 non-regex find and replace.")
    (license license:expat)))
 
+(define-public teip
+  (package
+    (name "teip")
+    (version "1.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "teip" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1wj58jqkbbrr19f7gffwwbv8g625gw1n2g3zbz1i1wy5y2rfshz4"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-docopt" ,rust-docopt-1.1)
+         ("rust-env-logger" ,rust-env-logger-0.7)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-onig" ,rust-onig-6)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-serde" ,rust-serde-1))
+        #:cargo-development-inputs
+        (("rust-assert-cmd" ,rust-assert-cmd-1)
+         ("rust-criterion" ,rust-criterion-0.3))
+        #:cargo-test-flags
+        '("--release" "--"
+          "--skip=cmdtest::test_regex_only_null"
+          "--skip=cmdtest::test_solid_regex_only_null")
+        #:phases
+        (modify-phases %standard-phases
+         (add-after 'install 'install-extra
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file
+                "man/teip.1" (string-append out "/share/man/man1/"))
+               (install-file
+                "completion/zsh/_teip"
+                (string-append out "/share/zsh/site-functions/"))))))))
+    (home-page "https://github.com/greymd/teip")
+    (synopsis
+      "Masking tape for standard input")
+    (description
+      "This package allows any command to ignore unwanted input.")
+    (license license:expat)))
+
 (define-public zoxide
   (package
    (name "zoxide")

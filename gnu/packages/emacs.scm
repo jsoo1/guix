@@ -22,7 +22,7 @@
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
+;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -445,21 +445,19 @@ editor (console only)")
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next)
-       ((#:modules _)
-        `((guix build emacs-utils)
-          ,@%gnu-build-system-modules))
-       ((#:imported-modules _)
-        `((guix build emacs-utils)
-          ,@%gnu-build-system-modules))
-       ((#:phases p)
-        `(modify-phases ,p
-           (delete 'restore-emacs-pdmp)))))
-    (inputs
-     (fold alist-delete
-           (package-inputs emacs-next)
-           '("libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
-             "imagemagick" "libpng" "librsvg" "libxpm" "libice"
-             "libsm")))))
+       ((#:configure-flags flags)
+        `(append '("--with-x-toolkit=no"
+                   "--with-xpm=no"
+                   "--with-jpeg=no"
+                   "--with-gif=no"
+                   "--with-tiff=no")
+                 ,flags))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'restore-emacs-pdmp)
+           (delete 'strip-double-wrap)))))
+    (inputs (package-inputs emacs-no-x))))
+
 
 (define-public emacs-no-x-toolkit
   (package/inherit emacs

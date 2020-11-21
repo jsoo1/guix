@@ -46,6 +46,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages autotools)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fribidi)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -72,7 +74,8 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix utils)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26))
 
 (define-public emacs
   (package
@@ -458,6 +461,253 @@ editor (console only)")
            (delete 'strip-double-wrap)))))
     (inputs (package-inputs emacs-no-x))))
 
+;; feature/native-comp
+(define-public gccemacs-commit
+  "6781cd670d1487bbf0364d80de68ca9733342769")
+
+(define-public gccemacs-semver-version "28.0.50")
+
+(define-public gccemacs-version
+  (git-version gccemacs-semver-version "0" gccemacs-commit))
+
+(define-public gccemacs-source
+  (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "git://git.sv.gnu.org/emacs.git")
+         (commit gccemacs-commit)))
+   (sha256
+    (base32
+     "13pmrak5jvk5qp4i5iccn0fqa6by8ig8l0n3qqirm67dxrqiz2ya"))
+   (patches (search-patches "gccemacs-exec-path.patch"
+                            "emacs-fix-scheme-indent-function.patch"
+                            "emacs-ignore-empty-xim-styles.patch"
+                            "emacs-source-date-epoch.patch"))
+   (modules '((guix build utils)))
+   (snippet
+    '(with-directory-excursion "lisp"
+      ;; Delete the bundled byte-compiled elisp files and generated
+      ;; autoloads.
+      (for-each delete-file
+                (append (find-files "." "\\.elc$")
+                        (find-files "." "loaddefs\\.el$")
+                        (find-files "eshell" "^esh-groups\\.el$")))
+
+      ;; Make sure Tramp looks for binaries in the right places on
+      ;; remote Guix System machines, where 'getconf PATH' returns
+      ;; something bogus.
+      (substitute* "net/tramp-sh.el"
+       ;; Patch the line after "(defcustom tramp-remote-path".
+       (("\\(tramp-default-remote-path")
+        (format #f "(tramp-default-remote-path ~s ~s ~s ~s "
+                "~/.guix-profile/bin" "~/.guix-profile/sbin"
+                "/run/current-system/profile/bin"
+                "/run/current-system/profile/sbin")))
+
+      ;; Make sure Man looks for C header files in the right
+      ;; places.
+      (substitute* "man.el"
+       (("\"/usr/local/include\"" line)
+        (string-join
+         (list line
+               "\"~/.guix-profile/include\""
+               "\"/var/guix/profiles/system/profile/include\"")
+         " ")))
+      #t))))
+
+(define add-libgccjit-gcc-lib-to-library-path
+  '(lambda* (#:key inputs #:allow-other-keys)
+     (define (prepend-to-env val var)
+       (let ((current (getenv var)))
+         (setenv
+          var (if (and current (not (string-null? current)))
+                  (string-append val ":" current)
+                  val))))
+     (let* ((libgccjit (assoc-ref inputs "libgccjit"))
+            (gcc-dirs (find-files
+                       libgccjit "^gcc$" #:directories? #t))
+            (gcc-dirs-paths (string-join gcc-dirs ":")))
+       (prepend-to-env gcc-dirs-paths "LIBRARY_PATH")
+       (prepend-to-env gcc-dirs-paths "LD_LIBRARY_PATH")
+       (prepend-to-env gcc-dirs-paths "PATH")
+       #t)))
+
+(define wrap-gccemacs-executables
+  '(lambda* (#:key inputs outputs
+             (glib-or-gtk-wrap-excluded-outputs '())
+             #:allow-other-keys)
+     (use-modules (ice-9 regex) (srfi srfi-1))
+
+     ;; TODO: Move these functions to a utils module
+     (define (subdirectory-exists? parent sub-directory)
+       (directory-exists? (string-append parent sub-directory)))
+
+     (define (directory-included? directory directories-list)
+       "Is DIRECTORY included in DIRECTORIES-LIST?"
+       (fold (lambda (s p) (or (string-ci=? s directory) p))
+             #f directories-list))
+
+     (define (gtk-module-directories inputs)
+       "Check for the existence of \"libdir/gtk-v.0\" in INPUTS.  Return a list
+with all found directories."
+       (let* ((version
+               (if (string-match "gtk\\+-3"
+                                 (or (assoc-ref inputs "gtk+")
+                                     (assoc-ref inputs "source")
+                                     "gtk+-3")) ; we default to version 3
+                   "3.0"
+                   "2.0"))
+              (gtk-module
+               (lambda (input prev)
+                 (let* ((in (if (pair? input)
+                                (car input)
+                                ""))
+                        (libdir
+                         (string-append in "/lib/gtk-" version)))
+                   (if (and (directory-exists? libdir)
+                            (not (directory-included? libdir prev)))
+                       (cons libdir prev)
+                       prev)))))
+         (fold gtk-module '() inputs)))
+
+     (define (data-directories inputs)
+       "Check for the existence of \"$datadir/glib-2.0/schemas\" or XDG themes data
+in INPUTS.  Return a list with all found directories."
+       (define (data-directory input previous)
+         (let* ((in (if (pair? input)
+                        (cdr input)
+                        ""))
+                (datadir (string-append in "/share")))
+           (if (and (or (subdirectory-exists? datadir "/glib-2.0/schemas")
+                        (subdirectory-exists? datadir "/sounds")
+                        (subdirectory-exists? datadir "/themes")
+                        (subdirectory-exists? datadir "/cursors")
+                        (subdirectory-exists? datadir "/wallpapers")
+                        (subdirectory-exists? datadir "/icons")
+                        (subdirectory-exists? datadir "/mime")) ;shared-mime-info
+                    (not (directory-included? datadir previous)))
+               (cons datadir previous)
+               previous)))
+
+       (fold data-directory '() inputs))
+
+     (define (gio-module-directories inputs)
+       "Check for the existence of \"$libdir/gio/modules\" in the INPUTS and
+returns a list with all found directories."
+       (define (gio-module-directory input previous)
+         (let* ((in (if (pair? input)
+                        (car input)
+                        ""))
+                (gio-mod-dir (string-append in "/lib/gio/modules")))
+           (if (and (directory-exists? gio-mod-dir)
+                    (not (directory-included? gio-mod-dir previous)))
+               (cons gio-mod-dir previous)
+               previous)))
+
+       (fold gio-module-directory '() inputs))
+
+     (define (env-vars-for-wrap inputs output directory)
+       (let* ((datadirs     (data-directories
+                             (alist-cons output directory inputs)))
+              (gtk-mod-dirs (gtk-module-directories
+                             (alist-cons output directory inputs)))
+              (gio-mod-dirs (gio-module-directories
+                             (alist-cons output directory inputs)))
+              (data-env-var
+               (if (not (null? datadirs))
+                   `(("XDG_DATA_DIRS" ":" prefix ,datadirs))
+                   '()))
+              (gtk-mod-env-var
+               (if (not (null? gtk-mod-dirs))
+                   `(("GTK_PATH" ":" prefix ,gtk-mod-dirs))
+                   '()))
+              (gio-mod-env-var
+               (if (not (null? gio-mod-dirs))
+                   `(("GIO_EXTRA_MODULES" ":" prefix ,gio-mod-dirs))
+                   '())))
+         (append data-env-var gtk-mod-env-var gio-mod-env-var)))
+
+     (define (wrap-bins build-output)
+       (let ((output (car build-output))
+             (directory (cdr build-output)))
+         (unless (member output glib-or-gtk-wrap-excluded-outputs)
+           (let* ((bin-list (find-files
+                             directory (lambda (p _)
+                                         (executable-file? p))))
+                  (libgccjit (assoc-ref inputs "libgccjit"))
+                  (gcc-dirs (find-files
+                             libgccjit "^gcc$" #:directories? #t))
+                  (glib-or-gtk-vars (env-vars-for-wrap inputs
+                                                       output
+                                                       directory)))
+             (for-each (lambda (bin)
+                         (apply wrap-program bin
+                                `(("LIBRARY_PATH" ":" prefix ,gcc-dirs)
+                                  ("LD_LIBRARY_PATH" ":" prefix ,gcc-dirs)
+                                  ("PATH" ":" prefix ,gcc-dirs)
+                                  ,@glib-or-gtk-vars)))
+                       bin-list)))))
+
+     (for-each wrap-bins outputs)))
+
+(define (transform-gccemacs-search-path version spec)
+  (cond
+   ((string=? (search-path-specification-variable spec)
+              "EMACSLOADPATH")
+    (search-path-specification
+     (inherit spec)
+     (files (list "share/emacs/site-lisp"
+                  (string-append "lib/emacs/" version "/native-lisp")
+                  (string-append "share/emacs/" version "/lisp")))))
+   (else spec)))
+
+(define-public gccemacs
+  (package
+   (inherit emacs-next)
+   (name "gccemacs")
+   (version gccemacs-version)
+   (source gccemacs-source)
+   (synopsis "The extensible, customizeable, self-documenting text
+editor (from the native compilation branch)")
+   (inputs
+    `(("libgccjit" ,(canonical-package libgccjit))
+      ,@(package-inputs emacs-next)))
+   (arguments
+    (substitute-keyword-arguments (package-arguments emacs-next)
+     ((#:phases p)
+      `(modify-phases ,p
+         (add-after 'bootstrap 'add-libgccjit-gcc-lib-to-library-path
+           ,add-libgccjit-gcc-lib-to-library-path)
+         (replace 'glib-or-gtk-wrap ,wrap-gccemacs-executables)))
+     ((#:configure-flags flags ''())
+      `(cons "--with-nativecomp" ,flags))))
+   (native-search-paths
+    (map (cut transform-gccemacs-search-path gccemacs-semver-version <>)
+         (package-native-search-paths emacs-next)))))
+
+(define-public gccemacs-no-x
+  (package/inherit emacs-next-no-x
+   (name "gccemacs-no-x")
+   (version gccemacs-version)
+   (source gccemacs-source)
+   (synopsis "The extensible, customizable, self-documenting text
+editor (console only, from the native compilation branch)")
+   (build-system gnu-build-system)
+   (inputs
+    `(("libgccjit" ,(canonical-package libgccjit))
+      ,@(package-inputs emacs-next-no-x)))
+   (arguments
+    (substitute-keyword-arguments (package-arguments emacs-next-no-x)
+      ((#:phases p)
+       `(modify-phases ,p
+          (add-after 'bootstrap 'add-libgccjit-gcc-lib-to-library-path
+            ,add-libgccjit-gcc-lib-to-library-path)
+          (replace 'glib-or-gtk-wrap ,wrap-gccemacs-executables)))
+      ((#:configure-flags flags ''())
+       `(cons "--with-nativecomp" ,flags))))
+   (native-search-paths
+    (map (cut transform-gccemacs-search-path gccemacs-semver-version <>)
+         (package-native-search-paths emacs-next)))))
 
 (define-public emacs-no-x-toolkit
   (package/inherit emacs

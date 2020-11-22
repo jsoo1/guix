@@ -9,8 +9,6 @@
 ** TODO Make a way to read all (filtered?) news for a channel
 ** TODO Add acl2
 ** TODO Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
-** TODO FreeCAD: Fix python 3.8 compatibility
-   https://forum.freecadweb.org/viewtopic.php?t=38982
 ** TODO Add note about guix pull --allow-downgrades when doing rebase workflow to contributing docs
 ** TODO Cargo importer missing things: MPL licenses and homepages
 * Notes

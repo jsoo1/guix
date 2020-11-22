@@ -1,0 +1,59 @@
+#+TITLE: (BoF) Rust + Cargo Discussion
+
+Rust has come a long way since I started using Guix in 2018: crate importer,
+cargo-build-system, bootstrapping with mrustc, etc. I use Guix to write Rust
+for work everyday now!
+
+Still a long way to go.  Some topics below (add your own before we start).
+
+* Topics
+
+** Improved, semantic versioning-aware, crate importer
+   - New work in https://issues.guix.gnu.org/44560
+   - Original issue https://issues.guix.gnu.org/38408
+
+** rustfmt as an output of rust
+   - Open patch in https://issues.guix.gnu.org/42295
+   - Other candidates include rls/rust-analyzer, clippy, racer
+
+** Keeping rust versions up to date
+   - On a 6 week release cycle, perhaps we need rust-updates branch?
+   - I have been using version 1.46 without issue
+
+** Packaging idioms
+   - How best to remove vendored sources?
+   - How to propagate the required environment variables.
+   - When to include minor version in package variable name?
+
+** guix refresh does not pick up dependencies between rust dependencies
+   #+begin_src bash
+   guix refresh --list-dependent rust-serde
+   #+end_src
+
+   #+RESULTS:
+   : No dependents other than itself: rust-serde@1.0.117
+
+** Incremental compilation/shared libraries possible?
+   - Use the store as a registry?
+   - $CARGO_OUT_DIR to put artifacts in build outputs
+     https://github.com/rust-lang/cargo/issues/6790
+   - cargo metadata, guile-toml, cargo-build --manifest-path=...?
+
+** Packaging efforts and updates
+   pijul patches available.
+
+   Others waiting to submit.
+   - teip
+   - skim
+   - dog
+   - sd
+   - zoxide
+   - tealdeer
+
+** Collaboration with Rust community directly
+   - Start with communication, maybe advance to RFC?
+   - Collaborate with Nix to understand how to make cargo work better for
+     functional package managers?
+
+** Wasm32 target support
+   - May need to patch-cargo-checksums of Cargo

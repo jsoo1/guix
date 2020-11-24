@@ -11,6 +11,9 @@
 ** TODO Remove ~/.local/bin/clipmenu when bug 40039 (wrap-script) is fixed.
 ** TODO Add note about guix pull --allow-downgrades when doing rebase workflow to contributing docs
 ** TODO Cargo importer missing things: MPL licenses and homepages
+** TODO Fix GHC package cache profile hook.
+   [2020-11-23 Mon]
+   [[file:~/projects/guix/guix/profiles.scm::(define (ghc-package-cache-file manifest)]]
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

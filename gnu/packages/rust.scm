@@ -1394,5 +1394,38 @@ tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
   (rust-bootstrapped-package rust-1.45 "1.46.0"
     "0a17jby2pd050s24cy4dfc0gzvgcl585v3vvyfilniyvjrqknsid"))
 
+(define-public rust-1.47
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.46 "1.47.0"
+          "07fqd2vp7cf1ka3hr207dnnz93ymxml4935vp74g4is79h3dz19i")))
+    (package
+      (inherit base-rust)
+      (properties '((hidden? . #t)))
+      (inputs
+       (alist-replace "llvm" (list llvm-11)
+                      (package-inputs base-rust)))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'patch-tests
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((bash (assoc-ref inputs "bash")))
+                   (substitute* "library/std/src/process.rs"
+                     ;; The newline is intentional.
+                     ;; There's a line length "tidy" check in Rust which would
+                     ;; fail otherwise.
+                     (("\"/bin/sh\"") (string-append "\n\"" bash "/bin/sh\"")))
+                   (substitute* "library/std/src/net/tcp.rs"
+                     ;; There is no network in build environment
+                     (("fn connect_timeout_unroutable")
+                      "#[ignore]\nfn connect_timeout_unroutable"))
+                   ;; <https://lists.gnu.org/archive/html/guix-devel/2017-06/msg00222.html>
+                   (substitute* "library/std/src/sys/unix/process/process_common.rs"
+                     (("fn test_process_mask") "#[allow(unused_attributes)]
+    #[ignore]
+    fn test_process_mask"))
+                   #t))))))))))
+
 ;; TODO(staging): Bump this variable to the latest packaged rust.
 (define-public rust rust-1.46)

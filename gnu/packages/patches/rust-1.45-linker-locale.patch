@@ -1,4 +1,10 @@
-Patch will be included upstream in 1.47: https://github.com/rust-lang/rust/pull/74416
+Patch was to be included upstream in 1.47:
+https://github.com/rust-lang/rust/pull/74416
+
+But it was reverted.  Keep it for localization for many non-english users.  A
+second patch is required since the location of the file changed.
+
+Reverted: https://github.com/rust-lang/rust/pull/74478
 diff --git a/src/librustc_codegen_ssa/back/linker.rs b/src/librustc_codegen_ssa/back/linker.rs
 index e64aafa599f..12575ac4358 100644
 --- a/src/librustc_codegen_ssa/back/linker.rs

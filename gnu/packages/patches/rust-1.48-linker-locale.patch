@@ -1,0 +1,19 @@
+./rust-1.45-linker-locale was not included upstream.  Keep it for localization
+for many non-english users.  A second patch is required since the location of
+the file changed.
+
+Reverted: https://github.com/rust-lang/rust/pull/74478
+
+diff --git a/compiler/rustc_codegen_ssa/src/back/linker.rs b/compiler/rustc_codegen_ssa/src/back/linker.rs
+index 0ddf8bd316f..51875cf2c0b 100644
+--- a/compiler/rustc_codegen_ssa/src/back/linker.rs
++++ b/compiler/rustc_codegen_ssa/src/back/linker.rs
+@@ -28,7 +28,7 @@ use rustc_target::spec::{LinkOutputKind, LinkerFlavor, LldFlavor};
+ pub fn disable_localization(linker: &mut Command) {
+     // No harm in setting both env vars simultaneously.
+     // Unix-style linkers.
+-    linker.env("LC_ALL", "C");
++    linker.env("LC_ALL", "en_US.UTF-8");
+     // MSVC's `link.exe`.
+     linker.env("VSLANG", "1033");
+ }

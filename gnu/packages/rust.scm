@@ -1427,5 +1427,24 @@ tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
     fn test_process_mask"))
                    #t))))))))))
 
+(define-public rust-1.48
+  (let* ((base-rust
+          (rust-bootstrapped-package rust-1.47 "1.48.0"
+           "0fz4gbb5hp5qalrl9lcl8yw4kk7ai7wx511jb28nypbxninkwxhf"))
+         (base-source (package-source base-rust)))
+    (package
+      (inherit base-rust)
+      (properties '((hidden? . #t)))
+      (source
+       (origin
+         (inherit base-source)
+         (patches
+          (map (lambda (p)
+                 (if (string=?
+                      p (search-patch "rust-1.45-linker-locale.patch"))
+                     (search-patch "rust-1.48-linker-locale.patch")
+                     p))
+               (origin-patches base-source))))))))
+
 ;; TODO(staging): Bump this variable to the latest packaged rust.
 (define-public rust rust-1.46)

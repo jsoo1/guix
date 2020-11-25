@@ -1280,16 +1280,24 @@ move around."
            "0ww4z2v3gxgn3zddqzwqya1gln04p91ykbrflnpdbmcd575n8bky")))
     (package
       (inherit base-rust)
-      (outputs (cons "rustfmt" (package-outputs base-rust)))
+      (outputs (append '("rustfmt" "rls") (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
              (replace 'build
                (lambda* _
+                 (substitute* "config.toml"
+                   ;; replace prefix to specific output
+                   (("\\[build\\]" all)
+                    (string-append all "
+extended = true
+tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
+")))
                  (invoke "./x.py" "build")
                  (invoke "./x.py" "build" "src/tools/cargo")
-                 (invoke "./x.py" "build" "src/tools/rustfmt")))
+                 (invoke "./x.py" "build" "src/tools/rustfmt")
+                 (invoke "./x.py" "build" "src/tools/rls")))
              (replace 'check
                (lambda* _
                  ;; Enable parallel execution.
@@ -1301,7 +1309,12 @@ move around."
                    (invoke "./x.py" parallel-job-spec "test"
                            "src/tools/cargo")
                    (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/rustfmt"))))
+                           "src/tools/rustfmt")
+                   (substitute* "src/tools/rls/tests/client.rs"
+                     (("fn client_dependency_typo_and_fix" all)
+                      (string-append "#[ignore]\n" all)))
+                   (invoke "./x.py" parallel-job-spec "test"
+                           "src/tools/rls"))))
              (replace 'mkdir-prefix-paths
                (lambda* (#:key outputs #:allow-other-keys)
                  ;; As result of https://github.com/rust-lang/rust/issues/36989
@@ -1309,6 +1322,7 @@ move around."
                  (mkdir-p (assoc-ref outputs "out"))
                  (mkdir-p (assoc-ref outputs "cargo"))
                  (mkdir-p (assoc-ref outputs "rustfmt"))
+                 (mkdir-p (assoc-ref outputs "rls"))
                  #t))
              (replace 'install
                (lambda* (#:key outputs #:allow-other-keys)
@@ -1322,7 +1336,18 @@ move around."
                    ;; replace prefix to specific output
                    (("prefix = \"[^\"]*\"")
                     (string-append "prefix = \"" (assoc-ref outputs "rustfmt") "\"")))
-                 (invoke "./x.py" "install" "rustfmt"))))))))))
+                 (invoke "./x.py" "install" "rustfmt")
+                 (substitute* "config.toml"
+                   ;; replace prefix to specific output
+                   (("prefix = \"[^\"]*\"")
+                    (string-append "prefix = \"" (assoc-ref outputs "rls") "\"")))
+                 (invoke "./x.py" "install" "rls")))
+             (replace 'validate-runpath
+               (lambda* (#:key outputs #:allow-other-keys #:rest rest)
+                 (apply (assoc-ref %standard-phases 'validate-runpath)
+                        ;; rls has references to "out"
+                        #:outputs (alist-delete "rls" outputs)
+                        rest))))))))))
 
 (define-public rust-1.45
   (let ((base-rust

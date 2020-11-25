@@ -1275,8 +1275,54 @@ move around."
     "18akhk0wz1my6y9vhardriy2ysc482z0fnjdcgs9gy59kmnarxkm"))
 
 (define-public rust-1.44
-  (rust-bootstrapped-package rust-1.43 "1.44.1"
-    "0ww4z2v3gxgn3zddqzwqya1gln04p91ykbrflnpdbmcd575n8bky"))
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.43 "1.44.1"
+           "0ww4z2v3gxgn3zddqzwqya1gln04p91ykbrflnpdbmcd575n8bky")))
+    (package
+      (inherit base-rust)
+      (outputs (cons "rustfmt" (package-outputs base-rust)))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'build
+               (lambda* _
+                 (invoke "./x.py" "build")
+                 (invoke "./x.py" "build" "src/tools/cargo")
+                 (invoke "./x.py" "build" "src/tools/rustfmt")))
+             (replace 'check
+               (lambda* _
+                 ;; Enable parallel execution.
+                 (let ((parallel-job-spec
+                        (string-append "-j" (number->string
+                                             (min 4
+                                                  (parallel-job-count))))))
+                   (invoke "./x.py" parallel-job-spec "test" "-vv")
+                   (invoke "./x.py" parallel-job-spec "test"
+                           "src/tools/cargo")
+                   (invoke "./x.py" parallel-job-spec "test"
+                           "src/tools/rustfmt"))))
+             (replace 'mkdir-prefix-paths
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; As result of https://github.com/rust-lang/rust/issues/36989
+                 ;; `prefix' directory should exist before `install' call
+                 (mkdir-p (assoc-ref outputs "out"))
+                 (mkdir-p (assoc-ref outputs "cargo"))
+                 (mkdir-p (assoc-ref outputs "rustfmt"))
+                 #t))
+             (replace 'install
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (invoke "./x.py" "install")
+                 (substitute* "config.toml"
+                   ;; replace prefix to specific output
+                   (("prefix = \"[^\"]*\"")
+                    (string-append "prefix = \"" (assoc-ref outputs "cargo") "\"")))
+                 (invoke "./x.py" "install" "cargo")
+                 (substitute* "config.toml"
+                   ;; replace prefix to specific output
+                   (("prefix = \"[^\"]*\"")
+                    (string-append "prefix = \"" (assoc-ref outputs "rustfmt") "\"")))
+                 (invoke "./x.py" "install" "rustfmt"))))))))))
 
 (define-public rust-1.45
   (let ((base-rust

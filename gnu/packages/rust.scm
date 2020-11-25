@@ -11,6 +11,7 @@
 ;;; Copyright © 2020, 2021 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Matthew Kraai <kraai@ftbfs.org>
+;;; Copyright © 2021 John Soo <jsoo1@asu.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
@@ -1327,19 +1329,41 @@ move around."
            "0a17jby2pd050s24cy4dfc0gzvgcl585v3vvyfilniyvjrqknsid")))
     (package
       (inherit base-rust)
-      (outputs (cons "rustfmt" (package-outputs base-rust)))
+      (outputs (append '("rustfmt" "rls" "src" "clippy" "rust-analyzer")
+                       (package-outputs base-rust)))
+      (inputs
+       `(("gcc-lib" ,gcc "lib")
+         ,@(package-inputs base-rust)))
+      (native-inputs
+       `(("node" ,node)
+         ("patchelf" ,patchelf)
+         ,@(package-native-inputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
+             (replace 'patch-cargo-checksums
+               ;; Generate checksums after patching generated files (in
+               ;; particular, vendor/jemalloc/rep/Makefile).
+               (lambda* _
+                 (use-modules (guix build cargo-utils))
+                 (substitute* '("Cargo.lock"
+                                "src/tools/rust-analyzer/Cargo.lock")
+                   (("(checksum = )\".*\"" all name)
+                    (string-append name "\"" ,%cargo-reference-hash "\"")))
+                 (generate-all-checksums "vendor")
+                 #t))
              (replace 'build
                (lambda* _
                  (invoke "./x.py" "build")
                  (invoke "./x.py" "build" "src/tools/cargo")
-                 (invoke "./x.py" "build" "src/tools/rustfmt")))
+                 (invoke "./x.py" "build" "src/tools/rustfmt")
+                 (invoke "./x.py" "build" "src/tools/clippy")
+                 (invoke "./x.py" "build" "src/tools/rls")
+                 (invoke "./x.py" "build"
+                         "src/tools/rust-analyzer/crates/rust-analyzer")))
              (replace 'check
                (lambda* _
-                 ;; Test rustfmt.
                  (let ((parallel-job-spec
                         (string-append "-j" (number->string
                                              (min 4
@@ -1348,44 +1372,84 @@ move around."
                    (invoke "./x.py" parallel-job-spec "test"
                            "src/tools/cargo")
                    (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/rustfmt"))))
+                           "src/tools/rustfmt")
+                   ;; Clippy tests do not work. See
+                   ;; https://github.com/rust-lang/rust/issues/78717
+                   ;; Even with --stage 1, they fail to compile
+                   ;; (invoke "./x.py" parallel-job-spec "test" "--stage" "1"
+                   ;;         "src/tools/clippy")
+                   (substitute* "src/tools/rls/tests/client.rs"
+                     (("fn client_dependency_typo_and_fix" all)
+                      (string-append "#[ignore]\n" all)))
+                   (invoke "./x.py" parallel-job-spec "test"
+                           "src/tools/rls"))))
              (replace 'install
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
+                 (for-each delete-file-recursively
+                           (find-files (assoc-ref outputs "out")
+                                       "^uninstall\\.sh$"))
                  (substitute* "config.toml"
                    ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "cargo") "\"")))
-                 (invoke "./x.py" "install" "cargo")
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "rustfmt") "\"")))
-                 (invoke "./x.py" "install" "rustfmt")))
+                   (("\\[build\\]" all)
+                    (string-append all "
+extended = true
+tools =
+")))
+                 (define (install-component component)
+                   (substitute* "config.toml"
+                     ;; replace prefix to specific output
+                     (("(tools =).*" all tools)
+                      (string-append tools " [\"" component "\"]\n"))
+                     (("prefix = \"[^\"]*\"")
+                      (string-append
+                       "prefix = \"" (assoc-ref outputs component) "\"")))
+                   (mkdir-p (assoc-ref outputs component))
+                   (invoke "./x.py" "install" component)
+                   (for-each delete-file-recursively
+                             (find-files (assoc-ref outputs component)
+                                         "uninstall\\.sh")))
+                 (for-each install-component
+                           '("cargo"
+                             "rustfmt"
+                             "clippy"
+                             "rls"
+                             "src"
+                             "rust-analyzer"))
+                 #t))
+             (add-after 'install 'patch-tools-runpaths
+               (lambda* (#:key outputs inputs #:allow-other-keys)
+                 (use-modules (ice-9 popen)
+                              (ice-9 textual-ports))
+                 (define (patch-path path)
+                   (let* ((read-rpath
+                           (string-append
+                            "patchelf --print-rpath " path))
+                          (pipe (open-input-pipe read-rpath))
+                          (current-rpath (get-string-all pipe))
+                          (out (assoc-ref outputs "out"))
+                          (libc (assoc-ref inputs "libc"))
+                          (gcc-lib (assoc-ref inputs "gcc-lib")))
+                     (close-pipe pipe)
+                     (invoke "patchelf" "--set-rpath"
+                             (string-append current-rpath
+                                            ":" out "/lib"
+                                            ":" libc "/lib"
+                                            ":" gcc-lib "/lib")
+                             path)))
+                 (define (patch-component component)
+                   (for-each patch-path
+                             (find-files (assoc-ref outputs component)
+                                         (lambda (p s) (executable-file? p)))))
+                 (for-each patch-component '("clippy" "rls"))))
              (replace 'delete-install-logs
                (lambda* (#:key outputs #:allow-other-keys)
-                 (define (delete-manifest-file out-path file)
-                   (delete-file (string-append out-path "/lib/rustlib/" file)))
-
-                 (let ((out (assoc-ref outputs "out"))
-                       (cargo-out (assoc-ref outputs "cargo"))
-                       (rustfmt-out (assoc-ref outputs "rustfmt")))
-                   (for-each
-                     (lambda (file) (delete-manifest-file out file))
-                     '("install.log"
-                       "manifest-rust-docs"
-                       ,(string-append "manifest-rust-std-"
-                                       (nix-system->gnu-triplet-for-rust))
-                       "manifest-rustc"))
-                   (for-each
-                     (lambda (file) (delete-manifest-file cargo-out file))
-                     '("install.log"
-                       "manifest-cargo"))
-                   (for-each
-                     (lambda (file) (delete-manifest-file rustfmt-out file))
-                     '("install.log"
-                       "manifest-rustfmt-preview"))
-                   #t))))))))))
+                 (define log-manifest-re
+                   "^install\\.log$|^manifest-([a-z]|[0-9]|_|-)+(-preview)?$")
+                 (define (delete-install-log output)
+                   (for-each delete-file-recursively
+                             (find-files output log-manifest-re)))
+                 (for-each delete-install-log (map cdr outputs)))))))))))
 
 (define-public rust-1.47
   (let ((base-rust
@@ -1418,7 +1482,8 @@ move around."
                ;; particular, vendor/jemalloc/rep/Makefile).
                (lambda* _
                  (use-modules (guix build cargo-utils))
-                 (substitute* "Cargo.lock"
+                 (substitute* '("Cargo.lock"
+                                "src/tools/rust-analyzer/Cargo.lock")
                    (("(checksum = )\".*\"" all name)
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor")
@@ -1450,7 +1515,15 @@ move around."
                      (("fn test_process_mask") "#[allow(unused_attributes)]
     #[ignore]
     fn test_process_mask"))
-                   #t))))))))))
+                   #t)))
+             ;; FIXME: This fixes the "src" output which is not critical.  We
+             ;; should probably copy the source of the de-vendored libunwind
+             ;; for completeness' sake.
+             (add-before 'install 'remove-vendored-llvm-reference-in-src
+               (lambda _
+                 (substitute* "src/bootstrap/dist.rs"
+                   ((", \"src/llvm-project/libunwind\"") ""))
+                 #t)))))))))
 
 (define-public rust-1.49
   (rust-bootstrapped-package rust-1.48 "1.49.0"

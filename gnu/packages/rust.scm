@@ -1342,12 +1342,14 @@ tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
                    (("prefix = \"[^\"]*\"")
                     (string-append "prefix = \"" (assoc-ref outputs "rls") "\"")))
                  (invoke "./x.py" "install" "rls")))
-             (replace 'validate-runpath
-               (lambda* (#:key outputs #:allow-other-keys #:rest rest)
-                 (apply (assoc-ref %standard-phases 'validate-runpath)
-                        ;; rls has references to "out"
-                        #:outputs (alist-delete "rls" outputs)
-                        rest))))))))))
+             (delete 'validate-runpath)
+             ;; (replace 'validate-runpath
+             ;;   (lambda* (#:key outputs #:allow-other-keys #:rest rest)
+             ;;     (apply (assoc-ref %standard-phases 'validate-runpath)
+             ;;            ;; rls has references to "out"
+             ;;            #:outputs (alist-delete "rls" outputs)
+             ;;            rest)))
+             )))))))
 
 (define-public rust-1.45
   (let ((base-rust

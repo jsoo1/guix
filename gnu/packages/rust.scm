@@ -1280,7 +1280,8 @@ move around."
            "0ww4z2v3gxgn3zddqzwqya1gln04p91ykbrflnpdbmcd575n8bky")))
     (package
       (inherit base-rust)
-      (outputs (append '("rustfmt" "rls" "src") (package-outputs base-rust)))
+      (outputs (append '("rustfmt" "rls" "src" "clippy")
+                       (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
@@ -1324,6 +1325,7 @@ tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
                  (mkdir-p (assoc-ref outputs "rustfmt"))
                  (mkdir-p (assoc-ref outputs "rls"))
                  (mkdir-p (assoc-ref outputs "src"))
+                 (mkdir-p (assoc-ref outputs "clippy"))
                  #t))
              (replace 'install
                (lambda* (#:key outputs #:allow-other-keys)
@@ -1335,7 +1337,7 @@ tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
                    (invoke "./x.py" "install" component))
                  (invoke "./x.py" "install")
                  (for-each install-component
-                           '("cargo" "rustfmt" "rls" "src"))))
+                           '("cargo" "rustfmt" "rls" "src" "clippy"))))
              (delete 'validate-runpath)
              ;; (replace 'validate-runpath
              ;;   (lambda* (#:key outputs #:allow-other-keys #:rest rest)

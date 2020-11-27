@@ -1280,7 +1280,7 @@ move around."
            "0ww4z2v3gxgn3zddqzwqya1gln04p91ykbrflnpdbmcd575n8bky")))
     (package
       (inherit base-rust)
-      (outputs (append '("rustfmt" "rls") (package-outputs base-rust)))
+      (outputs (append '("rustfmt" "rls" "src") (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
@@ -1323,25 +1323,19 @@ tools = [\"cargo\", \"rls\", \"clippy\", \"rustfmt\", \"analysis\", \"src\"]
                  (mkdir-p (assoc-ref outputs "cargo"))
                  (mkdir-p (assoc-ref outputs "rustfmt"))
                  (mkdir-p (assoc-ref outputs "rls"))
+                 (mkdir-p (assoc-ref outputs "src"))
                  #t))
              (replace 'install
                (lambda* (#:key outputs #:allow-other-keys)
+                 (define (install-component component)
+                   (substitute* "config.toml"
+                   ;; replace prefix to specific output
+                   (("prefix = \"[^\"]*\"")
+                    (string-append "prefix = \"" (assoc-ref outputs component) "\"")))
+                   (invoke "./x.py" "install" component))
                  (invoke "./x.py" "install")
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "cargo") "\"")))
-                 (invoke "./x.py" "install" "cargo")
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "rustfmt") "\"")))
-                 (invoke "./x.py" "install" "rustfmt")
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "rls") "\"")))
-                 (invoke "./x.py" "install" "rls")))
+                 (for-each install-component
+                           '("cargo" "rustfmt" "rls" "src"))))
              (delete 'validate-runpath)
              ;; (replace 'validate-runpath
              ;;   (lambda* (#:key outputs #:allow-other-keys #:rest rest)

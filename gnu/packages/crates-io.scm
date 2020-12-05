@@ -29073,10 +29073,10 @@ like Node.js and browsers, built on @code{#[wasm_bindgen]} using the
 wasm-bindgen crate.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-json-0.11
+(define-public rust-json-0.12
   (package
     (name "rust-json")
-    (version "0.11.15")
+    (version "0.12.4")
     (source
       (origin
         (method url-fetch)
@@ -29093,6 +29093,20 @@ wasm-bindgen crate.")
 friction with idiomatic Rust structs to ease interopability.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-json-0.11
+  (package
+    (inherit rust-json-0.12)
+    (name "rust-json")
+    (version "0.11.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "json" version))
+       (file-name (string-append name "-" version ".crate"))
+       (sha256
+        (base32
+         "1rg9jxf6bpbwis3ixd5ak8rp37him7n4z8awz4ssrxl6hyplbhlj"))))))
 
 (define-public rust-juliex-0.3
   (package

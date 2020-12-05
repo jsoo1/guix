@@ -13,6 +13,7 @@
 ** TODO Fix GHC package cache profile hook.
    [2020-11-23 Mon]
    [[file:~/projects/guix/guix/profiles.scm::(define (ghc-package-cache-file manifest)]]
+** TODO cabal-install does not work with ghc < 8.7
 * Notes
 ** Build from source instructions - Required for ./pre-inst-env
    <2019-12-18 Wed>

@@ -7600,7 +7600,7 @@ and above.")
        ("clang-toolchain" ,clang-toolchain)
        ("elfutils" ,elfutils)
        ("libbpf" ,libbpf)
-       ("linux-libre-headers" ,linux-libre-headers)))
+       ("linux-libre-headers" ,linux-libre-headers-5.9)))
     (arguments
      `(#:tests? #f ;Tests require googletest sources.
        #:configure-flags

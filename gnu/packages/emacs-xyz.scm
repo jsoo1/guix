@@ -2303,6 +2303,30 @@ Its features are:
     ;; Software is dual-licensed.
     (license (list license:unlicense license:wtfpl2))))
 
+(define-public emacs-cql-mode
+  (let ((revision "1")
+        (commit "db63f40dac1760c80d1e1c1d6c2670fbdb9845b4"))
+    (package
+      (name "emacs-cql-mode")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alexott/cql-mode.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "0p6a1l3axl0dkn8fgpmyxa6cblyv2pmc6vmkwr5spxni6mx9yyil"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/alexott/cql-mode")
+      (description "Emacs mode for work with CQL")
+      (synopsis
+       "Major Emacs mode for work with CQL (Cassandra Query Language) files.
+This is a new implementation that should provide more functionality than the
+existing one.")
+      (license license:gpl3+))))
+
 (define-public emacs-direnv
   (package
     (name "emacs-direnv")

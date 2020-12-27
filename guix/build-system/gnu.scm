@@ -36,7 +36,8 @@
             static-libgcc-package
             static-package
             dist-package
-            package-with-restricted-references))
+            package-with-restricted-references
+            lower))
 
 ;; Commentary:
 ;;

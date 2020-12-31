@@ -3951,22 +3951,31 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
         (base32
          "0i2nwkdh6cfzmnsdsr8aw86vs8j1k5jkjzrs61b9384wnffdbbmj"))))
     (build-system dune-build-system)
-    (arguments '(#:package "merlin"
-                 #:test-target "tests"))
+    (arguments
+     `(#:package "merlin"
+       #:test-target "tests"
+       #:phases
+       ;; FIXME: Make merlin.vim into a separate package.
+       (modify-phases %standard-phases
+         (add-after 'install 'remove-emacs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file-recursively
+              (string-append (assoc-ref outputs "out") "/share/emacs")))))))
     (inputs
      `(("ocaml-yojson" ,ocaml-yojson)
        ("ocaml-csexp" ,ocaml-csexp)
        ("ocaml-result" ,ocaml-result)))
     (native-inputs
-     `(("ocaml-dot-merlin-reader" ,ocaml-dot-merlin-reader) ; required for tests
-       ("ocaml-mdx" ,ocaml-mdx)
+     `(("ocaml-mdx" ,ocaml-mdx)
        ("jq" ,jq)))
+    (propagated-inputs
+     `(("ocaml-dot-merlin-reader" ,ocaml-dot-merlin-reader)))
     (home-page "https://ocaml.github.io/merlin/")
     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
     (description "Merlin is an editor service that provides modern IDE
 features for OCaml.  Emacs and Vim support is provided out-of-the-box.
 External contributors added support for Visual Studio Code, Sublime Text and
-Atom.")
+Atom.  To install the emacs specific package, use @code{emacs-merlin}.")
     (license license:expat)))
 
 ;; ocaml-merlin 3.4.2 can not be built with old version of dune used in

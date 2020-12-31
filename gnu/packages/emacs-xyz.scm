@@ -137,6 +137,7 @@
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages telephony)
@@ -665,6 +666,43 @@ process, passing on the arguments as command line arguments.")
       (description
        "Magit-annex adds a few git-annex operations to the Magit interface.")
       (license license:gpl3+))))
+
+(define-public emacs-merlin
+  (package
+    (name "emacs-merlin")
+    (version "3.4.2")
+    (home-page "https://ocaml.github.io/merlin/")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml/merlin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i2nwkdh6cfzmnsdsr8aw86vs8j1k5jkjzrs61b9384wnffdbbmj"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-auto-complete" ,emacs-auto-complete)
+       ("emacs-company" ,emacs-company)
+       ("emacs-iedit" ,emacs-iedit)
+       ("ocaml-merlin" ,ocaml-merlin)))
+    (arguments
+     `(#:tests? #f ; No tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'setup-emacs-build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((merlin (assoc-ref inputs "ocaml-merlin")))
+               (chdir "emacs")
+               (for-each make-file-writable (find-files "." "\\.el$"))
+               (emacs-substitute-variables "merlin.el"
+                 ("merlin-command"
+                  (string-append merlin "/bin/ocamlmerlin")))))))))
+    (synopsis "Context sensitive completion for OCaml in Emacs")
+    (description "Merlin is an editor service that provides modern IDE
+features for OCaml.  This package provides the Emacs support for Merlin.")
+    (license license:expat)))
 
 (define-public emacs-minions
   (package

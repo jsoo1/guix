@@ -7520,7 +7520,7 @@ headers.")
        ;; archives, only object files.
        ;; https://github.com/iovisor/bcc/issues/504
        ("elfutils" ,elfutils)
-       ("linux-libre-headers" ,linux-libre-headers-5.9)
+       ("linux-libre-headers" ,linux-libre-headers-5.10)
        ("luajit" ,luajit)
        ("python-wrapper" ,python-wrapper)))
     (arguments
@@ -7600,7 +7600,7 @@ and above.")
        ("clang-toolchain" ,clang-toolchain)
        ("elfutils" ,elfutils)
        ("libbpf" ,libbpf)
-       ("linux-libre-headers" ,linux-libre-headers-5.9)))
+       ("linux-libre-headers" ,linux-libre-headers-5.10)))
     (arguments
      `(#:tests? #f ;Tests require googletest sources.
        #:configure-flags

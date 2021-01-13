@@ -7787,6 +7787,37 @@ ERC, an Emacs client for IRC (Internet Relay Chat).  It relies on the
 @code{erc-track} does in the mode line, but in an alternative format.")
       (license license:gpl3+))))
 
+(define-public emacs-eredis
+  (package
+    (name "emacs-eredis")
+    (version "0.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/justinhj/eredis")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f2f57c0bz3c6p11hr69aar6z5gg33zvfvsm76ma11vx21qilz6i"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-dash" ,emacs-dash)))
+    (home-page "https://github.com/justinhj/eredis")
+    (synopsis "Redis client written in Emacs Lisp")
+    (description
+     "This package provides a Redis client written in Emacs Lisp.
+ It features:
+@itemize
+@item Almost everything implemented
+@item Redis 5.0 support including LOLWUT
+@item Multiple connections to multiple Redis servers
+@item Integration with org-mode
+@item Multibyte characters handling
+@item Buffer per connection shows all Redis output
+@end itemize")
+    (license license:gpl3)))
+
 (define-public emacs-shut-up
   (package
     (name "emacs-shut-up")

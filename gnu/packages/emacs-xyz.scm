@@ -1699,6 +1699,33 @@ view.  This allows you to move to the character, word, or line almost
 directly.")
     (license license:gpl3+)))
 
+(define-public emacs-aio
+  (let ((revision "1")
+        (commit "da93523e235529fa97d6f251319d9e1d6fc24a41"))
+   (package
+    (name "emacs-aio")
+    (version (git-version "1.0" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/skeeto/emacs-aio")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hnxbz5pxlrgxhjr5gnhf06qwg67g5pd87xkp0smmagsh18pnf76"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-elfeed" ,emacs-elfeed)
+       ("emacs-skewer-mode" ,emacs-skewer-mode)))
+    (home-page "https://github.com/skeeto/emacs-aio")
+    (synopsis "Async/await for Emacs Lisp")
+    (description
+     "This package is to Emacs Lisp as asyncio is to Python.  It builds upon
+Emacs generators to provide functions that pause while they wait on
+asynchronous events.  They do not block any thread while paused.")
+    (license license:unlicense))))
+
 (define-public emacs-anaphora
   (package
     (name "emacs-anaphora")

@@ -11658,23 +11658,28 @@ expression.")
     (license license:gpl3+)))
 
 (define-public emacs-counsel
-  (package
-    (name "emacs-counsel")
-    (version "0.13.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/"
-                           "counsel-" version ".tar"))
-       (sha256
-        (base32 "094zfapfn1l8wjf3djkipk0d9nks0g77sbk107pfsbr3skkzh031"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-swiper))
-    (home-page "https://github.com/abo-abo/swiper")
-    (synopsis "Various completion functions using Ivy")
-    (description
-     "Just call one of the interactive functions in a file to complete the
+  (let ((commit "d0f592f51ada810b80deafa3becfa3f74dfa8fa7")
+        (revision "1"))
+    (package
+      (name "emacs-counsel")
+      (version "0.13.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jsoo1/swiper")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1d3rzha0b228kp8qyr6n7iwhm3x77r3xkx98mq2y9427m10wpsxr"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       `(("emacs-avy" ,emacs-avy)
+         ("emacs-swiper" ,emacs-swiper)))
+      (home-page "https://github.com/abo-abo/swiper")
+      (synopsis "Various completion functions using Ivy")
+      (description
+       "Just call one of the interactive functions in a file to complete the
 corresponding thing using Ivy.
 
 The following completions are currently available:
@@ -11688,7 +11693,7 @@ The following completions are currently available:
 @item System utilities: process list, rhythmbox, linux-app.
 @item Many more.
 @end itemize")
-    (license license:gpl3+)))
+    (license license:gpl3+))))
 
 (define-public emacs-swiper
   (package

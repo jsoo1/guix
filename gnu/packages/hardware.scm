@@ -43,12 +43,14 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -136,6 +138,63 @@ calibrated, and restored when the calibration is applied.")
       (description "edid-decode decodes @dfn{EDID} monitor description data in
 human-readable format and checks if it conforms to the standards.")
       (license license:expat))))
+
+(define-public ibm-capsense-usb-util
+  (let ((synopsis "Configures xwhatsit capsense keyboard controllers"))
+    (package
+      (name "ibm-capsense-usb-util")
+      (version "0.9.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "https://static.wongcornall.com/ibm-capsense-usb/"
+                             version "/ibm-capsense-usb_" version ".tar.gz"))
+         (sha256
+          (base32 "0zrrjmx8469mll0r87m3w56ii2470is1mi7q2gsla0nm6lfp3bah"))))
+      (build-system qt-build-system)
+      (inputs
+       `(("hidapi" ,hidapi)
+         ("qtbase" ,qtbase)))
+      (arguments
+       `(#:tests? #f ; No tests
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'chdir-util
+             (lambda _ (chdir "src/util") #t))
+           (replace 'configure
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((qtbase (assoc-ref inputs "qtbase"))
+                     (hidapi (assoc-ref inputs "hidapi")))
+                 (invoke (string-append qtbase "/bin/qmake")
+                         (string-append
+                          "INCLUDEPATH=" hidapi "/include/hidapi")))))
+           (replace 'install
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (rules (string-append out "/lib/udev/rules.d"))
+                      (udev-rule "82-ibm-capsense-usb.rules")
+                      (desktop-file "ibm_capsense_usb_util.desktop"))
+                 (install-file "src/ibm_capsense_usb_util"
+                               (string-append out "/bin"))
+                 (mkdir-p rules)
+                 (call-with-output-file (string-append rules udev-rule)
+                   (lambda (p)
+                     (display "
+SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0481\", ATTR{idProduct}==\"0002\", MODE=\"660\", GROUP=\"plugdev\"
+" p)))
+                 (make-desktop-entry-file
+                  (string-append out "/share/" desktop-file)
+                  #:name "ibm_capsense_usb_util"
+                  #:comment ,synopsis
+                  #:exec (string-append out "/bin/ibm_capsense_usb_util")
+                  #:icon "preferences-desktop-keyboard"
+                  #:categories "Settings;HardwareSettings;Qt;")))))))
+      (home-page "https://static.wongcornall.com/ibm-capsense-usb/")
+      (synopsis synopsis)
+      (description
+       "This package provides a Qt-based user interface to configure xwhatsit
+capsense keyboard controllers.")
+      (license license:gpl3+))))
 
 (define-public libsmbios
   (package

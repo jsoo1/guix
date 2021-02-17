@@ -68,6 +68,7 @@
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -1299,3 +1300,31 @@ are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
     (license license:gpl3+)))
+
+(define-public lastpass-cli
+  (package
+    (name "lastpass-cli")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lastpass/lastpass-cli")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "168jg8kjbylfgalhicn0llbykd7kdc9id2989gg0nxlgmnvzl58a"))))
+    (build-system cmake-build-system)
+    (inputs
+     `(("curl" ,curl)
+       ("libxml2" ,libxml2)
+       ("openssl" ,openssl)))
+    (native-inputs
+     `(("asciidoc" ,asciidoc)
+       ("pkg-config" ,pkg-config)))
+    (arguments
+     `(#:tests? #f))
+    (home-page "https://github.com/lastpass/lastpass-cli")
+    (synopsis "Command line interface to LastPass.com")
+    (description
+     "This package provides a command line interface to LastPass.")
+    (license license:gpl2)))

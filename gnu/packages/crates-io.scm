@@ -14385,6 +14385,31 @@ signing, and verification in pure Rust.")
 @code{Right} is a general purpose sum type with two cases.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-emacs-module-0.12
+  (package
+    (name "rust-emacs-module")
+    (version "0.12.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "emacs_module" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0h57x1lppd93cbs3nix9z6yxwf3waipnmp53zd7sr5zb8pf2s6ks"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build?
+        #t
+        #:cargo-inputs
+        (("rust-bindgen" ,rust-bindgen-0.51))))
+    (home-page
+      "https://github.com/ubolonton/emacs-module-rs")
+    (synopsis "Raw FFI for emacs-module")
+    (description "Raw FFI for emacs-module")
+    (license license:bsd-3)))
+
 (define-public rust-embed-resource-1
   (package
     (name "rust-embed-resource")

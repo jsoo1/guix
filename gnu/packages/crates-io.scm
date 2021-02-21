@@ -18612,6 +18612,31 @@ Emacs' support for dynamic modules.")
     (description "This package provides proc macros for Emacs modules.")
     (license license:bsd-3)))
 
+(define-public rust-emacs-macros-0.15
+  (package
+    (name "rust-emacs-macros")
+    (version "0.15.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "emacs-macros" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "0xz4scnxrvssa5cb4avw0xyiphzl1ms03zjpxvyc1v0iy471cc8b"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-darling" ,rust-darling-0.10)
+         ("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/ubolonton/emacs-module-rs")
+    (synopsis "Proc macros for Emacs modules")
+    (description "This package provides proc macros for Emacs modules.")
+    (license license:bsd-3)))
+
 (define-public rust-emacs-macros-0.11
   (package (inherit rust-emacs-macros-0.17)
     (name "rust-emacs-macros")

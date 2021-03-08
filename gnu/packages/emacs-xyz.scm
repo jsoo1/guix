@@ -32725,6 +32725,32 @@ subsequent committal of a chain of @code{undo} commands as a single edit in
 the @code{undo} history.")
       (license license:gpl3+))))
 
+(define-public emacs-uuidgen-el
+  (let ((revision "1")
+        (commit "b50e6fef2de4199a8f207b46588c2cb3890ddd85"))
+    (package
+      (name "emacs-uuidgen-el")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kanru/uuidgen-el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08m74kj7h70kna3pifk3sgsy7mck11p32vi48h9wzqnafyq3n55d"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/kanru/uuidgen-el")
+      (synopsis "UUID generation implemented in elisp")
+      (description
+       "This package provides a naive implementation of RFC4122 Universally
+Unique IDentifier generation in elisp.  Currently implemented are UUID v1 v3,
+v4 and v5 generation.  The resolution of the time based UUID is microseconds,
+which is 10 times of the suggested 100-nanosecond resolution, but should be
+enough for general usage.")
+      (license license:gpl3))))
+
 (define-public emacs-elisp-docstring-mode
   (let ((commit "f512e509dd690f65133e55563ebbfd2dede5034f")
         (version "0.0.1")

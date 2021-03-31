@@ -9133,6 +9133,30 @@ movements, and keymaps for quickly entering environments or
 boundaries defined by syntax highlighting.")
       (license license:gpl3+))))
 
+(define-public emacs-evil-textobj-line
+  (let ((commit "3d401b6831bdbeec967ec8e64177a8950251e812")
+        (revision "1"))
+    (package
+      (name "emacs-evil-textobj-line")
+      (version "0.01")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/evil-textobj-line")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vnk27bizzi321mdq3k39zxv8w20ifxbhxabiy685nyk89cq3mbj"))))
+      (build-system emacs-build-system)
+      (propagated-inputs `(("emacs-evil" ,emacs-evil)))
+      (home-page "https://github.com/emacsorphanage/evil-textobj-line/")
+      (synopsis "Text objects for lines for Evil mode")
+      (description
+       "This package provides text objects for working with lines.  It is a
+port of the vim plugin vim-textobj-line.")
+      (license license:gpl3+))))
+
 (define-public emacs-flycheck-flow
   (let ((commit "9e8e52cfc98af6a23fd906f9cb5d5d470d8cf82d")
         (version "1.1")

@@ -46,6 +46,8 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages bootstrap)          ;for 'bootstrap-guile-origin'
+  #:use-module (gnu packages c)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
@@ -55,6 +57,8 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -67,7 +71,9 @@
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages nss)
@@ -79,6 +85,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
@@ -631,6 +638,57 @@ never change after they have been built.  Nix stores packages in the Nix
 store, usually the directory /nix/store, where each package has its own unique
 sub-directory.")
     (license license:lgpl2.1+)))
+
+(define-public nix-unstable
+  (let ((commit "e8f585be70b22c11db5356f886049f432699eac3")
+        (revision "1"))
+    (package
+      (inherit nix)
+      (name "nix-unstable")
+      (version (git-version "2.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/NixOS/nix")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1a8impjbbg8w1vsm9md0b1pidi9sd6r8cx0723p1li6xzqjg45xf"))))
+      (outputs '("out" "doc"))
+      (arguments
+       `(#:configure-flags ("--sysconfdir=/etc"
+                            "--enable-gc"
+                            ;; FIXME: Find out required version of aws-sdk-cpp
+                            "--enable-s3=false")
+         #:make-flags (let* ((etc (string-append %output "/etc"))
+                             (gcc (assoc-ref %build-inputs "gcc")))
+                        (list (string-append "sysconfdir=" etc)
+                              (string-append "profiledir=" etc "/etc/profile.d")
+                              (string-append "CC=" gcc "/bin/gcc")
+                              (string-append "CXX=" gcc "/bin/g++")
+                              "PRECOMPILE_HEADERS=1"))
+         ,@(package-arguments nix)))
+      (inputs
+       `(("googletest" ,googletest)
+         ("libarchive" ,libarchive)
+         ("libcpuid" ,libcpuid)
+         ("json-modern-cxx" ,json-modern-cxx)
+         ("zlib" ,zlib)
+         ,@(package-inputs nix)))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("autoconf-archive" ,autoconf-archive)
+         ("automake" ,automake)
+         ("bison" ,bison)
+         ("gcc" ,gcc-10)
+         ("flex" ,flex)
+         ("graphviz" ,graphviz)
+         ("jq" ,jq)
+         ("lowdown" ,lowdown)
+         ("lsof" ,lsof)
+         ("mdbook" ,mdbook)
+         ,@(package-native-inputs nix))))))
 
 (define-public stow
   (package

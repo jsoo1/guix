@@ -25027,6 +25027,38 @@ correct value of @samp{CARGO_HOME} and @samp{RUSTUP_HOME}.")
      "This package provides a port of the Hamcrest testing library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-handlebars-3
+  (package
+    (name "rust-handlebars")
+    (version "3.5.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "handlebars" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1qxkdhqqrl53mdzmzg78dgmhxd5b54slfkhqd3llvlx7bw8zr624"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-log" ,rust-log-0.4)
+         ("rust-pest" ,rust-pest-2)
+         ("rust-pest-derive" ,rust-pest-derive-2)
+         ("rust-quick-error" ,rust-quick-error-2)
+         ("rust-rhai" ,rust-rhai-0.18)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/sunng87/handlebars-rust")
+    (synopsis "Handlebars templating implemented in Rust")
+    (description
+     "This package provides handlebars templating implemented in Rust.  It is
+the template engine that renders the official Rust website")
+    (license license:expat)))
+
 (define-public rust-hash-hasher-2
   (package
     (name "rust-hash-hasher")

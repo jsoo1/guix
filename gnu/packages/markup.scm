@@ -36,6 +36,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -68,6 +69,47 @@
 processing library written in C.")
     (home-page "https://github.com/hoedown/hoedown")
     (license expat)))
+
+(define-public lowdown
+  (let ((major "0") (minor "8") (patch "4"))
+    (package
+      (name "lowdown")
+      (version (format #f "~a.~a.~a" major minor patch))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/kristapsdz/lowdown")
+                      (commit (format #f "VERSION_~a_~a_~a" major minor patch))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17pyzyzjlfda6xwjm84nz9xnxwhhkrfayjg56m8m9fcbbcwdzaaa"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:make-flags '("CFLAGS='-fPIC'")
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'configure
+             (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bash* (assoc-ref inputs "bash"))
+                      (bash (string-append bash* "/bin/bash")))
+                 (apply invoke bash
+                        "configure"
+                        (filter (lambda (flag)
+                                  (not (string-prefix? "CONFIG_SHELL" flag)))
+                                `(,(string-append "PREFIX=" %output)
+                                  ,(string-append "BINDIR=" %output "/bin")
+                                  ,@configure-flags)))))))))
+      (native-inputs `(("which" ,which)))
+      (synopsis "Markdown processing library forked from hoedown")
+      (description
+       "This package provides a Markdown translator producing HTML5, roff
+documents in the ms and man formats, LaTeX, gemini, and terminal output.  The
+open source C source code has no dependencies.")
+      (home-page "https://kristaps.bsd.lv/lowdown/")
+      (license isc))))
 
 (define-public markdown
   (package

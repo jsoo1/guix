@@ -29068,6 +29068,38 @@ strings and byte slices for sets of ASCII characters or bytes.")
         (base32 "1sq6d6c9vi44gkr566w2f1d4n6mmrjx8gjdwgnhkgcsg051j391j"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-jieba-rs-0.5
+  (package
+    (name "rust-jieba-rs")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jieba-rs" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0z0k1n38s8x0h0rz08rrv41lv9rmmvvl55bxj5h78wlk7rrdx8ic"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cedarwood" ,rust-cedarwood-0.4)
+        ("rust-hashbrown" ,rust-hashbrown-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-phf" ,rust-phf-0.8)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.8)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page
+     "https://github.com/messense/jieba-rs")
+    (synopsis
+     "Jieba Chinese word segmentation implemented in Rust")
+    (description
+     "This package provides the Jieba Chinese word segmentation implemented
+in Rust.")
+    (license license:expat)))
+
 (define-public rust-jni-0.18
   (package
     (name "rust-jni")

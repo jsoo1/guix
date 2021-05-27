@@ -654,6 +654,34 @@ the current and parent directories.  This file is then used to alter the
 environment variables of the current shell.")
     (license license:expat)))
 
+(define-public nix-direnv
+  (package
+    (name "nix-direnv")
+    (version "1.3.0")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/nix-community/nix-direnv")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1gs1fj6b7fg44hgydykl165a3607plkvjqq8xjr4fcgw12395chf"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan '(("direnvrc" "share/nix-direnv/"))))
+    (home-page "https://github.com/nix-community/nix-direnv")
+    (synopsis "Fast, persistent use_nix implementation for direnv")
+    (description
+     "This package provides a faster, persistent implementation of direnv's
+use_nix, to replace the built-in one.  Prominent features include:
+
+* Significantly faster after the first run by caching the nix-shell
+  environment.
+* Prevents garbage collection of build dependencies by symlinking the
+  resulting shell derivation in the user's gcroots.")
+    (license license:expat)))
+
 (define-public fzy
   (package
     (name "fzy")

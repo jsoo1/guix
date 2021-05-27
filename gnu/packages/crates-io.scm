@@ -2611,6 +2611,37 @@ be used with the stdlib.")
 applications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ammonia-3
+  (package
+    (name "rust-ammonia")
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ammonia" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0yb25xrb7bn1s7hchqvpxcv6vhyby0bxypf9xmf7qcvz2pmxdrqy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-html5ever" ,rust-html5ever-0.25)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-maplit" ,rust-maplit-1)
+        ("rust-markup5ever-rcdom"
+         ,rust-markup5ever-rcdom-0.1)
+        ("rust-matches" ,rust-matches-0.1)
+        ("rust-tendril" ,rust-tendril-0.4)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-ammonia/ammonia")
+    (synopsis "Sanitize HTML in Rust")
+    (description "This package provides a Rust library for HTML
+sanitization.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-glue-0.2
   (package
     (name "rust-android-glue")

@@ -235,7 +235,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.15.2")
+    (version "2.28.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -244,18 +244,13 @@ are already there.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1y18619pmhfl0vrf4w0h75ybkkwgi9wcb7d9kv4n8drg1xp4aw4w"))))
+               "0yk53jn7wafklixclka17wyjjs2g5giigjr2bd0xzy10nrzwp7c9"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/direnv/direnv"
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'delete-vendor
-           (lambda _
-             ;; Using a snippet causes issues with the name of the directory,
-             ;; so delete the extra source code here.
-             (delete-file-recursively "src/github.com/direnv/direnv/vendor")
-             #t))
          (add-after 'install 'install-manpages
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -281,6 +276,8 @@ are already there.")
     (native-inputs
      `(("go-github-com-burntsushi-toml" ,go-github-com-burntsushi-toml)
        ("go-github-com-direnv-go-dotenv" ,go-github-com-direnv-go-dotenv)
+       ("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
+       ("go-golang-org-x-mod-semver" ,go-golang-org-x-mod-semver)
        ("which" ,which)))
     (home-page "https://direnv.net/")
     (synopsis "Environment switcher for the shell")

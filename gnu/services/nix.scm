@@ -127,7 +127,7 @@ GID."
                             (append (list (string-append "/bin/sh=" #$bash-minimal "/bin/sh"))
                                     internal-sandbox-paths
                                     '#$build-sandbox-items))
-                    (for-each (cut display <>) '#$extra-config)))))))))))
+                    (for-each (cut format #t "~a~%" <>) '#$extra-config)))))))))))
 
 (define nix-shepherd-service
   ;; Return a <shepherd-service> for Nix.

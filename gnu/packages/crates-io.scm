@@ -31142,6 +31142,37 @@ known as zlib).")
      "This package provides a morphological dictionary loader.")
     (license license:expat)))
 
+(define-public rust-lindera-fst-0.1
+  (package
+    (name "rust-lindera-fst")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lindera-fst" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1q2a52q0m9y8pr2wi5434z2m41cr5wizlzi25p6rd4k7lry8l2d6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-levenshtein-automata"
+         ,rust-levenshtein-automata-0.1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.4)
+        ("rust-utf8-ranges" ,rust-utf8-ranges-1))))
+    (home-page "https://github.com/lindera-morphology/lindera-fst")
+    (properties '((hidden? . #t)))
+    (synopsis
+     "Fork of the fst crate for Lindera")
+    (description
+     "This crate is a fork of the fst crate from Andrew Gallant to better fit
+the need of lindera.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-lindera-ipadic-0.3
   (package
     (name "rust-lindera-ipadic")

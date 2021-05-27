@@ -56375,6 +56375,33 @@ crate.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-rust-stemmers-1
+  (package
+    (name "rust-rust-stemmers")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rust-stemmers" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0m6acgdflrrcm17dj7lp7x4sfqqhga24qynv660qinwz04v20sp4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/CurrySoftware/rust-stemmers")
+    (synopsis
+     "Implementation of some popular snowball stemming algorithms in Rust")
+    (description
+     "This package provides a rust implementation of some popular snowball
+stemming algorithms.")
+    (license (list license:expat license:bsd-3))))
+
 (define-public rust-stfu8-0.2
   (package
     (name "rust-stfu8")

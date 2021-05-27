@@ -47251,6 +47251,40 @@ uses finite automata and guarantees linear time matching on all inputs.")
 functionality as retain but gives mutable borrow to the predicate.")
     (license license:expat)))
 
+(define-public rust-rhai-0.18
+  (package
+    (name "rust-rhai")
+    (version "0.18.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rhai" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1b8msn1bw59aq1jb1c12rk0nla9zf3f5i4s0xg9la96aq4f5hsyf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.3)
+        ("rust-core-error" ,rust-core-error-0.0.0)
+        ("rust-hashbrown" ,rust-hashbrown-0.7)
+        ("rust-instant" ,rust-instant-0.1)
+        ("rust-libm" ,rust-libm-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-unicode-xid" ,rust-unicode-xid-0.2))))
+    (home-page "https://rhai.rs")
+    (synopsis "Embedded scripting for Rust")
+    (description
+     "This package provides an embedded scripting language and evaluation
+engine for Rust that gives a safe and easy way to add scripting to any
+application.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ring-0.16
   (package
     (name "rust-ring")

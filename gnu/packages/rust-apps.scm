@@ -820,6 +820,64 @@ replacement for i3status, written in pure Rust.  It provides a way to display
 bar.  It is also compatible with sway.")
     (license license:gpl3)))
 
+(define-public mdbook
+  (package
+    (name "mdbook")
+    (version "0.4.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "mdbook" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1853h3ab1cx11ylw6dskgmrvw85d6n24rs1pvxwh8aikrw60dm7y"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-ammonia" ,rust-ammonia-3)
+         ("rust-anyhow" ,rust-anyhow-1)
+         ("rust-chrono" ,rust-chrono-0.4)
+         ("rust-clap" ,rust-clap-2)
+         ("rust-elasticlunr-rs" ,rust-elasticlunr-rs-2)
+         ("rust-env-logger" ,rust-env-logger-0.7)
+         ("rust-futures-util" ,rust-futures-util-0.3)
+         ("rust-gitignore" ,rust-gitignore-1)
+         ("rust-handlebars" ,rust-handlebars-3)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-memchr" ,rust-memchr-2)
+         ("rust-notify" ,rust-notify-4)
+         ("rust-open" ,rust-open-1)
+         ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.7)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-derive" ,rust-serde-derive-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-shlex" ,rust-shlex-1)
+         ("rust-tempfile" ,rust-tempfile-3)
+         ("rust-tokio" ,rust-tokio-0.2)
+         ("rust-toml" ,rust-toml-0.5)
+         ("rust-warp" ,rust-warp-0.2))
+        #:cargo-development-inputs
+        (("rust-pretty-assertions"
+          ,rust-pretty-assertions-0.6)
+         ("rust-select" ,rust-select-0.5)
+         ("rust-walkdir" ,rust-walkdir-2))
+        #:cargo-test-flags
+        '("--release" "--"
+          "--skip=preprocess::cmd::tests::round_trip_write_and_parse_input"
+          "--skip=example_book_can_build"
+          "--skip=theme_dir_overrides_work_correctly")))
+    (home-page "https://github.com/rust-lang/mdBook")
+    (synopsis "Creates a book from markdown files")
+    (description
+      "Thix package provides is a command line tool and Rust crate to create
+books using Markdown (as by the CommonMark specification) files.  It's very
+similar to Gitbook but written in Rust.")
+    (license license:mpl2.0)))
+
 (define-public pijul
   (package
     (name "pijul")

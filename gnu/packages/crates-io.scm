@@ -9755,6 +9755,35 @@ archive to be linked into Rustcode.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-cedarwood-0.4
+  (package
+    (name "rust-cedarwood")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cedarwood" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "13glk5w8hndgy553nrdmqxdvlr0b4s6n0lm4lf680qs1p73q4gln"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-smallvec" ,rust-smallvec-1))))
+    (home-page "https://github.com/MnO2/cedarwood")
+    (synopsis
+     "Double-array trie in Rust")
+    (description
+     "This package provides an efficiently-updatable double-array trie in
+Rust (ported from cedar).  This library is tested with reasonably enough of
+randomized tests, but it is considered as beta since it is not yet tested in
+high-pressured production environment.  Please let me know if you have good
+use cases to prove its stability.")
+    (license license:bsd-2)))
+
 (define-public rust-cesu8-1
   (package
     (name "rust-cesu8")

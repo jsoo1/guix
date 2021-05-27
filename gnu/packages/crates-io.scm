@@ -22087,6 +22087,26 @@ macOS API for file changes notifications")
 strings (> 1 billion is possible).")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-fst-0.3
+  (package
+    (inherit rust-fst-0.4)
+    (name "rust-fst")
+    (version "0.3.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "fst" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1mpby7wa5mkpgjiilam94a2l9mxx9wpgs3nw2nr1a0czzwsb8zwj"))))
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-byteorder" ,rust-byteorder-1)
+         ("rust-memmap" ,rust-memmap-0.6))))))
+
 (define-public rust-fuchsia-cprng-0.1
   (package
     (name "rust-fuchsia-cprng")

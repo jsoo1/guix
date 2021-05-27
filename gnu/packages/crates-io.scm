@@ -23679,6 +23679,31 @@ requires non-const function calls to be computed.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-clippy" ,rust-clippy-0.0))))))
 
+(define-public rust-levenshtein-automata-0.1
+  (package
+    (name "rust-levenshtein-automata")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "levenshtein_automata" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1jp8yb4dyqxidp1id16vpgxdhjd2ars9gi0ain6m8s7lfzw0983k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-fst" ,rust-fst-0.3))))
+    (home-page "https://github.com/tantivy-search/levenshtein-automata")
+    (synopsis "Creates Levenshtein Automata in an efficient manner")
+    (description
+     "This crate makes it fast and simple to build a finite determinic
+automaton that computes the levenshtein distance from a given string.")
+    (license license:expat)))
+
 (define-public rust-lexical-core-0.7
   (package
     (name "rust-lexical-core")

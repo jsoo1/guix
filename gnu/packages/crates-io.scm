@@ -31116,6 +31116,40 @@ known as zlib).")
     (description "This package provides an object pool manager in Rust.")
     (license license:expat)))
 
+(define-public rust-lindera-0.3
+  (package
+    (name "rust-lindera")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lindera" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "004c29dbmdhlv9q4n123ya2j9vamp9m1ldmqv2k1kz7md36ngf3i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-encoding" ,rust-encoding-0.2)
+        ("rust-lindera-core" ,rust-lindera-core-0.3)
+        ("rust-lindera-dictionary"
+         ,rust-lindera-dictionary-0.3)
+        ("rust-lindera-fst" ,rust-lindera-fst-0.1)
+        ("rust-lindera-ipadic" ,rust-lindera-ipadic-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/lindera-morphology/lindera")
+    (synopsis "Morphological analysis library")
+    (description
+     "This package provides a morphological analysis library in Rust.  This
+project fork from fulmicoton's kuromoji-rs.")
+    (license license:expat)))
+
 (define-public rust-lindera-core-0.3
   (package
     (name "rust-lindera-core")

@@ -31116,6 +31116,34 @@ known as zlib).")
     (description "This package provides an object pool manager in Rust.")
     (license license:expat)))
 
+(define-public rust-lindera-core-0.3
+  (package
+    (name "rust-lindera-core")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lindera-core" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1zw1nrdm54zpnjd4qknzxdkqiywp41ilqhr8dciw2qfkllrg3dwp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-encoding" ,rust-encoding-0.2)
+        ("rust-lindera-fst" ,rust-lindera-fst-0.1)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/lindera-morphology/lindera")
+    (synopsis "Morphological analysis core library")
+    (description
+     "This package provides a morphological analysis core library.")
+    (license license:expat)))
+
 (define-public rust-lindera-dictionary-0.3
   (package
     (name "rust-lindera-dictionary")

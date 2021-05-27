@@ -24081,6 +24081,31 @@ reading and writing git repositories.")
 libcurl, which is intended to be used with the @code{git2} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gitignore-1
+  (package
+    (name "rust-gitignore")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gitignore" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "197rlas99iqc95fhikyspfa5flhva9pbl1jc8fn9h50ccbj91akq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-glob" ,rust-glob-0.3))))
+    (home-page "https://github.com/nathankleyn/gitignore.rs")
+    (synopsis "Parse .gitignore files in Rust")
+    (description
+     "This package provides an implementation of .gitignore file parsing and
+glob testing in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gjson-0.8
   (package
     (name "rust-gjson")

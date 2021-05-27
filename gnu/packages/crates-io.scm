@@ -51398,6 +51398,35 @@ macOS and iOS.")
        (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.2)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-select-0.5
+  (package
+    (name "rust-select")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "select" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1dvnb12fqczq0mqgyh7pafkhngv8478x0y3sxy5ngj7w1bwn3q4f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build?
+       #t
+       #:cargo-inputs
+       (("rust-bit-set" ,rust-bit-set-0.5)
+        ("rust-html5ever" ,rust-html5ever-0.25)
+        ("rust-markup5ever-rcdom" ,rust-markup5ever-rcdom-0.1))))
+    (home-page "https://github.com/utkarshkukreti/select.rs")
+    (synopsis
+     "Extract useful data from HTML documents, suitable for web scraping")
+    (description
+     "This package provides a library to extract useful data from HTML
+documents which is suitable for web scraping.")
+    (license license:expat)))
+
 (define-public rust-selectors-0.23
   (package
     (name "rust-selectors")

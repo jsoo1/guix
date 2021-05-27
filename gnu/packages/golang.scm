@@ -1042,6 +1042,35 @@ for the Go language.")
       (home-page "https://go.googlesource.com/crypto/")
       (license license:bsd-3))))
 
+(define-public go-golang-org-x-mod-semver
+  (package
+    (name "go-golang-org-x-mod-semver")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/mod")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0z1p17i291z2k6va08i80ljyzyij2b6qsz78lnz0wi8zsnkfdz43"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "golang.org/x/mod/semver"
+                 #:unpack-path "golang.org/x/mod"))
+    (propagated-inputs
+     `(("go-golang-org-x-xerrors" ,go-golang-org-x-xerrors)
+       ("go-golang-org-x-tools" ,go-golang-org-x-tools)
+       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+    (home-page "https://golang.org/x/mod")
+    (synopsis "Go module mechanics libraries")
+    (description
+     "This repository holds packages for writing tools
+that work directly with Go module mechanics.
+That is, it is for direct manipulation of Go modules themselves.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-net
   (let ((commit "ba9fcec4b297b415637633c5a6e8fa592e4a16c3")
         (revision "4"))

@@ -123,10 +123,10 @@ GID."
 
                     (format #t "sandbox = ~a~%" (if #$sandbox "true" "false"))
                     ;; config.nix captures store file names.
-                    (format #t "build-sandbox-paths = ~{~a ~}~%"
-                            (append (list (string-append "/bin/sh=" #$bash-minimal "/bin/sh"))
-                                    internal-sandbox-paths
-                                    '#$build-sandbox-items))
+                    (format #t "sandbox-paths = ~{~a ~}~%"
+                            `(,(string-append "/bin/sh=" #$bash-minimal "/bin/sh")
+                              ,@internal-sandbox-paths
+                              ,@'#$build-sandbox-items))
                     (for-each (cut format #t "~a~%" <>) '#$extra-config)))))))))))
 
 (define nix-shepherd-service

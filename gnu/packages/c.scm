@@ -538,6 +538,32 @@ Its three main components are:
 whose behaviour is inconsistent across *NIX flavours.")
     (license license:boost1.0)))
 
+(define-public libcpuid
+  (package
+    (name "libcpuid")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anrieff/libcpuid")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0mg9h2sdd5fkz9yr27n47s8q51hin5wf02ahvzqm54q1viv0npcv"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)))
+    (home-page "http://libcpuid.sourceforge.net/")
+    (synopsis "C library for x86 CPU detection and feature extraction")
+    (description
+     "This package provides CPU identification for the x86 (and x86_64).  For
+details about the programming API, you might want to take a look at the
+project's website on sourceforge @url{http://libcpuid.sourceforge.net/}.
+There you'd find a short tutorial, as well as the full API reference. ")
+    (license license:bsd-3)))
+
 (define-public libhx
   (package
     (name "libhx")

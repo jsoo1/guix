@@ -31071,6 +31071,33 @@ known as zlib).")
     (description "This package provides an object pool manager in Rust.")
     (license license:expat)))
 
+(define-public rust-lindera-ipadic-0.3
+  (package
+    (name "rust-lindera-ipadic")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lindera-ipadic" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04p1xipvalbhndllrr70qbv1ypyfj452yfl6y0glqvss716g84lz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-lindera-core" ,rust-lindera-core-0.3))))
+    (home-page "https://github.com/lindera-morphology/lindera")
+    (synopsis "Japanese morphological dictionary loader for IPADIC")
+    (description
+     "This package provides a Japanese morphological dictionary loader for
+IPADIC.")
+    (license license:expat)))
+
 (define-public rust-line-wrap-0.1
   (package
     (name "rust-line-wrap")

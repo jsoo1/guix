@@ -18587,6 +18587,41 @@ signing, and verification in pure Rust.")
      "This package provides a pure-Rust library for parsing ELF files.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-elasticlunr-rs-2
+  (package
+    (name "rust-elasticlunr-rs")
+    (version "2.3.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "elasticlunr-rs" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0066sskvmmmmjvahg5sn6c2qng5fq4pmlx7m89lwxbm734xzg31g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-jieba-rs" ,rust-jieba-rs-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-lindera" ,rust-lindera-0.3)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rust-stemmers" ,rust-rust-stemmers-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-strum" ,rust-strum-0.18)
+        ("rust-strum-macros" ,rust-strum-macros-0.18))))
+    (home-page "https://github.com/mattico/elasticlunr-rs")
+    (synopsis
+     "Generate static document search indexes in Rust")
+    (description
+     "This package provides a partial port of elasticlunr.js to Rust for
+generating static document search indexes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-emacs-0.18
   (package
     (name "rust-emacs")

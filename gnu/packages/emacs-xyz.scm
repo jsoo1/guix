@@ -34177,9 +34177,8 @@ conventions.")
         #~(modify-phases %standard-phases
             (add-after 'install 'install-snippets
               (lambda _
-                (let ((snippets
-                       (string-append
-                        #$output "/share/emacs/site-lisp/snippets/haskell-mode")))
+                (let* ((snippets
+                        (string-append (elpa-directory #$output) "/snippets")))
                   (mkdir-p snippets)
                   (copy-recursively "snippets/haskell-mode" snippets)))))))
       (propagated-inputs

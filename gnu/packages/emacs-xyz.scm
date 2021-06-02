@@ -27761,8 +27761,7 @@ conventions.")
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (snippets
-                       (string-append
-                        out "/share/emacs/site-lisp/snippets/haskell-mode")))
+                       (string-append (elpa-directory out) "/snippets")))
                  (mkdir-p snippets)
                  (copy-recursively "snippets/haskell-mode" snippets)
                  #t))))))

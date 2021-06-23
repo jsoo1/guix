@@ -31670,6 +31670,28 @@ GUI.")
 file for Google C and C++ style.")
       (license license:gpl1+))))
 
+(define-public emacs-redis
+  (let ((commit "2c33f3397bc14e7a8192867b55920492d4eead8c")
+        (revision "1"))
+    (package
+      (name "emacs-redis")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/emacs-pe/redis.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rjpf23a8rggjmmxvm1997d3xz03kz84xams486b9ky0n2v02d57"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/emacs-pe/redis.el")
+      (synopsis "Comint mode for redis-cli")
+      (description
+       "This package provides a comint mode for redis-cli.")
+      (license license:gpl3+))))
+
 (define-public emacs-redshank
   (let ((commit "f98e68f532e622bcd464292ca4a9cf5fbea14ebb")
         (revision "1"))

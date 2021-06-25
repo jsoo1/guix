@@ -382,6 +382,39 @@ program @code{ls}.  It uses colours to distinguish file types and metadata.  It
 also knows about symlinks, extended attributes, and Git.")
     (license license:expat)))
 
+(define-public evcxr-repl
+  (package
+    (name "evcxr-repl")
+    (version "0.10.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "evcxr-repl" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "03d7r02am7vhprqz25ky7rkk6p09pc4ccff3xap458f8gpa62n1i"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-colored" ,rust-colored-2)
+         ("rust-evcxr" ,rust-evcxr-0.10)
+         ("rust-mimalloc" ,rust-mimalloc-0.1)
+         ("rust-once-cell" ,rust-once-cell-1)
+         ("rust-parking-lot" ,rust-parking-lot-0.11)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-rustyline" ,rust-rustyline-8)
+         ("rust-structopt" ,rust-structopt-0.3)
+         ("rust-unicode-segmentation"
+          ,rust-unicode-segmentation-1)
+         ("rust-unicode-xid" ,rust-unicode-xid-0.2))))
+    (home-page "https://github.com/google/evcxr")
+    (synopsis "A REPL for Rust")
+    (description
+      "This package provides a REPL for Rust")
+    (license license:asl2.0)))
+
 (define-public fd
   (package
     (name "fd")

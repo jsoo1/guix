@@ -6678,6 +6678,38 @@ special comments and cinaps makes sure that what follows is what is printed by
 the OCaml code.")
       (license license:expat))))
 
+(define-public ocaml-pp
+  (package
+    (name "ocaml-pp")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://github.com/ocaml-dune/pp/releases/download/1.1.2/pp-1.1.2.tbz")
+       (sha256
+        (base32
+         "0mhxmzsraid4yw18zr6pyjfrhvf873ls8vfd1yapdfxijs6yk974"))))
+    (build-system dune-build-system)
+    (native-inputs
+     `(("ocaml-ppx-expect" ,ocaml-ppx-expect)))
+    (home-page "https://github.com/ocaml-dune/pp")
+    (synopsis "Pretty-printing library")
+    (description
+     "This library provides a lean alternative to the Format
+@url{https://caml.inria.fr/pub/docs/manual-ocaml/libref/Format.html} module of
+the OCaml standard library. It aims to make it easy for users to do the right
+thing. If you have tried Format before but find its API complicated and
+difficult to use, then Pp might be a good choice for you.
+
+Pp uses the same concepts of boxes and break hints, and the final rendering is
+done to formatter from the Format module. However it defines its own algebra
+which some might find easier to work with and reason about. No previous
+knowledge is required to start using this library, however the various guides
+for the Format module such as this one
+@url{http://caml.inria.fr/resources/doc/guides/format.en.html} should be
+applicable to Pp as well. ")
+    (license license:expat)))
+
 (define-public ocaml-ppxlib
   (package
     (name "ocaml-ppxlib")

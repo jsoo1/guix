@@ -2266,6 +2266,30 @@ functions to the next and/or previous version.")
 to replace readline.")
     (license license:bsd-2)))
 
+(define-public ocaml-ppx-yojson-conv-lib
+  (package
+    (name "ocaml-ppx-yojson-conv-lib")
+    (version "0.14.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://ocaml.janestreet.com/ocaml-core/v0.14/files/ppx_yojson_conv_lib-v0.14.0.tar.gz")
+        (sha256
+          (base32
+            "1f1530pvyg05zwi83iwrk3v207w316wlljikwyl9ahjh24lsja46"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:tests? #f))
+    (propagated-inputs
+      `(("ocaml-yojson" ,ocaml-yojson)))
+    (properties
+      `((upstream-name . "ppx_yojson_conv_lib")))
+    (home-page
+      "https://github.com/janestreet/ppx_yojson_conv_lib")
+    (synopsis "Runtime lib for ppx_yojson_conv")
+    (description "Part of the Jane Street's PPX rewriters collection.")
+    (license license:expat)))
+
 (define-public ocaml-bitstring
   (package
     (name "ocaml-bitstring")

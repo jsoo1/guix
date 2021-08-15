@@ -9462,6 +9462,38 @@ bibliography files in BibTeX format, a bibliography in HTML format.")
 3.0, supporting easy interop between OCaml and GNU Guile Scheme.")
     (license license:gpl3+)))
 
+(define-public ocaml-lsp-server
+  (package
+    (name "ocaml-lsp-server")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://github.com/ocaml/ocaml-lsp/releases/download/1.7.0/jsonrpc-1.7.0.tbz")
+       (sha256
+        (base32
+         "1va2zj41znsr94bdw485vak96zrcvqwcrqf1sy8zipb6hdhbchya"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+     `(("ocaml-yojson" ,ocaml-yojson)
+       ("ocaml-re" ,ocaml-re)
+       ("ocaml-ppx-yojson-conv-lib"
+        ,ocaml-ppx-yojson-conv-lib)
+       ("ocaml-dune-build-info" ,ocaml-dune-build-info)
+       ("ocaml-dot-merlin-reader"
+        ,ocaml-dot-merlin-reader)
+       ("ocaml-pp" ,ocaml-pp)
+       ("ocaml-csexp" ,ocaml-csexp)
+       ("ocaml-result" ,ocaml-result)
+       ("ocaml-odoc" ,ocaml-odoc)))
+    (native-inputs `(("ocamlformat" ,ocamlformat)))
+    (properties
+     `((upstream-name . "ocaml-lsp-server")))
+    (home-page "https://github.com/ocaml/ocaml-lsp")
+    (synopsis "LSP Server for OCaml")
+    (description "An LSP server for OCaml.")
+    (license license:isc)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar

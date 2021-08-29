@@ -124,7 +124,7 @@ GID."
                     (format #t "sandbox = ~a~%" (if #$sandbox "true" "false"))
                     ;; config.nix captures store file names.
                     (format #t "sandbox-paths = ~{~a ~}~%"
-                            `("/bin/sh=/nix/store/iyqah3h6ywjdxl6xmsdxqv26x71i091v-busybox-static-x86_64-unknown-linux-musl-1.32.1/bin/ash"
+                            `("/bin/sh=/nix/store/7ll2jfpb8ypiqzynll74a671r4x0dfn5-busybox-static-x86_64-unknown-linux-musl-1.33.1/bin/ash"
                               ,@internal-sandbox-paths
                               ,@'#$build-sandbox-items))
                     (for-each (cut format #t "~a~%" <>) '#$extra-config)))))))))))

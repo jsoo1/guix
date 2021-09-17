@@ -943,7 +943,7 @@ tiled on several screens.")
            ghc-pango
            libxpm))
     (arguments
-     `(#:configure-flags (list "--flags=all_extensions")
+     `(#:configure-flags (list "--flags=all_extensions" "--flags=with_threaded")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'remove-binaries

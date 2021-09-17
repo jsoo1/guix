@@ -891,7 +891,7 @@ tiled on several screens.")
            ghc-pango
            libxpm))
     (arguments
-     `(#:configure-flags (list "--flags=all_extensions")
+     `(#:configure-flags (list "--flags=all_extensions" "--flags=with_threaded")
        ;; Haddock documentation is for the library.
        #:haddock? #f
        #:phases

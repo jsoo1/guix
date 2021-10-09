@@ -34892,6 +34892,27 @@ contents of the buffer are pasted into the previously focused application on
 deletion of the frame.")
       (license license:gpl3+))))
 
+(define-public emacs-tmux-pane
+  (package
+    (name "emacs-tmux-pane")
+    (version "20200730.520")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://melpa.org/packages/tmux-pane-"
+             version
+             ".el"))
+       (sha256
+        (base32 "1dxrrv9sp275hljj3db1k650g8fajr3aqqf9a1i0j5qnl4fdm657"))))
+    (build-system emacs-build-system)
+    (propagated-inputs `(("emacs-names" ,emacs-names) ("emacs-s" ,emacs-s)))
+    (home-page "https://github.com/laishulu/emacs-tmux-pane")
+    (synopsis "Provide integration between emacs window and tmux pane")
+    (description
+     "This package provide integration between Emacs window and tmux pane.")
+    (license license:gpl3)))
+
 (define-public emacs-xclip
   (package
     (name "emacs-xclip")

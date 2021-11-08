@@ -9537,6 +9537,29 @@ pandoc to represent structured documents.  It also provides functions for
 building up, manipulating and serialising @code{Pandoc} structures.")
     (license license:bsd-3)))
 
+(define-public ghc-pango
+  (package
+    (name "ghc-pango")
+    (version "0.13.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "pango" version))
+       (sha256
+        (base32 "1c18sh5g3xl4362llqmhcy66ry4328v6pxp1mmdgqgk499aznbs9"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "pango")))
+    (inputs (list ghc-glib ghc-cairo))
+    (native-inputs (list ghc-gtk2hs-buildtools))
+    (home-page "http://projects.haskell.org/gtk2hs/")
+    (synopsis "Binding to the Pango text rendering engine.")
+    (description
+     "This package provides a wrapper around the Pango C library that allows
+high-quality rendering of Unicode text.  It can be used either with Cairo to
+output text in PDF, PS or other documents or with Gtk+ to display text
+on-screen.")
+    (license #f)))
+
 (define-public ghc-pantry
   (package
     (name "ghc-pantry")

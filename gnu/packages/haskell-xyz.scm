@@ -5137,6 +5137,38 @@ and edge labels with positional information, etc.
 monoid with invertibility.")
     (license license:bsd-3)))
 
+(define-public ghc-gtk
+  (package
+    (name "ghc-gtk")
+    (version "0.15.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/gtk/gtk-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32 "096xawq85shmdhsqwpcmidjc4asqgqxsxv0f0xff78169jrdh6a2"))))
+    (build-system haskell-build-system)
+    (inputs
+      `(("ghc-glib" ,ghc-glib)
+        ("ghc-pango" ,ghc-pango)
+        ("ghc-cairo" ,ghc-cairo)
+        ("ghc-gio" ,ghc-gio)
+        ("glib" ,glib) ; for gthread
+        ("gtk+" ,gtk+-2)))
+    (native-inputs
+     `(("ghc-gtk2hs-buildtools" ,ghc-gtk2hs-buildtools)
+       ("pkg-config" ,pkg-config)))
+    (home-page "http://projects.haskell.org/gtk2hs/")
+    (synopsis "Haskell Binding to Gtk+")
+    (description
+      "This is the core library of the Gtk2Hs suite of libraries for Haskell
+based on Gtk+. Gtk+ is an extensive and mature multi-platform toolkit for
+creating graphical user interfaces.")
+    (license license:lgpl2.1)))
+
 (define-public ghc-gtk2hs-buildtools
   (package
     (name "ghc-gtk2hs-buildtools")

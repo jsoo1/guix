@@ -4829,6 +4829,37 @@ properties for functions operating on them.")
 interfaces with ease.")
     (license license:bsd-3)))
 
+(define-public ghc-gio
+  (package
+    (name "ghc-gio")
+    (version "0.13.8.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/gio/gio-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32 "00dq87p6nqk4x2n98a6b35l7a4crkmhr36zjk0xsfdsr3lf7zmr6"))))
+    (build-system haskell-build-system)
+    (inputs
+     `(("ghc-glib" ,ghc-glib)
+       ("glib" ,glib)))
+    (native-inputs
+     `(("ghc-gtk2hs-buildtools" ,ghc-gtk2hs-buildtools)
+       ("pkg-config" ,pkg-config)))
+    (home-page "http://projects.haskell.org/gtk2hs/")
+    (synopsis "Haskell bindings to GIO")
+    (description
+      "This package provides Haskell bindings to GIO, a VFS API that sits at
+the right level in the library stack. The goal is to overcome the shortcomings
+of GnomeVFS and provide an API that is so good that developers prefer it over
+raw POSIX calls. Among other things that means using GObject. It also means
+not cloning the POSIX API, but providing higher-level, document-centric
+interfaces.")
+    (license license:lgpl2.1)))
+
 (define-public ghc-githash
   (package
     (name "ghc-githash")

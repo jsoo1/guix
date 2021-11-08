@@ -4953,6 +4953,36 @@ for including in panic messages, @command{--version} output, or diagnostic
 info for more informative bug reports.")
     (license license:bsd-3)))
 
+(define-public ghc-glib
+  (package
+    (name "ghc-glib")
+    (version "0.13.8.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/glib/glib-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32 "170sbi1gg38sxl4yhd4z716fljlcbf21vgl58p0pcx2adnn2il6w"))))
+    (build-system haskell-build-system)
+    (inputs
+     `(("ghc-utf8-string" ,ghc-utf8-string)
+       ("glib" ,glib)))
+    (native-inputs
+     `(("ghc-gtk2hs-buildtools" ,ghc-gtk2hs-buildtools)
+       ("pkg-config" ,pkg-config)))
+    (home-page "http://projects.haskell.org/gtk2hs/")
+    (synopsis "Haskell bindings to the GLIB library for Gtk2Hs")
+    (description
+     "This package provides Haskell bindings to GLib - a collection of C data
+structures and utility functions for the GObject system, main loop
+implementation, for strings and common data structures dealing with
+Unicode. This package only binds as much functionality as required to support
+the packages that wrap libraries that are themselves based on GLib.")
+    (license license:lgpl2.1)))
+
 (define-public ghc-glob
   (package
     (name "ghc-glob")

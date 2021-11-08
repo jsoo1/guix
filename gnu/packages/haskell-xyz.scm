@@ -4093,6 +4093,31 @@ to learn new concepts, just new syntax, and it's fairly easy to predict the
 generated SQL and optimize it for your backend.")
     (license license:bsd-3)))
 
+;; Don't know if this is in the stackage revision for guix.
+;; Just wanted to use threadscope.
+(define-public ghc-events
+  (package
+    (name "ghc-events")
+    (version "0.15.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/ghc-events/ghc-events-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32 "16kh64z60353m6bj9lmv9yzlvydgmi66hm8gc4b22bs69xyh2pxz"))))
+    (build-system haskell-build-system)
+    (inputs `(("ghc-vector" ,ghc-vector)))
+    (home-page "http://hackage.haskell.org/package/ghc-events")
+    (synopsis "Library and tool for parsing .eventlog files from GHC")
+    (description
+      "This package Parses .eventlog files emitted by GHC 6.12.1 and
+later. Includes the ghc-events tool permitting, in particular, to dump an
+event log file as text.")
+    (license license:bsd-3)))
+
 (define-public ghc-exactprint
   (package
     (name "ghc-exactprint")

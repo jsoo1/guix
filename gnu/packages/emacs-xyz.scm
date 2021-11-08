@@ -11695,7 +11695,7 @@ expression.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1d3rzha0b228kp8qyr6n7iwhm3x77r3xkx98mq2y9427m10wpsxr"))))
+          (base32 "0hr50i168df2jfvjwwyzg5qz6rnnr4swhxg47amdsfq8p32hn47s"))))
       (build-system emacs-build-system)
       (propagated-inputs
        `(("emacs-avy" ,emacs-avy)

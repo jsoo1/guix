@@ -14,9 +14,6 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
-;;; Copyright © 2022 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2021 John Soo <jsoo1@asu.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +44,6 @@
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
-  #:use-module (gnu packages node)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
@@ -666,15 +662,7 @@ safety and thread safety guarantees.")
   (let ((base-rust rust-1.60))
     (package
       (inherit base-rust)
-      (outputs (append '("rustfmt" "rls" "src" "clippy" "rust-analyzer")
-                       (package-outputs base-rust)))
-      (inputs
-       `(("gcc-lib" ,gcc "lib")
-         ,@(package-inputs base-rust)))
-      (native-inputs
-       `(("node" ,node)
-         ("patchelf" ,patchelf)
-         ,@(package-native-inputs base-rust)))
+      (outputs (cons "rustfmt" (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:tests? _ #f)
@@ -739,281 +727,6 @@ safety and thread safety guarantees.")
                (lambda _
                  (delete-file "src/test/ui/parser/shebang/sneaky-attrib.rs")))
              (add-after 'unpack 'patch-process-tests
-             (replace 'build
-               (lambda* _
-                 (invoke "./x.py" "build")
-                 (invoke "./x.py" "build" "src/tools/cargo")
-                 (invoke "./x.py" "build" "src/tools/rustfmt")))
-             (replace 'check
-               (lambda* _
-                 ;; Test rustfmt.
-                 (let ((parallel-job-spec
-                        (string-append "-j" (number->string
-                                             (min 4
-                                                  (parallel-job-count))))))
-                   (invoke "./x.py" parallel-job-spec "test" "-vv")
-                   (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/cargo")
-                   (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/rustfmt"))))
-             (replace 'install
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (invoke "./x.py" "install")
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "cargo") "\"")))
-                 (invoke "./x.py" "install" "cargo")
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("prefix = \"[^\"]*\"")
-                    (string-append "prefix = \"" (assoc-ref outputs "rustfmt") "\"")))
-                 (invoke "./x.py" "install" "rustfmt")))
-             (replace 'delete-install-logs
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (define (delete-manifest-file out-path file)
-                   (delete-file (string-append out-path "/lib/rustlib/" file)))
-
-                 (let ((out (assoc-ref outputs "out"))
-                       (cargo-out (assoc-ref outputs "cargo"))
-                       (rustfmt-out (assoc-ref outputs "rustfmt")))
-                   (for-each
-                     (lambda (file) (delete-manifest-file out file))
-                     '("install.log"
-                       "manifest-rust-docs"
-                       ,(string-append "manifest-rust-std-"
-                                       (nix-system->gnu-triplet-for-rust))
-                       "manifest-rustc"))
-                   (for-each
-                     (lambda (file) (delete-manifest-file cargo-out file))
-                     '("install.log"
-                       "manifest-cargo"))
-                   (for-each
-                     (lambda (file) (delete-manifest-file rustfmt-out file))
-                     '("install.log"
-                       "manifest-rustfmt-preview"))
-                   #t))))))))))
-
-(define-public rust-1.47
-  (let ((base-rust
-         (rust-bootstrapped-package rust-1.46 "1.47.0"
-          "07fqd2vp7cf1ka3hr207dnnz93ymxml4935vp74g4is79h3dz19i")))
-    (package
-      (inherit base-rust)
-      (inputs
-        (alist-replace "llvm" (list llvm-11)
-                       (package-inputs base-rust)))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             ;; The source code got rearranged: libstd is now in the newly created library folder.
-             (replace 'patch-tests
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((bash (assoc-ref inputs "bash")))
-                   (substitute* "library/std/src/process.rs"
-                     (("\"/bin/sh\"") (string-append "\"" bash "/bin/sh\"")))
-                   ;; <https://lists.gnu.org/archive/html/guix-devel/2017-06/msg00222.html>
-                   (substitute* "library/std/src/sys/unix/process/process_common.rs"
-                     (("fn test_process_mask") "#[allow(unused_attributes)]
-    #[ignore]
-    fn test_process_mask"))
-                   #t)))
-             (delete 'patch-cargo-checksums)
-             (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
-               ;; Generate checksums after patching generated files (in
-               ;; particular, vendor/jemalloc/rep/Makefile).
-               (lambda* _
-                 (use-modules (guix build cargo-utils))
-                 (substitute* "Cargo.lock"
-                   (("(checksum = )\".*\"" all name)
-                    (string-append name "\"" ,%cargo-reference-hash "\"")))
-                 (generate-all-checksums "vendor")
-                 #t)))))))))
-
-(define-public rust-1.48
-  (let ((base-rust
-         (rust-bootstrapped-package rust-1.47 "1.48.0"
-           "0fz4gbb5hp5qalrl9lcl8yw4kk7ai7wx511jb28nypbxninkwxhf")))
-    (package
-      (inherit base-rust)
-      (source
-        (origin
-          (inherit (package-source base-rust))
-          ;; New patch required due to the second part of the source code rearrangement:
-          ;; the relevant source code is now in the compiler directory.
-          (patches (search-patches "rust-1.48-linker-locale.patch"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             ;; Some tests got split out into separate files.
-             (replace 'patch-tests
-             (replace 'patch-cargo-checksums
-               ;; Generate checksums after patching generated files (in
-               ;; particular, vendor/jemalloc/rep/Makefile).
-               (lambda* _
-                 (use-modules (guix build cargo-utils))
-                 (substitute* '("Cargo.lock"
-                                "src/tools/rust-analyzer/Cargo.lock")
-                   (("(checksum = )\".*\"" all name)
-                    (string-append name "\"" ,%cargo-reference-hash "\"")))
-                 (generate-all-checksums "vendor")
-                 #t))
-             (replace 'build
-               (lambda* _
-                 (invoke "./x.py" "build")
-                 (invoke "./x.py" "build" "src/tools/cargo")
-                 (invoke "./x.py" "build" "src/tools/rustfmt")
-                 (invoke "./x.py" "build" "src/tools/clippy")
-                 (invoke "./x.py" "build" "src/tools/rls")
-                 (invoke "./x.py" "build"
-                         "src/tools/rust-analyzer/crates/rust-analyzer")))
-             (replace 'check
-               (lambda* _
-                 (let ((parallel-job-spec
-                        (string-append "-j" (number->string
-                                             (min 4
-                                                  (parallel-job-count))))))
-                   (invoke "./x.py" parallel-job-spec "test" "-vv")
-                   (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/cargo")
-                   (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/rustfmt")
-                   ;; Clippy tests do not work. See
-                   ;; https://github.com/rust-lang/rust/issues/78717
-                   ;; Even with --stage 1, they fail to compile
-                   ;; (invoke "./x.py" parallel-job-spec "test" "--stage" "1"
-                   ;;         "src/tools/clippy")
-                   (substitute* "src/tools/rls/tests/client.rs"
-                     (("fn client_dependency_typo_and_fix" all)
-                      (string-append "#[ignore]\n" all)))
-                   (invoke "./x.py" parallel-job-spec "test"
-                           "src/tools/rls"))))
-             (replace 'install
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (invoke "./x.py" "install")
-                 (for-each delete-file-recursively
-                           (find-files (assoc-ref outputs "out")
-                                       "^uninstall\\.sh$"))
-                 (substitute* "config.toml"
-                   ;; replace prefix to specific output
-                   (("\\[build\\]" all)
-                    (string-append all "
-extended = true
-tools =
-")))
-                 (define (install-component component)
-                   (substitute* "config.toml"
-                     ;; replace prefix to specific output
-                     (("(tools =).*" all tools)
-                      (string-append tools " [\"" component "\"]\n"))
-                     (("prefix = \"[^\"]*\"")
-                      (string-append
-                       "prefix = \"" (assoc-ref outputs component) "\"")))
-                   (mkdir-p (assoc-ref outputs component))
-                   (invoke "./x.py" "install" component)
-                   (for-each delete-file-recursively
-                             (find-files (assoc-ref outputs component)
-                                         "uninstall\\.sh")))
-                 (for-each install-component
-                           '("cargo"
-                             "rustfmt"
-                             "clippy"
-                             "rls"
-                             "src"
-                             "rust-analyzer"))
-                 #t))
-             (add-after 'install 'patch-tools-runpaths
-               (lambda* (#:key outputs inputs #:allow-other-keys)
-                 (use-modules (ice-9 popen)
-                              (ice-9 textual-ports))
-                 (define (patch-path path)
-                   (let* ((read-rpath
-                           (string-append
-                            "patchelf --print-rpath " path))
-                          (pipe (open-input-pipe read-rpath))
-                          (current-rpath (get-string-all pipe))
-                          (out (assoc-ref outputs "out"))
-                          (libc (assoc-ref inputs "libc"))
-                          (gcc-lib (assoc-ref inputs "gcc-lib")))
-                     (close-pipe pipe)
-                     (invoke "patchelf" "--set-rpath"
-                             (string-append current-rpath
-                                            ":" out "/lib"
-                                            ":" libc "/lib"
-                                            ":" gcc-lib "/lib")
-                             path)))
-                 (define (patch-component component)
-                   (for-each patch-path
-                             (find-files (assoc-ref outputs component)
-                                         (lambda (p s) (executable-file? p)))))
-                 (for-each patch-component '("clippy" "rls"))))
-             (replace 'delete-install-logs
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (define log-manifest-re
-                   "^install\\.log$|^manifest-([a-z]|[0-9]|_|-)+(-preview)?$")
-                 (define (delete-install-log output)
-                   (for-each delete-file-recursively
-                             (find-files output log-manifest-re)))
-                 (for-each delete-install-log (map cdr outputs)))))))))))
-
-(define-public rust-1.47
-  (let ((base-rust
-         (rust-bootstrapped-package rust-1.46 "1.47.0"
-          "07fqd2vp7cf1ka3hr207dnnz93ymxml4935vp74g4is79h3dz19i")))
-    (package
-      (inherit base-rust)
-      (inputs
-        (alist-replace "llvm" (list llvm-11)
-                       (package-inputs base-rust)))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             ;; The source code got rearranged: libstd is now in the newly created library folder.
-             (replace 'patch-tests
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((bash (assoc-ref inputs "bash")))
-                   (substitute* "library/std/src/process.rs"
-                     (("\"/bin/sh\"") (string-append "\"" bash "/bin/sh\"")))
-                   ;; <https://lists.gnu.org/archive/html/guix-devel/2017-06/msg00222.html>
-                   (substitute* "library/std/src/sys/unix/process/process_common.rs"
-                     (("fn test_process_mask") "#[allow(unused_attributes)]
-    #[ignore]
-    fn test_process_mask"))
-                   #t)))
-             (delete 'patch-cargo-checksums)
-             (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums
-               ;; Generate checksums after patching generated files (in
-               ;; particular, vendor/jemalloc/rep/Makefile).
-               (lambda* _
-                 (use-modules (guix build cargo-utils))
-                 (substitute* '("Cargo.lock"
-                                "src/tools/rust-analyzer/Cargo.lock")
-                   (("(checksum = )\".*\"" all name)
-                    (string-append name "\"" ,%cargo-reference-hash "\"")))
-                 (generate-all-checksums "vendor")
-                 #t)))))))))
-
-(define-public rust-1.48
-  (let ((base-rust
-         (rust-bootstrapped-package rust-1.47 "1.48.0"
-           "0fz4gbb5hp5qalrl9lcl8yw4kk7ai7wx511jb28nypbxninkwxhf")))
-    (package
-      (inherit base-rust)
-      (source
-        (origin
-          (inherit (package-source base-rust))
-          ;; New patch required due to the second part of the source code rearrangement:
-          ;; the relevant source code is now in the compiler directory.
-          (patches (search-patches "rust-1.48-linker-locale.patch"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             ;; Some tests got split out into separate files.
-             (replace 'patch-tests
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((bash (assoc-ref inputs "bash")))
                    (substitute* "library/std/src/process/tests.rs"
@@ -1084,18 +797,6 @@ tools =
       (native-inputs (cons* `("gdb" ,gdb)
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
-    fn test_process_mask"))
-                   #t))))))))))
-    fn test_process_mask"))
-                   #t)))
-             ;; FIXME: This fixes the "src" output which is not critical.  We
-             ;; should probably copy the source of the de-vendored libunwind
-             ;; for completeness' sake.
-             (add-before 'install 'remove-vendored-llvm-reference-in-src
-               (lambda _
-                 (substitute* "src/bootstrap/dist.rs"
-                   ((", \"src/llvm-project/libunwind\"") ""))
-                 #t)))))))))
 
 (define-public rust-src
   (hidden-package

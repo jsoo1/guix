@@ -861,21 +861,7 @@ safety and thread safety guarantees.")
                  (generate-all-checksums "vendor")
                  #t))
              (replace 'build
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (substitute* "config.toml"
-                   (("\\[build\\]" all)
-                    (string-append all "
-target = [\"" ,(nix-system->gnu-triplet-for-rust) "\", \"wasm32-unknown-unknown\"]
-"))
-                   (("\\[dist\\]" all)
-                    (string-append "
-[target.wasm32-unknown-unknown]
-llvm-config = \"" (assoc-ref inputs "llvm") "/bin/llvm-config\"
-cc = \"" (assoc-ref inputs "gcc") "/bin/gcc\"
-cxx = \"" (assoc-ref inputs "gcc") "/bin/g++\"
-ar = \"" (assoc-ref inputs "binutils") "/bin/ar\"
-"
-all)))
+               (lambda* _
                  (invoke "./x.py" "build")
                  (invoke "./x.py" "build" "src/tools/cargo")
                  (invoke "./x.py" "build" "src/tools/rustfmt")
@@ -889,9 +875,7 @@ all)))
                         (string-append "-j" (number->string
                                              (min 4
                                                   (parallel-job-count))))))
-                   (invoke "./x.py" parallel-job-spec "test"
-                           (string-append "--target=" ,(nix-system->gnu-triplet-for-rust))
-                           "-vv")
+                   (invoke "./x.py" parallel-job-spec "test" "-vv")
                    (invoke "./x.py" parallel-job-spec "test"
                            "src/tools/cargo")
                    (invoke "./x.py" parallel-job-spec "test"
@@ -987,13 +971,6 @@ tools =
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
           `(modify-phases ,phases
-             ;; Rustdocs fail to build with wasm32 target
-             ;; See https://github.com/rust-lang/rust/issues/76526
-             (add-after 'configure 'deny-warnings
-               (lambda _
-                 (substitute* "config.toml"
-                   (("\\[rust\\]" all) (string-append all "
-deny-warnings = false")))))
              ;; The source code got rearranged: libstd is now in the newly created library folder.
              (replace 'patch-tests
                (lambda* (#:key inputs #:allow-other-keys)

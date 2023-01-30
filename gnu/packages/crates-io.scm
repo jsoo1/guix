@@ -48150,39 +48150,6 @@ can handle huge texts and memory-incoherent edits with ease.")
     (description "This package provides a pure Rust RSA implementation.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rsass-0.9
-  (package
-    (name "rust-rsass")
-    (version "0.9.8")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rsass" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "05i3c70qfplfz685f27ygidpxrbgy8aihqk84v6yl2q40g638ibz"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-clap" ,rust-clap-2)
-         ("rust-deunicode" ,rust-deunicode-0.4)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-nom" ,rust-nom-4)
-         ("rust-num-rational" ,rust-num-rational-0.2)
-         ("rust-num-traits" ,rust-num-traits-0.2)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-regex" ,rust-regex-1)
-         ("rust-yaml-rust" ,rust-yaml-rust-0.4))))
-    (home-page "https://github.com/kaj/rsass")
-    (synopsis
-      "Early-stage sass implementation in pure rust")
-    (description
-      "Early-stage sass implementation in pure rust")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-rspec-1
   (package
     (name "rust-rspec")

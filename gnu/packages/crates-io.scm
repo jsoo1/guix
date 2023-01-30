@@ -18658,30 +18658,6 @@ generating static document search indexes.")
 Emacs' support for dynamic modules.")
     (license license:bsd-3)))
 
-(define-public rust-emacs-0.16
-  (package
-    (inherit rust-emacs-0.18)
-    (name "rust-emacs")
-    (version "0.16.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "emacs" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1badqz4skmk6mq10mrsknxy22fbh71my1swrray4wzzfzf3y1bf6"))))
-    (arguments
-      `(#:cargo-inputs
-        (("rust-anyhow" ,rust-anyhow-1)
-         ("rust-ctor" ,rust-ctor-0.1)
-         ("rust-emacs-macros" ,rust-emacs-macros-0.15)
-         ("rust-emacs-module" ,rust-emacs-module-0.12)
-         ("rust-once-cell" ,rust-once-cell-1)
-         ("rust-rustc-version" ,rust-rustc-version-0.2)
-         ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-emacs-0.11
   (package (inherit rust-emacs-0.18)
     (name "rust-emacs")

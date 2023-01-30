@@ -63535,32 +63535,6 @@ recycle bin.")
 traversing a filetype tree.")
     (license license:expat)))
 
-(define-public rust-tree-sitter-0.17
-  (package
-    (name "rust-tree-sitter")
-    (version "0.17.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "tree-sitter" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1b7s436zxsbcz655hbhpndllmls6b5j1vl84vfkapzrsdmvwp3fi"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-cc" ,rust-cc-1)
-         ("rust-regex" ,rust-regex-1))))
-    (home-page
-      "https://github.com/tree-sitter/tree-sitter")
-    (synopsis
-      "Rust bindings to the Tree-sitter parsing library")
-    (description
-      "Rust bindings to the Tree-sitter parsing library")
-    (license license:expat)))
-
 (define-public rust-treeline-0.1
   (package
     (name "rust-treeline")

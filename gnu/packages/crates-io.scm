@@ -61778,7 +61778,7 @@ the current thread.")
 (define-public rust-tokio-executor-0.1
   (package
     (name "rust-tokio-executor")
-    (version "0.1.8")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
@@ -61787,7 +61787,7 @@ the current thread.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1b5n6barppmhfyb1m2cvswp7nqvyrr3lb0kk545my75hdl7fw9qg"))))
+         "0pjmgpg58k3hf5q9w6xjljsv8xy66lf734qnfwsc0g3pq3349sl3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t

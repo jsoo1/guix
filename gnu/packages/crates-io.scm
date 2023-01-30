@@ -63561,34 +63561,6 @@ traversing a filetype tree.")
       "Rust bindings to the Tree-sitter parsing library")
     (license license:expat)))
 
-(define-public rust-tree-sitter-highlight-0.3
-  (package
-    (name "rust-tree-sitter-highlight")
-    (version "0.3.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "tree-sitter-highlight" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1l9myymgx9cwc98hzjkyj0dsf48rag95lz8wgwnjmvnhrliiqvl5"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build?
-        #t
-        #:cargo-inputs
-        (("rust-regex" ,rust-regex-1)
-         ("rust-tree-sitter" ,rust-tree-sitter-0.17))))
-    (home-page
-      "https://github.com/tree-sitter/tree-sitter")
-    (synopsis
-      "Library for performing syntax highlighting with Tree-sitter")
-    (description
-      "Library for performing syntax highlighting with Tree-sitter")
-    (license license:expat)))
-
 (define-public rust-treeline-0.1
   (package
     (name "rust-treeline")

@@ -18747,24 +18747,6 @@ Emacs' support for dynamic modules.")
 Emacs' support for dynamic modules.")
     (license license:bsd-3)))
 
-(define-public rust-emacs-module-0.12
-  (package
-    (inherit rust-emacs-module-0.18)
-    (name "rust-emacs-module")
-    (version "0.12.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "emacs_module" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "0h57x1lppd93cbs3nix9z6yxwf3waipnmp53zd7sr5zb8pf2s6ks"))))
-    (arguments
-      `(#:cargo-inputs
-        (("rust-bindgen" ,rust-bindgen-0.51))))))
-
 (define-public rust-emacs-module-0.10
   (package (inherit rust-emacs-module-0.18)
     (name "rust-emacs-module")

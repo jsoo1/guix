@@ -659,6 +659,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/tor.scm				\
   %D%/packages/tree-sitter.scm			\
   %D%/packages/tv.scm				\
+  %D%/packages/twelf.scm			\
   %D%/packages/uglifyjs.scm			\
   %D%/packages/uml.scm				\
   %D%/packages/unicode.scm			\

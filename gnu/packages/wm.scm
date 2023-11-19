@@ -909,13 +909,13 @@ tiled on several screens.")
 (define-public ghc-xmobar
   (package
     (name "ghc-xmobar")
-    (version "0.46")
+    (version "0.40")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmobar" version))
               (sha256
                (base32
-                "0glpiq7c0qwfcxnc2flgzj7afm5m1a9ghzwwcq7f8q27m21kddrd"))))
+                "1mrdiblm8vilkm1w23pz6xbi16zh1b1lvql26czjzw5k79vd67sf"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmobar")))
     (native-inputs
@@ -946,6 +946,10 @@ tiled on several screens.")
      `(#:configure-flags (list "--flags=all_extensions" "--flags=with_threaded")
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'jailbreak
+           (lambda _
+             (substitute* "xmobar.cabal"
+               (("base >= 4.11.0 && < 4.16") "base"))))
          (add-after 'install 'remove-binaries
              (lambda* (#:key outputs #:allow-other-keys)
                (delete-file-recursively (string-append (assoc-ref outputs "out") "/bin"))))

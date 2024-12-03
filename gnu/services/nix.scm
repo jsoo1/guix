@@ -158,6 +158,7 @@ GID."
        (start #~(make-forkexec-constructor
                  (list (string-append #$package "/bin/nix-daemon")
                        #$@extra-options)
+                 #:log-file "/var/log/nix-daemon.log"
                  #:environment-variables
                  (list (string-append "TMPDIR=" #$build-directory)
                        "PATH=/run/current-system/profile/bin")))

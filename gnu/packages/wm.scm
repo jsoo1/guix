@@ -1132,13 +1132,13 @@ tiled on several screens.")
 (define-public ghc-xmobar
   (package
     (name "ghc-xmobar")
-    (version "0.48.1")
+    (version "0.40")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmobar" version))
               (sha256
                (base32
-                "1infcisv7l00a4z4byjwjisg4yndk0cymibfii1c7yzyzrlvavhl"))))
+                "1mrdiblm8vilkm1w23pz6xbi16zh1b1lvql26czjzw5k79vd67sf"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmobar")))
     (native-inputs

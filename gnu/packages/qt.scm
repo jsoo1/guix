@@ -783,355 +783,356 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                "qtbase-qmake-fix-includedir.patch"))))
     (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments qtbase-5)
-       ((#:configure-flags _ ''())
-        `(let ((out (assoc-ref %outputs "out")))
-           (list "-DQT_BUILD_TESTS=ON"
-                 (string-append "-DINSTALL_ARCHDATADIR=" out "/lib/qt6")
-                 (string-append "-DINSTALL_DATADIR=" out "/share/qt6")
-                 (string-append "-DINSTALL_DOCDIR=" out "/share/doc/qt6")
-                 (string-append "-DINSTALL_MKSPECSDIR=" out "/lib/qt6/mkspecs")
-                 (string-append "-DINSTALL_EXAMPLESDIR=" out
-                                "/share/doc/qt6/examples")
-                 (string-append "-DINSTALL_INCLUDEDIR=" out "/include/qt6")
+     `(#:make-flags '("-j6") ; Frequently OOMs
+       ,@(substitute-keyword-arguments (package-arguments qtbase-5)
+           ((#:configure-flags _ ''())
+            `(let ((out (assoc-ref %outputs "out")))
+               (list "-DQT_BUILD_TESTS=ON"
+                     (string-append "-DINSTALL_ARCHDATADIR=" out "/lib/qt6")
+                     (string-append "-DINSTALL_DATADIR=" out "/share/qt6")
+                     (string-append "-DINSTALL_DOCDIR=" out "/share/doc/qt6")
+                     (string-append "-DINSTALL_MKSPECSDIR=" out "/lib/qt6/mkspecs")
+                     (string-append "-DINSTALL_EXAMPLESDIR=" out
+                                    "/share/doc/qt6/examples")
+                     (string-append "-DINSTALL_INCLUDEDIR=" out "/include/qt6")
 
-                 ;; Do not embed an absolute reference to compilers, to reduce
-                 ;; the closure size.
-                 "-DQT_EMBED_TOOLCHAIN_COMPILER=OFF"
+                     ;; Do not embed an absolute reference to compilers, to reduce
+                     ;; the closure size.
+                     "-DQT_EMBED_TOOLCHAIN_COMPILER=OFF"
 
-                 ;; Link with DBus and OpenSSL so they don't get dlopen'ed.
-                 "-DINPUT_dbus=linked"
-                 "-DINPUT_openssl=linked"
-                 ;; These features require higher versions of Linux than the
-                 ;; minimum version of the glibc.  See
-                 ;; src/corelib/global/minimum-linux_p.h.  By disabling these
-                 ;; features Qt applications can be used on the oldest kernels
-                 ;; that the glibc supports, including the RHEL6 (2.6.32) and
-                 ;; RHEL7 (3.10) kernels.
-                 "-DFEATURE_getentropy=OFF" ; requires Linux 3.17
-                 "-DFEATURE_renameat2=OFF"  ; requires Linux 3.16
-                 ;; Most system libraries are used by default, except in some
-                 ;; cases such as for those below.
-                 "-DFEATURE_system_pcre2=ON"
-                 "-DFEATURE_system_sqlite=ON"
-                 "-DFEATURE_system_xcb_xinput=ON"
-                 ;; Don't use the precompiled headers.
-                 "-DBUILD_WITH_PCH=OFF")))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
-              (lambda _
-                ;; The configuration files for other Qt packages are searched
-                ;; through a call to "find_package" in Qt5Config.cmake, which
-                ;; disables the use of CMAKE_PREFIX_PATH via the parameter
-                ;; "NO_DEFAULT_PATH".  Re-enable it so that the different
-                ;; components can be installed in different places.
-                (substitute* (find-files "." "\\.cmake(\\.in)?$")
-                  (("\\bNO_DEFAULT_PATH\\b") ""))
-                ;; Because Qt goes against the grain of CMake and set
-                ;; NO_DEFAULT_PATH, it needs to invent yet another variable
-                ;; to do what CMAKE_PREFIX_PATH could have done:
-                ;; QT_ADDITIONAL_PACKAGES_PREFIX_PATH.  Since we patch out
-                ;; the NO_DEFAULT_PATH, we can set the default value of
-                ;; QT_ADDITIONAL_PACKAGES_PREFIX_PATH to that of
-                ;; CMAKE_PREFIX_PATH to ensure tools such as
-                ;; 'qmlimportscanner' from qtdeclarative work out of the
-                ;; box.
-                (substitute* "cmake/QtConfig.cmake.in"
-                  (("(set\\(QT_ADDITIONAL_PACKAGES_PREFIX_PATH )\"\"" _ head)
-                   (string-append head "\"$ENV{CMAKE_PREFIX_PATH}\"")))))
-            (delete 'patch-bin-sh)
-            (delete 'patch-xdg-open)
-            ;; Some tests fail to build on i686-linux
-            #$@(if (target-x86-32?)
-                   #~((add-after 'unpack 'skip-some-tests
-                        ;; This might be a FLOAT16 problem.
-                        (lambda _
-                          (substitute* "tests/auto/corelib/global/CMakeLists.txt"
-                            ((".*qcomparehelpers.*") "")))))
-                   #~())
-            (add-after 'patch-paths 'patch-more-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* (find-files "bin" "\\.in$")
-                  (("/bin/pwd")
-                   (search-input-file inputs "bin/pwd"))
-                  ;; Do not keep a reference to cmake-minimal; it is looked
-                  ;; from PATH anyway.
-                  (("original_cmake_path=\"@CMAKE_COMMAND@\"")
-                   "original_cmake_path=\"\""))
-                (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
-                  (("\"xdg-open\"")
-                   (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
-                (substitute* '("mkspecs/features/qt_functions.prf"
-                               "qmake/library/qmakebuiltins.cpp")
-                  (("/bin/sh")
-                   (search-input-file inputs "bin/bash")))
+                     ;; Link with DBus and OpenSSL so they don't get dlopen'ed.
+                     "-DINPUT_dbus=linked"
+                     "-DINPUT_openssl=linked"
+                     ;; These features require higher versions of Linux than the
+                     ;; minimum version of the glibc.  See
+                     ;; src/corelib/global/minimum-linux_p.h.  By disabling these
+                     ;; features Qt applications can be used on the oldest kernels
+                     ;; that the glibc supports, including the RHEL6 (2.6.32) and
+                     ;; RHEL7 (3.10) kernels.
+                     "-DFEATURE_getentropy=OFF" ; requires Linux 3.17
+                     "-DFEATURE_renameat2=OFF"  ; requires Linux 3.16
+                     ;; Most system libraries are used by default, except in some
+                     ;; cases such as for those below.
+                     "-DFEATURE_system_pcre2=ON"
+                     "-DFEATURE_system_sqlite=ON"
+                     "-DFEATURE_system_xcb_xinput=ON"
+                     ;; Don't use the precompiled headers.
+                     "-DBUILD_WITH_PCH=OFF")))
+           ((#:phases phases)
+            #~(modify-phases #$phases
+                (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
+                  (lambda _
+                    ;; The configuration files for other Qt packages are searched
+                    ;; through a call to "find_package" in Qt5Config.cmake, which
+                    ;; disables the use of CMAKE_PREFIX_PATH via the parameter
+                    ;; "NO_DEFAULT_PATH".  Re-enable it so that the different
+                    ;; components can be installed in different places.
+                    (substitute* (find-files "." "\\.cmake(\\.in)?$")
+                      (("\\bNO_DEFAULT_PATH\\b") ""))
+                    ;; Because Qt goes against the grain of CMake and set
+                    ;; NO_DEFAULT_PATH, it needs to invent yet another variable
+                    ;; to do what CMAKE_PREFIX_PATH could have done:
+                    ;; QT_ADDITIONAL_PACKAGES_PREFIX_PATH.  Since we patch out
+                    ;; the NO_DEFAULT_PATH, we can set the default value of
+                    ;; QT_ADDITIONAL_PACKAGES_PREFIX_PATH to that of
+                    ;; CMAKE_PREFIX_PATH to ensure tools such as
+                    ;; 'qmlimportscanner' from qtdeclarative work out of the
+                    ;; box.
+                    (substitute* "cmake/QtConfig.cmake.in"
+                      (("(set\\(QT_ADDITIONAL_PACKAGES_PREFIX_PATH )\"\"" _ head)
+                       (string-append head "\"$ENV{CMAKE_PREFIX_PATH}\"")))))
+                (delete 'patch-bin-sh)
+                (delete 'patch-xdg-open)
+                ;; Some tests fail to build on i686-linux
+                #$@(if (target-x86-32?)
+                       #~((add-after 'unpack 'skip-some-tests
+                            ;; This might be a FLOAT16 problem.
+                            (lambda _
+                              (substitute* "tests/auto/corelib/global/CMakeLists.txt"
+                                ((".*qcomparehelpers.*") "")))))
+                       #~())
+                (add-after 'patch-paths 'patch-more-paths
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* (find-files "bin" "\\.in$")
+                      (("/bin/pwd")
+                       (search-input-file inputs "bin/pwd"))
+                      ;; Do not keep a reference to cmake-minimal; it is looked
+                      ;; from PATH anyway.
+                      (("original_cmake_path=\"@CMAKE_COMMAND@\"")
+                       "original_cmake_path=\"\""))
+                    (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
+                      (("\"xdg-open\"")
+                       (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
+                    (substitute* '("mkspecs/features/qt_functions.prf"
+                                   "qmake/library/qmakebuiltins.cpp")
+                      (("/bin/sh")
+                       (search-input-file inputs "bin/bash")))
 
-                (substitute* "tests/auto/tools/qt_cmake_create/\
+                    (substitute* "tests/auto/tools/qt_cmake_create/\
 tst_qt_cmake_create.cpp"
-                  (("/bin/sh")
-                   (which "sh")))
+                      (("/bin/sh")
+                       (which "sh")))
 
-                (substitute* "src/corelib/CMakeLists.txt"
-                  (("/bin/ls")
-                   (search-input-file inputs "bin/ls")))))
-            (delete 'do-not-capture-python) ;move after patch-source-shebangs
-            (add-after 'patch-source-shebangs 'do-not-capture-python
-              (lambda _
-                (substitute* '("mkspecs/features/uikit/devices.py"
-                               "util/testrunner/qt-testrunner.py"
-                               "util/testrunner/sanitizer-testrunner.py")
-                  (((which "python3"))
-                   "/usr/bin/env python3"))))
-            (replace 'configure
-              (assoc-ref %standard-phases 'configure))
-            (delete 'check)             ;move after patch-prl-files
-            (add-after 'patch-prl-files 'check
-              (lambda* (#:key tests? parallel-tests?
-                        native-inputs inputs #:allow-other-keys)
-                (when tests?
-                  ;; The tests expect to find the modules provided by this
-                  ;; package; extend the environment variables needed to do so.
-                  (setenv "CMAKE_PREFIX_PATH"
-                          (string-append #$output
-                                         ":" (getenv "CMAKE_PREFIX_PATH")))
-                  (setenv "QMAKEPATH" (string-append #$output "/lib/qt6"))
-                  ;; It is necessary to augment LIBRARY_PATH with that of the
-                  ;; freshly installed qtbase because of the
-                  ;; 'qtbase-qmake-use-libname.patch' patch.
-                  (setenv "LIBRARY_PATH" (string-append #$output "/lib:"
-                                                        (getenv "LIBRARY_PATH")))
-                  (setenv "QML_IMPORT_PATH"
-                          (string-append #$output "/lib/qt6/qml"))
-                  (setenv "QT_PLUGIN_PATH"
-                          (string-append #$output "/lib/qt6/plugins"))
-                  (setenv "QT_QPA_PLATFORM" "offscreen")
-                  ;; Skip tests known to fail on GNU/Linux, in a CI context or
-                  ;; due to bitness (see: https://code.qt.io/cgit/qt/qtbase.git
-                  ;; /tree/src/testlib/qtestblacklist.cpp).
-                  (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
-                  (setenv "HOME" "/tmp") ;some tests require a writable HOME
+                    (substitute* "src/corelib/CMakeLists.txt"
+                      (("/bin/ls")
+                       (search-input-file inputs "bin/ls")))))
+                (delete 'do-not-capture-python) ;move after patch-source-shebangs
+                (add-after 'patch-source-shebangs 'do-not-capture-python
+                  (lambda _
+                    (substitute* '("mkspecs/features/uikit/devices.py"
+                                   "util/testrunner/qt-testrunner.py"
+                                   "util/testrunner/sanitizer-testrunner.py")
+                      (((which "python3"))
+                       "/usr/bin/env python3"))))
+                (replace 'configure
+                  (assoc-ref %standard-phases 'configure))
+                (delete 'check)             ;move after patch-prl-files
+                (add-after 'patch-prl-files 'check
+                  (lambda* (#:key tests? parallel-tests?
+                            native-inputs inputs #:allow-other-keys)
+                    (when tests?
+                      ;; The tests expect to find the modules provided by this
+                      ;; package; extend the environment variables needed to do so.
+                      (setenv "CMAKE_PREFIX_PATH"
+                              (string-append #$output
+                                             ":" (getenv "CMAKE_PREFIX_PATH")))
+                      (setenv "QMAKEPATH" (string-append #$output "/lib/qt6"))
+                      ;; It is necessary to augment LIBRARY_PATH with that of the
+                      ;; freshly installed qtbase because of the
+                      ;; 'qtbase-qmake-use-libname.patch' patch.
+                      (setenv "LIBRARY_PATH" (string-append #$output "/lib:"
+                                                            (getenv "LIBRARY_PATH")))
+                      (setenv "QML_IMPORT_PATH"
+                              (string-append #$output "/lib/qt6/qml"))
+                      (setenv "QT_PLUGIN_PATH"
+                              (string-append #$output "/lib/qt6/plugins"))
+                      (setenv "QT_QPA_PLATFORM" "offscreen")
+                      ;; Skip tests known to fail on GNU/Linux, in a CI context or
+                      ;; due to bitness (see: https://code.qt.io/cgit/qt/qtbase.git
+                      ;; /tree/src/testlib/qtestblacklist.cpp).
+                      (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
+                      (setenv "HOME" "/tmp") ;some tests require a writable HOME
 
-                  ;; Note: the search path specified for TZDIR is only
-                  ;; effective for users of the package, not while it's being
-                  ;; built.
-                  (setenv "TZDIR" (search-input-directory
-                                   (or native-inputs inputs) "share/zoneinfo"))
+                      ;; Note: the search path specified for TZDIR is only
+                      ;; effective for users of the package, not while it's being
+                      ;; built.
+                      (setenv "TZDIR" (search-input-directory
+                                       (or native-inputs inputs) "share/zoneinfo"))
 
-                  ;; This is to avoid QTimeZone::systemTimeZone() returning
-                  ;; invalid QDate objects due to missing /etc/timezone or
-                  ;; /etc/localtime.
-                  (setenv "TZ" "Etc/UTC")
+                      ;; This is to avoid QTimeZone::systemTimeZone() returning
+                      ;; invalid QDate objects due to missing /etc/timezone or
+                      ;; /etc/localtime.
+                      (setenv "TZ" "Etc/UTC")
 
-                  (invoke
-                   "xvfb-run" "ctest" "--output-on-failure"
-                   "-j" (if parallel-tests?
-                            (number->string (parallel-job-count))
-                            "1")
-                   "-E"                 ;disable problematic tests
-                   (string-append
-                    "("
-                    (string-join
-                     (append
-                      (list
-                       ;; The 'tst_qdialogbuttonbox' may fail non-deterministically
-                       ;; (see: https://bugreports.qt.io/browse/QTBUG-123939).
-                       "tst_qdialogbuttonbox"
+                      (invoke
+                       "xvfb-run" "ctest" "--output-on-failure"
+                       "-j" (if parallel-tests?
+                                (number->string (parallel-job-count))
+                                "1")
+                       "-E"                 ;disable problematic tests
+                       (string-append
+                        "("
+                        (string-join
+                         (append
+                          (list
+                           ;; The 'tst_qdialogbuttonbox' may fail non-deterministically
+                           ;; (see: https://bugreports.qt.io/browse/QTBUG-123939).
+                           "tst_qdialogbuttonbox"
 
-                       ;; The 'test_standalone_test' fails with a
-                       ;; "get_property could not find TARGET Qt6::Core" error
-                       ;; (see: https://bugreports.qt.io/browse/QTBUG-123940).
-                       "test_standalone_test"
+                           ;; The 'test_standalone_test' fails with a
+                           ;; "get_property could not find TARGET Qt6::Core" error
+                           ;; (see: https://bugreports.qt.io/browse/QTBUG-123940).
+                           "test_standalone_test"
 
-                       ;; The 'test_collecting_plugins' fails with a "Unknown
-                       ;; platform linux-g++" error (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-123941).
-                       "test_collecting_plugins"
+                           ;; The 'test_collecting_plugins' fails with a "Unknown
+                           ;; platform linux-g++" error (see:
+                           ;; https://bugreports.qt.io/browse/QTBUG-123941).
+                           "test_collecting_plugins"
 
-                       ;; The 'tst_selftests' fails with the following error:
-                       ;; with expansion:
-                       ;; false
-                       ;; with messages:
-                       ;; test := "keyboard"
-                       ;; arguments := QList("-o", "-,tap")
-                       ;; Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
-                       ;; Qt depends on a UTF-8 locale, but has failed to switch to one.
-                       ;; If this causes problems, reconfigure your locale. See the locale(1) manual
-                       ;; for more information.
+                           ;; The 'tst_selftests' fails with the following error:
+                           ;; with expansion:
+                           ;; false
+                           ;; with messages:
+                           ;; test := "keyboard"
+                           ;; arguments := QList("-o", "-,tap")
+                           ;; Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+                           ;; Qt depends on a UTF-8 locale, but has failed to switch to one.
+                           ;; If this causes problems, reconfigure your locale. See the locale(1) manual
+                           ;; for more information.
 
-                       ;; See https://bugreports.qt.io/browse/QTBUG-113371
-                       ;; Adding glibc-utf8-locales to native-inpus is no help.
-                       ;; TODO: when core-updates is merged, check again.
-                       "tst_selftests"
+                           ;; See https://bugreports.qt.io/browse/QTBUG-113371
+                           ;; Adding glibc-utf8-locales to native-inpus is no help.
+                           ;; TODO: when core-updates is merged, check again.
+                           "tst_selftests"
 
-                       ;; The 'tst_qsqlthread' test sometimes fails.
-                       "tst_qsqlthread"
+                           ;; The 'tst_qsqlthread' test sometimes fails.
+                           "tst_qsqlthread"
 
-                       ;; The 'tst_qsystemsemaphore' test sometimes fails.
-                       "tst_qsystemsemaphore"
-                       ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
-                       "tst_moc"
+                           ;; The 'tst_qsystemsemaphore' test sometimes fails.
+                           "tst_qsystemsemaphore"
+                           ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
+                           "tst_moc"
 
-                       ;; The qgraphicsview and qopenglwidget tests fail with a
-                       ;; segfault for unknown reasons (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-116018).
-                       "tst_qgraphicsview"
-                       "tst_qopenglwidget"
+                           ;; The qgraphicsview and qopenglwidget tests fail with a
+                           ;; segfault for unknown reasons (see:
+                           ;; https://bugreports.qt.io/browse/QTBUG-116018).
+                           "tst_qgraphicsview"
+                           "tst_qopenglwidget"
 
-                       ;; The 'test_rcc' test fails on a comparison:
-                       ;; <<<<<< actual
-                       ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x3,0xe8,
-                       ;; ======
-                       ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-                       ;; >>>>>> expected
-                       "tst_rcc"
-                       ;; The 'tst_qtemporarydir' and 'tst_qtemporaryfile'
-                       ;; tests depend on '/home' not being writable.
-                       "tst_qtemporarydir"
-                       "tst_qtemporaryfile"
-                       ;; The 'tst_qdir' compares two directories which are
-                       ;; unexpectedly different when inside the build
-                       ;; container.
-                       "tst_qdir"
-                       ;; This checks the last modified time of '/', and fails
-                       ;; because Epoch 0 is considered to be invalid.
-                       "tst_qresourceengine"
-                       ;; The 'tst_qfilesystemwatcher' installs a watcher on
-                       ;; '/home', which doesn't exist in the build container.
-                       "tst_qfilesystemwatcher"
-                       ;; Not all of the tested formats are supported by our
-                       ;; build of openssl; 871 passed, 122 failed.
-                       "tst_qsslkey"
-                       ;; The 'mockplugins' test fail following error: "Unknown
-                       ;; platform linux-g++", and the other plugin tests
-                       ;; depend on it.
-                       "mockplugins"
-                       "test_plugin_flavor.*"
-                       ;; The 'test_import_plugins' fails with "Could NOT find
-                       ;; Qt6MockPlugins1".
-                       "test_import_plugins"
-                       ;; The tst_QObjectRace::destroyRace is flaky (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-103489).
-                       "tst_qobjectrace"
-                       ;; The 'tst_QSettings::fromFile' assumes the data
-                       ;; location to be relative to the root directory and
-                       ;; fails.
-                       "tst_qsettings"
-                       ;; The 'tst_qaddpreroutine',
-                       ;; 'test_generating_cpp_exports' and
-                       ;; 'test_static_resources' tests fail with: "Unknown
-                       ;; platform linux-g++.
-                       "tst_qaddpreroutine"
-                       "test_generating_cpp_exports"
-                       "test_static_resources"
-                       ;; The 'tst_qfile' fails since there is no /home in the
-                       ;; build container.
-                       "tst_qfile"
-                       ;; The 'tst_QGlyphRun::mixedScripts' test fails with:
-                       ;; Actual   (glyphRuns.size()): 1
-                       ;; Expected (2)               : 2
-                       "tst_qglyphrun"
-                       ;; The 'tst_qx11info' test fails with "Internal error:
-                       ;; QPA plugin doesn't implement generatePeekerId",
-                       ;; likely requires a real display.
-                       "tst_qx11info"
+                           ;; The 'test_rcc' test fails on a comparison:
+                           ;; <<<<<< actual
+                           ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x3,0xe8,
+                           ;; ======
+                           ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+                           ;; >>>>>> expected
+                           "tst_rcc"
+                           ;; The 'tst_qtemporarydir' and 'tst_qtemporaryfile'
+                           ;; tests depend on '/home' not being writable.
+                           "tst_qtemporarydir"
+                           "tst_qtemporaryfile"
+                           ;; The 'tst_qdir' compares two directories which are
+                           ;; unexpectedly different when inside the build
+                           ;; container.
+                           "tst_qdir"
+                           ;; This checks the last modified time of '/', and fails
+                           ;; because Epoch 0 is considered to be invalid.
+                           "tst_qresourceengine"
+                           ;; The 'tst_qfilesystemwatcher' installs a watcher on
+                           ;; '/home', which doesn't exist in the build container.
+                           "tst_qfilesystemwatcher"
+                           ;; Not all of the tested formats are supported by our
+                           ;; build of openssl; 871 passed, 122 failed.
+                           "tst_qsslkey"
+                           ;; The 'mockplugins' test fail following error: "Unknown
+                           ;; platform linux-g++", and the other plugin tests
+                           ;; depend on it.
+                           "mockplugins"
+                           "test_plugin_flavor.*"
+                           ;; The 'test_import_plugins' fails with "Could NOT find
+                           ;; Qt6MockPlugins1".
+                           "test_import_plugins"
+                           ;; The tst_QObjectRace::destroyRace is flaky (see:
+                           ;; https://bugreports.qt.io/browse/QTBUG-103489).
+                           "tst_qobjectrace"
+                           ;; The 'tst_QSettings::fromFile' assumes the data
+                           ;; location to be relative to the root directory and
+                           ;; fails.
+                           "tst_qsettings"
+                           ;; The 'tst_qaddpreroutine',
+                           ;; 'test_generating_cpp_exports' and
+                           ;; 'test_static_resources' tests fail with: "Unknown
+                           ;; platform linux-g++.
+                           "tst_qaddpreroutine"
+                           "test_generating_cpp_exports"
+                           "test_static_resources"
+                           ;; The 'tst_qfile' fails since there is no /home in the
+                           ;; build container.
+                           "tst_qfile"
+                           ;; The 'tst_QGlyphRun::mixedScripts' test fails with:
+                           ;; Actual   (glyphRuns.size()): 1
+                           ;; Expected (2)               : 2
+                           "tst_qglyphrun"
+                           ;; The 'tst_qx11info' test fails with "Internal error:
+                           ;; QPA plugin doesn't implement generatePeekerId",
+                           ;; likely requires a real display.
+                           "tst_qx11info"
 
-                       ;; The 'tst_qgraphicswidget' test fails because "This
-                       ;; plugin does not support propagateSizeHints".
-                       "tst_qgraphicswidget"
-                       ;; The 'tst_qdnslookup' test requires networking.
-                       "tst_qdnslookup"
-                       ;; The 'tst_qcompleter' and 'tst_QFiledialog::completer'
-                       ;; attempt to complete paths they assume exist, such as
-                       ;; "/home", "/etc" or "/root" and fail.
-                       "tst_qcompleter"
-                       "tst_qfiledialog"
-                       ;; This test is susceptible to the 600 ms timeout used:
-                       "tst_qpauseanimation")
-                      #$@(cond
-                           ((target-ppc64le?)
-                             #~((list
-                                 ;; The 'tst_QPainter::fpe_radialGradients'
-                                 ;; test fails with a 'Floating point
-                                 ;; exception' error on powerpc64le (see:
-                                 ;; https://bugreports.qt.io/browse/QTBUG-117113).
-                                 "tst_qpainter"
+                           ;; The 'tst_qgraphicswidget' test fails because "This
+                           ;; plugin does not support propagateSizeHints".
+                           "tst_qgraphicswidget"
+                           ;; The 'tst_qdnslookup' test requires networking.
+                           "tst_qdnslookup"
+                           ;; The 'tst_qcompleter' and 'tst_QFiledialog::completer'
+                           ;; attempt to complete paths they assume exist, such as
+                           ;; "/home", "/etc" or "/root" and fail.
+                           "tst_qcompleter"
+                           "tst_qfiledialog"
+                           ;; This test is susceptible to the 600 ms timeout used:
+                           "tst_qpauseanimation")
+                          #$@(cond
+                              ((target-ppc64le?)
+                               #~((list
+                                   ;; The 'tst_QPainter::fpe_radialGradients'
+                                   ;; test fails with a 'Floating point
+                                   ;; exception' error on powerpc64le (see:
+                                   ;; https://bugreports.qt.io/browse/QTBUG-117113).
+                                   "tst_qpainter"
 
-                                 ;; The 'startStopStartStopBuffers' test fails
-                                 ;; on the powerpc64le architecture (see:
-                                 ;; https://bugreports.qt.io/browse/QTBUG-80953).
-                                 "tst_qprocess"
+                                   ;; The 'startStopStartStopBuffers' test fails
+                                   ;; on the powerpc64le architecture (see:
+                                   ;; https://bugreports.qt.io/browse/QTBUG-80953).
+                                   "tst_qprocess"
 
-                                 ;; The 'tst_QSqlThread::readWriteThreading'
-                                 ;; test may fail with an sqlite related error,
-                                 ;; "'Unable to fetch row' || 'database is
-                                 ;; locked'" (see:
-                                 ;; https://bugreports.qt.io/browse/QTBUG-117114).
-                                 "tst_qsqlthread"
+                                   ;; The 'tst_QSqlThread::readWriteThreading'
+                                   ;; test may fail with an sqlite related error,
+                                   ;; "'Unable to fetch row' || 'database is
+                                   ;; locked'" (see:
+                                   ;; https://bugreports.qt.io/browse/QTBUG-117114).
+                                   "tst_qsqlthread"
 
-                                 ;; The 'tst_qxmlstream' can time out (see:
-                                 ;; https://bugreports.qt.io/projects/QTBUG/issues/QTBUG-123778).
-                                 "tst_qxmlstream")))
-                           ((target-x86-32?)
-                             #~((list
-                                 ;; QCOMPARE(qRound(actual), expected) returned TRUE
-                                 ;; unexpectedly.
-                                 "tst_qglobal"
+                                   ;; The 'tst_qxmlstream' can time out (see:
+                                   ;; https://bugreports.qt.io/projects/QTBUG/issues/QTBUG-123778).
+                                   "tst_qxmlstream")))
+                              ((target-x86-32?)
+                               #~((list
+                                   ;; QCOMPARE(qRound(actual), expected) returned TRUE
+                                   ;; unexpectedly.
+                                   "tst_qglobal"
 
-                                 ;; Actual   (llMinDbl == llMin) : 0
-                                 ;; Expected (-9223372036854775807.0 ==
-                                 ;; Q_INT64_C(-9223372036854775807)) : 1
-                                 "tst_json"
+                                   ;; Actual   (llMinDbl == llMin) : 0
+                                   ;; Expected (-9223372036854775807.0 ==
+                                   ;; Q_INT64_C(-9223372036854775807)) : 1
+                                   "tst_json"
 
-                                 ;; 'QVector3D::normal(QVector3D(), v1, v2) ==
-                                 ;; v3.normalized()' returned FALSE. ()
-                                 "tst_qvectornd"
+                                   ;; 'QVector3D::normal(QVector3D(), v1, v2) ==
+                                   ;; v3.normalized()' returned FALSE. ()
+                                   "tst_qvectornd"
 
-                                 ;; Actual   (dv.validate(value, dummy)): Invalid
-                                 ;; Expected (standard_state)           : Intermediate
-                                 "tst_qdoublevalidator")))
-                           (else #~()))) "|") ")")))))
-            (replace 'patch-mkspecs
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((archdata (search-input-directory outputs "lib/qt6"))
-                       (mkspecs (search-input-directory outputs
-                                                        "lib/qt6/mkspecs"))
-                       (qt_config.prf
-                        (search-input-file
-                         outputs "lib/qt6/mkspecs/features/qt_config.prf"))
-                       (qt_functions.prf
-                        (search-input-file
-                         outputs "lib/qt6/mkspecs/features/qt_functions.prf")))
-                  ;; For each Qt module, let `qmake' uses search paths in the
-                  ;; module directory instead of all in QT_INSTALL_PREFIX.
-                  (substitute* qt_config.prf
-                    (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
-                     "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt6))")
-                    (("\\$\\$\\[QT_INSTALL_LIBS\\]")
-                     "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
-                    (("\\$\\$\\[QT_HOST_LIBS\\]")
-                     "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
-                    (("\\$\\$\\[QT_INSTALL_BINS\\]")
-                     "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
+                                   ;; Actual   (dv.validate(value, dummy)): Invalid
+                                   ;; Expected (standard_state)           : Intermediate
+                                   "tst_qdoublevalidator")))
+                              (else #~()))) "|") ")")))))
+                (replace 'patch-mkspecs
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let* ((archdata (search-input-directory outputs "lib/qt6"))
+                           (mkspecs (search-input-directory outputs
+                                                            "lib/qt6/mkspecs"))
+                           (qt_config.prf
+                            (search-input-file
+                             outputs "lib/qt6/mkspecs/features/qt_config.prf"))
+                           (qt_functions.prf
+                            (search-input-file
+                             outputs "lib/qt6/mkspecs/features/qt_functions.prf")))
+                      ;; For each Qt module, let `qmake' uses search paths in the
+                      ;; module directory instead of all in QT_INSTALL_PREFIX.
+                      (substitute* qt_config.prf
+                        (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
+                         "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt6))")
+                        (("\\$\\$\\[QT_INSTALL_LIBS\\]")
+                         "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                        (("\\$\\$\\[QT_HOST_LIBS\\]")
+                         "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                        (("\\$\\$\\[QT_INSTALL_BINS\\]")
+                         "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
 
-                  ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
-                  (substitute* qt_functions.prf
-                    (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
-                     "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
+                      ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
+                      (substitute* qt_functions.prf
+                        (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
+                         "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
 
-                  ;; Resolve qmake spec files within qtbase by absolute paths.
-                  (substitute*
-                      (map (lambda (file)
-                             (search-input-file
-                              outputs
-                              (string-append "lib/qt6/mkspecs/features/" file)))
-                           '("device_config.prf" "moc.prf" "qt_config.prf"))
-                    (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
-                    (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
-            (add-after 'install 'delete-installed-tests
-              (lambda _
-                (delete-file-recursively
-                 (string-append #$output "/tests"))))))))
+                      ;; Resolve qmake spec files within qtbase by absolute paths.
+                      (substitute*
+                          (map (lambda (file)
+                                 (search-input-file
+                                  outputs
+                                  (string-append "lib/qt6/mkspecs/features/" file)))
+                               '("device_config.prf" "moc.prf" "qt_config.prf"))
+                        (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
+                        (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
+                (add-after 'install 'delete-installed-tests
+                  (lambda _
+                    (delete-file-recursively
+                     (string-append #$output "/tests")))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
        (prepend tzdata-for-tests

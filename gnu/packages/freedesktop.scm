@@ -885,7 +885,8 @@ the freedesktop.org XDG Base Directory specification.")
               (sha256
                (base32
                 "049cfv97975x700s7lx4p9i22nv6v7j046iwkspxba7kr5qq7akw"))
-              (patches (search-patches "elogind-fix-rpath.patch"))))
+              (patches (search-patches "elogind-fix-rpath.patch"
+                                       "elogind-no-chown-tty.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

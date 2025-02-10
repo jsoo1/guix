@@ -934,11 +934,6 @@ the freedesktop.org XDG Base Directory specification.")
                "-Ddefault-user-shell=/bin/sh"))
          #:phases
          (modify-phases %standard-phases
-           (add-after 'unpack 'fix-pkttyagent-path
-             (lambda _
-               (substitute* "meson.build"
-                 (("join_paths\\(bindir, 'pkttyagent'\\)")
-                  "'\"/run/current-system/profile/bin/pkttyagent\"'"))))
            (add-after 'unpack 'use-global-hook-directory
              ;; XXX There is no run-time setting to set this per-process, only a
              ;; build-time, hard-coded list of global directories.

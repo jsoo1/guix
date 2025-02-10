@@ -1,0 +1,82 @@
+commit 113ec5653784fe0ab3c1bede469a01d34f7e4c0d (HEAD -> ifdef-netlink-rtnl-types)
+Author: John Soo <jsoo1@asu.edu>
+Date:   Sat Feb 8 22:49:05 2025 -0700
+
+    sd-netlink, sleep: ifdef missed sleep.c things, newer rtnl defs
+
+diff --git a/src/libelogind/sd-netlink/netlink-types-rtnl.c b/src/libelogind/sd-netlink/netlink-types-rtnl.c
+index e39a75cfe..c4936d73d 100644
+--- a/src/libelogind/sd-netlink/netlink-types-rtnl.c
++++ b/src/libelogind/sd-netlink/netlink-types-rtnl.c
+@@ -124,7 +124,9 @@ static const NLAPolicy rtnl_link_info_data_bond_policies[] = {
+         [IFLA_BOND_AD_ACTOR_SYSTEM]     = BUILD_POLICY_WITH_SIZE(ETHER_ADDR, ETH_ALEN),
+         [IFLA_BOND_TLB_DYNAMIC_LB]      = BUILD_POLICY(U8),
+         [IFLA_BOND_PEER_NOTIF_DELAY]    = BUILD_POLICY(U32),
++#ifdef IFLA_BOND_MISSED_MAX
+         [IFLA_BOND_MISSED_MAX]          = BUILD_POLICY(U8),
++#endif
+ };
+ 
+ static const NLAPolicy rtnl_link_info_data_bridge_policies[] = {
+@@ -207,7 +209,9 @@ static const NLAPolicy rtnl_link_info_data_geneve_policies[] = {
+         [IFLA_GENEVE_LABEL]               = BUILD_POLICY(U32),
+         [IFLA_GENEVE_TTL_INHERIT]         = BUILD_POLICY(U8),
+         [IFLA_GENEVE_DF]                  = BUILD_POLICY(U8),
++#ifdef IFLA_GENEVE_INNER_PROTO_INHERIT
+         [IFLA_GENEVE_INNER_PROTO_INHERIT] = BUILD_POLICY(FLAG),
++#endif
+ };
+ 
+ static const NLAPolicy rtnl_link_info_data_gre_policies[] = {
+@@ -308,7 +312,9 @@ static const NLAPolicy rtnl_link_info_data_macvlan_policies[] = {
+         [IFLA_MACVLAN_MACADDR_COUNT]     = BUILD_POLICY(U32),
+         [IFLA_MACVLAN_BC_QUEUE_LEN]      = BUILD_POLICY(U32),
+         [IFLA_MACVLAN_BC_QUEUE_LEN_USED] = BUILD_POLICY(U32),
++#ifdef IFLA_MACVLAN_BC_CUTOFF
+         [IFLA_MACVLAN_BC_CUTOFF]         = BUILD_POLICY(S32),
++#endif
+ };
+ 
+ static const NLAPolicy rtnl_link_info_data_tun_policies[] = {
+diff --git a/src/sleep/sleep.c b/src/sleep/sleep.c
+index d627b8e34..fa7797591 100644
+--- a/src/sleep/sleep.c
++++ b/src/sleep/sleep.c
+@@ -200,7 +200,9 @@ static int write_efi_hibernate_location(const HibernationDevice *hibernation_dev
+         _cleanup_(sd_device_unrefp) sd_device *device = NULL;
+         const char *uuid_str;
+         sd_id128_t uuid;
++#if 0
+         struct utsname uts = {};
++#endif // 0
+         int r, log_level_ignore = required ? LOG_WARNING : LOG_DEBUG;
+ 
+         assert(hibernation_device);
+@@ -224,9 +226,12 @@ static int write_efi_hibernate_location(const HibernationDevice *hibernation_dev
+                 return log_full_errno(log_level, r, "Failed to parse ID_FS_UUID '%s' for device '%s': %m",
+                                       uuid_str, hibernation_device->path);
+ 
++#if 0
+         if (uname(&uts) < 0)
+                 log_full_errno(log_level_ignore, errno, "Failed to get kernel info, ignoring: %m");
++#endif // 0
+ 
++#if 0
+         r = parse_os_release(NULL,
+                              "ID", &id,
+                              "IMAGE_ID", &image_id,
+@@ -234,11 +239,13 @@ static int write_efi_hibernate_location(const HibernationDevice *hibernation_dev
+                              "IMAGE_VERSION", &image_version);
+         if (r < 0)
+                 log_full_errno(log_level_ignore, r, "Failed to parse os-release, ignoring: %m");
+-
++#endif // 0
+         r = json_build(&v, JSON_BUILD_OBJECT(
+                                JSON_BUILD_PAIR_UUID("uuid", uuid),
+                                JSON_BUILD_PAIR_UNSIGNED("offset", hibernation_device->offset),
++#if 0
+                                JSON_BUILD_PAIR_CONDITION(!isempty(uts.release), "kernelVersion", JSON_BUILD_STRING(uts.release)),
++#endif // 0
+                                JSON_BUILD_PAIR_CONDITION(id, "osReleaseId", JSON_BUILD_STRING(id)),
+                                JSON_BUILD_PAIR_CONDITION(image_id, "osReleaseImageId", JSON_BUILD_STRING(image_id)),
+                                JSON_BUILD_PAIR_CONDITION(version_id, "osReleaseVersionId", JSON_BUILD_STRING(version_id)),

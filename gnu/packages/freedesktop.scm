@@ -873,161 +873,179 @@ the freedesktop.org XDG Base Directory specification.")
     (license license:expat)))
 
 (define-public elogind
-  (package
-    (name "elogind")
-    (version "252.9")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/elogind/elogind")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "049cfv97975x700s7lx4p9i22nv6v7j046iwkspxba7kr5qq7akw"))
-              (patches (search-patches "elogind-fix-rpath.patch"
-                                       "elogind-no-chown-tty.patch"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:configure-flags
-       ,#~(let* ((out #$output)
-                 (sysconf (string-append out "/etc"))
-                 (libexec (string-append out "/libexec/elogind"))
-                 (dbus-data (string-append out "/share/dbus-1"))
-                 (dbuspolicy (string-append dbus-data "/system.d"))
-                 (dbussessionservice (string-append dbus-data "/services"))
-                 (dbussystemservice (string-append dbus-data
-                                                   "/system-services"))
-                 (dbusinterfaces (string-append dbus-data "/interfaces"))
-
-                 #$@(if (not (target-riscv64?))
-                        #~((kexec-tools #$(this-package-input "kexec-tools")))
-                        #~())
-                 (shadow #$(this-package-input "shadow"))
-                 (shepherd #$(this-package-input "shepherd"))
-                 (halt-path (string-append shepherd "/sbin/halt"))
-                 #$@(if (not (target-riscv64?))
-                        #~((kexec-path (string-append kexec-tools "/sbin/kexec")))
-                        #~())
-                 (nologin-path (string-append shadow "/sbin/nologin"))
-                 (poweroff-path (string-append shepherd "/sbin/shutdown"))
-                 (reboot-path (string-append shepherd "/sbin/reboot")))
-            (list
-             (string-append "-Drootprefix=" out)
-             (string-append "-Dsysconfdir=" sysconf)
-             (string-append "-Drootlibexecdir=" libexec)
-             (string-append "-Ddbuspolicydir=" dbuspolicy)
-             (string-append "-Ddbussessionservicedir=" dbussessionservice)
-             (string-append "-Ddbussystemservicedir=" dbussystemservice)
-             (string-append "-Ddbus-interfaces-dir=" dbusinterfaces)
-             (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
-             (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
-             (string-append "-Dhalt-path=" halt-path)
-             #$@(if (not (target-riscv64?))
-                    #~((string-append "-Dkexec-path=" kexec-path))
-                    #~())
-             (string-append "-Dpoweroff-path=" poweroff-path)
-             (string-append "-Dreboot-path=" reboot-path)
-             (string-append "-Dnologin-path=" nologin-path)
-             "-Dcgroup-controller=elogind"
-             "-Dman=true"
-             ;; Disable some tests.
-             "-Dslow-tests=false"
-             ;; Adjust the default user shell to /bin/sh (otherwise it is set
-             ;; to /bin/bash).
-             "-Ddefault-user-shell=/bin/sh"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-pkttyagent-path
-           (lambda _
-             (substitute* "meson.build"
-               (("join_paths\\(bindir, 'pkttyagent'\\)")
-                "'\"/run/current-system/profile/bin/pkttyagent\"'"))))
-         (add-after 'unpack 'use-global-hook-directory
-           ;; XXX There is no run-time setting to set this per-process, only a
-           ;; build-time, hard-coded list of global directories.
-           (lambda _
-             (substitute* (list "src/login/logind-core.c"
-                                "src/login/logind-dbus.c"
-                                "src/sleep/sleep.c"
-                                "src/shared/sleep-config.c")
-               (("PKGSYSCONFDIR") "\"/etc/elogind\""))))
-         (add-after 'unpack 'adjust-tests
-           (lambda _
-             (substitute* "src/test/meson.build"
-               ((".*'test-cgroup.c'.*") "")) ;no cgroup in container
-             ;; This test tries to copy some bytes from /usr/lib/os-release,
-             ;; which does not exist in the build container.  Choose something
-             ;; more likely to be available.
-             (substitute* "src/test/test-copy.c"
-               (("/usr/lib/os-release")
-                "/etc/passwd")
-               ;; Skip the copy_holes test, which fails for unknown reasons
-               ;; (see: https://github.com/elogind/elogind/issues/261).
-               (("TEST_RET\\(copy_holes).*" all)
-                (string-append all "        return 77;\n")))
-             ;; Use a shebang that works in the build container.
-             (substitute* "src/test/test-exec-util.c"
-               (("#!/bin/sh")
-                (string-append "#!" (which "sh"))))
-             ;; Do not look for files or directories that do not exist.
-             (substitute* "src/test/test-fs-util.c"
-               (("usr") "etc")
-               (("/etc/machine-id") "/etc/passwd"))
-             ;; FIXME: Why is sd_id128_get_machine_app_specific failing.
-             ;; Disable for now by hooking into the kernel support check.
-             (substitute* "src/test/test-id128.c"
-               (("if \\(r == -EOPNOTSUPP\\)")
-                "if (1)"))
-             ;; This test expects that /sys is available.
-             (substitute* "src/test/test-mountpoint-util.c"
-               (("assert_se\\(path_is_mount_point\\(\"/sys.*")
-                ""))
-             ;; /bin/sh does not exist in the build container.
-             (substitute* "src/test/test-path-util.c"
-               (("/bin/sh") (which "sh")))
-             ;; This test uses sd_device_new_from_syspath to allocate a
-             ;; loopback device, but that fails because /sys is unavailable.
-             (substitute* "src/libelogind/sd-device/test-sd-device-thread.c"
-               ((".*sd_device_new_from_syspath.*/sys/class/net/lo.*")
-                "return 77;"))))
-         (add-after 'unpack 'change-pid-file-path
-           (lambda _
-             (substitute* "src/login/elogind.c"
-               (("\"/run/elogind.pid\"") "\"/run/systemd/elogind.pid\"")))))))
-    (native-inputs
-     (list docbook-xml-4.5
-           docbook-xml-4.2
-           docbook-xsl
-           gettext-minimal
-           gperf
-           m4
-           pkg-config
-           python
-           python-jinja2
-           libxslt))
-    (inputs
-     (append
-      (if (not (target-riscv64?))
-          (list kexec-tools)
-          '())
-      (list linux-pam
-            libcap
-            libxcrypt
-            `(,util-linux "lib")        ;for 'libmount'
-            shadow                      ;for 'nologin'
-            shepherd                    ;for 'halt' and 'reboot', invoked
+  (let ((commit  "0b50b2d13c443862919fc14b2ef593218a8d766d"))
+    (package
+      (name "elogind")
+      (version "256-pre")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/elogind/elogind")
+                      (commit commit)))
+                (file-name (git-file-name name (git-version version "0" commit)))
+                (sha256
+                 (base32
+                  "0w0iji0g45cxgbh3smvh2q49adrvrrzf2vlkv376a8ym3pqwds52"))
+                (patches (search-patches "elogind-ifdef-new-symbols.patch"
+                                         "elogind-fix-library-name.patch"))))
+      (build-system meson-build-system)
+      (arguments
+       `(#:configure-flags
+         ,#~(let* ((out #$output)
+                   (sysconf (string-append out "/etc"))
+                   (libexec (string-append out "/libexec/elogind"))
+                   (sharedstate (string-append out "/var/lib"))
+                   (dbus-data (string-append out "/share/dbus-1"))
+                   (dbuspolicy (string-append dbus-data "/system.d"))
+                   (dbussystemservice (string-append dbus-data
+                                                     "/system-services"))
+                   #$@(if (not (target-riscv64?))
+                          #~((kexec-tools #$(this-package-input "kexec-tools")))
+                          #~())
+                   (shadow #$(this-package-input "shadow"))
+                   (shepherd #$(this-package-input "shepherd"))
+                   (halt-path (string-append shepherd "/sbin/halt"))
+                   #$@(if (not (target-riscv64?))
+                          #~((kexec-path (string-append kexec-tools "/sbin/kexec")))
+                          #~())
+                   (nologin-path (string-append shadow "/sbin/nologin"))
+                   (poweroff-path (string-append shepherd "/sbin/shutdown"))
+                   (reboot-path (string-append shepherd "/sbin/reboot")))
+              (list
+               (string-append "-Dsysconfdir=" sysconf)
+               (string-append "-Dsharedstatedir=" sharedstate)
+               (string-append "-Ddbuspolicydir=" dbuspolicy)
+               (string-append "-Ddbussystemservicedir=" dbussystemservice)
+               (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
+               (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
+               (string-append "-Dhalt-path=" halt-path)
+               #$@(if (not (target-riscv64?))
+                      #~((string-append "-Dkexec-path=" kexec-path))
+                      #~())
+               (string-append "-Dpoweroff-path=" poweroff-path)
+               (string-append "-Dreboot-path=" reboot-path)
+               (string-append "-Dnologin-path=" nologin-path)
+               "-Dcgroup-controller=elogind"
+               "-Dman=enabled"
+               ;; Disable some tests.
+               "-Dslow-tests=false"
+               ;; Adjust the default user shell to /bin/sh (otherwise it is set
+               ;; to /bin/bash).
+               "-Ddefault-user-shell=/bin/sh"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-pkttyagent-path
+             (lambda _
+               (substitute* "meson.build"
+                 (("join_paths\\(bindir, 'pkttyagent'\\)")
+                  "'\"/run/current-system/profile/bin/pkttyagent\"'"))))
+           (add-after 'unpack 'use-global-hook-directory
+             ;; XXX There is no run-time setting to set this per-process, only a
+             ;; build-time, hard-coded list of global directories.
+             (lambda _
+               (substitute* (list "src/login/logind-core.c"
+                                  "src/login/logind-dbus.c"
+                                  "src/sleep/sleep.c"
+                                  "src/shared/sleep-config.c")
+                 (("PKGSYSCONFDIR") "\"/etc/elogind\""))))
+           (add-after 'unpack 'remove-shared-state-dir-install
+             (lambda _
+               ;; Tries to make an empty dir in /var/lib/elogind
+               (substitute* "meson.build"
+                 (("install_emptydir\\(elogindstatedir\\)") ""))))
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "src/test/meson.build"
+                 ((".*'test-cgroup.c'.*") "")) ;no cgroup in container
+               ;; This test tries to copy some bytes from /usr/lib/os-release,
+               ;; which does not exist in the build container.  Choose something
+               ;; more likely to be available.
+               (substitute* "src/test/test-copy.c"
+                 (("/usr/lib/os-release")
+                  "/etc/passwd")
+                 ;; Skip the copy_holes test, which fails for unknown reasons
+                 ;; (see: https://github.com/elogind/elogind/issues/261).
+                 (("TEST_RET\\(copy_holes).*" all)
+                  (string-append all "        return 77;\n")))
+               ;; This test expects that /usr is available.
+               (substitute* "src/test/test-chase.c"
+                 (("usr") "etc"))
+               ;; This test also expects that /usr is available.
+               (substitute* "src/test/test-fd-util.c"
+                 (("usr") "etc"))
+               ;; This test expects that /var and /usr are available.
+               (substitute* "src/test/test-xattr-util.c"
+                 (("/var") "")
+                 (("usr") "etc"))
+               ;; This test expects /run to be mounted
+               (substitute* "src/test/test-mountpoint-util.c"
+                 (("int id1, id2;") "int id1, id2; exit(77);"))
+               ;; Use a shebang that works in the build container.
+               (substitute* "src/test/test-exec-util.c"
+                 (("#!/bin/sh")
+                  (string-append "#!" (which "sh"))))
+               ;; Do not look for files or directories that do not exist.
+               (substitute* "src/test/test-fs-util.c"
+                 (("usr") "etc")
+                 (("/etc/machine-id") "/etc/passwd"))
+               ;; FIXME: Why is sd_id128_get_machine_app_specific failing.
+               ;; Disable for now by hooking into the kernel support check.
+               (substitute* "src/test/test-id128.c"
+                 (("if \\(r == -EOPNOTSUPP\\)")
+                  "if (1)"))
+               ;; This test expects that /sys is available.
+               (substitute* "src/test/test-mountpoint-util.c"
+                 (("assert_se\\(path_is_mount_point\\(\"/sys.*")
+                  ""))
+               ;; /bin/sh does not exist in the build container.
+               (substitute* "src/test/test-path-util.c"
+                 (("/bin/sh") (which "sh")))
+               ;; This test uses sd_device_new_from_syspath to allocate a
+               ;; loopback device, but that fails because /sys is unavailable.
+               (substitute* "src/libelogind/sd-device/test-sd-device-thread.c"
+                 ((".*sd_device_new_from_syspath.*/sys/class/net/lo.*")
+                  "return 77;"))))
+           (add-after 'unpack 'rewrite-hardcoded-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/login/elogind.c"
+                 (("\"/run/elogind.pid\"") "\"/run/systemd/elogind.pid\""))
+               (substitute* "src/basic/time-util.c"
+                 (("/usr/share/zoneinfo")
+                  (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo"))))))))
+      (native-inputs
+       (list docbook-xml-4.5
+             docbook-xml-4.2
+             docbook-xsl
+             gettext-minimal
+             gperf
+             m4
+             pkg-config
+             python
+             python-jinja2
+             libxslt))
+      (inputs
+       (append
+        (if (not (target-riscv64?))
+            (list kexec-tools)
+            '())
+        (list linux-pam
+              libcap
+              libxcrypt
+              `(,util-linux "lib")        ;for 'libmount'
+              shadow                      ;for 'nologin'
+              shepherd                    ;for 'halt' and 'reboot', invoked
                                         ;when pressing the power button
-            dbus
-            eudev
-            acl)))             ; to add individual users to ACLs on /dev nodes
-    (home-page "https://github.com/elogind/elogind")
-    (synopsis "User, seat, and session management service")
-    (description "Elogind is the systemd project's \"logind\" service,
+              tzdata
+              dbus
+              eudev
+              acl)))             ; to add individual users to ACLs on /dev nodes
+      (home-page "https://github.com/elogind/elogind")
+      (synopsis "User, seat, and session management service")
+      (description "Elogind is the systemd project's \"logind\" service,
 extracted out as a separate project.  Elogind integrates with PAM to provide
 the org.freedesktop.login1 interface over the system bus, allowing other parts
 of a the system to know what users are logged in, and where.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public basu
   (package

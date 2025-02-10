@@ -1,0 +1,22 @@
+commit 861a09800b8967e21900741eda5ef74018ccf0fd (HEAD -> ifdef-netlink-rtnl-types)
+Author: John Soo <jsoo1@asu.edu>
+Date:   Mon Feb 10 00:19:24 2025 -0700
+
+    meson.build: Fix installed library name
+
+diff --git a/meson.build b/meson.build
+index bf42c8f69..8f2ea9254 100644
+--- a/meson.build
++++ b/meson.build
+@@ -2450,9 +2450,9 @@ subdir('src/shared')
+ #endif // 0
+ 
+ libelogind = shared_library(
+-        'systemd',
++        'elogind',
+         version : libsystemd_version,
+-        include_directories : libsystemd_includes,
++        include_directories : libelogind_includes,
+         link_args : ['-shared',
+ #if 0 /// elogind is a lot simpler in its needs.
+ #                      # Make sure our library is never deleted from memory, so that our open logging fds don't leak on dlopen/dlclose cycles.

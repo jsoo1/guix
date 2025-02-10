@@ -1314,7 +1314,7 @@ seats.)"
          (provision '(elogind))
          (start #~(make-forkexec-constructor
                    (list #$(file-append (elogind-package config)
-                                        "/libexec/elogind/elogind"))
+                                        "/libexec/elogind"))
                    #:environment-variables
                    (list (string-append "ELOGIND_CONF_FILE="
                                         #$config-file))))
@@ -1354,6 +1354,7 @@ seats.)"
                        ;; elogind uses /var/lib/elogind
                        (service-extension activation-service-type
                                           elogind-activation)
+
                        ;; We need /run/user, /run/systemd, etc.
                        (service-extension file-system-service-type
                                           (const %elogind-file-systems))))

@@ -1,0 +1,189 @@
+commit 3b80c8d3d4e2656d1190fa99ef6bd48775783709 (HEAD -> logind-improvements/21)
+Author: John Soo <jsoo1@asu.edu>
+Date:   Wed Feb 12 16:12:28 2025 -0700
+
+    systemd-logind: TakeControl of existing session on vtno
+    
+    Otherwise, fall back to session for PID.
+    
+    This allows a daemonized X to be spawned by a process that is not
+    owned by the desired vtno.
+    
+    This is to address the rootless X with a user service scenario. In
+    that case X will be spawned by an init process as the user. So the tty
+    associated to getpid() will not match the desired one specified in vtno.
+    
+    When that happens, even if the user owns the desired vt, logind won't
+    be able to take over the session.
+
+diff --git a/hw/xfree86/os-support/linux/systemd-logind.c b/hw/xfree86/os-support/linux/systemd-logind.c
+index d817df5a9..d3d02578f 100644
+--- a/hw/xfree86/os-support/linux/systemd-logind.c
++++ b/hw/xfree86/os-support/linux/systemd-logind.c
+@@ -482,6 +482,151 @@ systemd_logind_get_session_by_pid(DBusConnection *connection, DBusMessage *msg,
+     return session;
+ }
+ 
++static char *
++systemd_logind_get_session_tty(DBusConnection *connection, DBusMessage *msg,
++                               DBusMessage *reply, DBusError *error,
++                               const char *session)
++{
++    const char *interface = "org.freedesktop.login1.Session";
++    const char *property = "TTY";
++    DBusMessageIter variant;
++    DBusMessageIter str;
++    char *tty = NULL;
++
++    msg = dbus_message_new_method_call("org.freedesktop.login1", session,
++                                       "org.freedesktop.DBus.Properties", "Get");
++    if (!msg) {
++        LogMessage(X_ERROR, "systemd-logind: out of memory\n");
++        return tty;
++    }
++
++    if (!dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface,
++                                       DBUS_TYPE_STRING, &property,
++                                       DBUS_TYPE_INVALID)) {
++        LogMessage(X_ERROR, "systemd-logind: out of memory\n");
++
++        goto cleanup;
++    }
++
++    reply = dbus_connection_send_with_reply_and_block(connection, msg,
++                                                      DBUS_TIMEOUT_USE_DEFAULT, error);
++    if (!reply) {
++        LogMessage(X_ERROR, "systemd-logind: failed to get session tty %s\n",
++                   error->message);
++        goto cleanup;
++    }
++
++    if (!dbus_message_iter_init(reply, &variant)) {
++        LogMessage(X_ERROR, "systemd-logind: failed to get session tty, reply had no arguments\n");
++        goto cleanup;
++    }
++
++    dbus_message_iter_recurse(&variant, &str);
++
++    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&str)) {
++        LogMessage(X_ERROR, "systemd-logind: failed to get session tty, reply was not a string\n");
++        goto cleanup;
++    }
++
++    dbus_message_iter_get_basic(&str, &tty);
++
++    tty = XNFstrdup(tty);
++
++ cleanup:
++    dbus_message_unref(reply);
++
++    reply = NULL;
++
++    return tty;
++}
++
++static char *
++systemd_logind_get_session_by_tty(DBusConnection *connection, DBusMessage *msg,
++                                  DBusMessage *reply, DBusError *error)
++{
++    DBusMessageIter args;
++    DBusMessageIter elems;
++    DBusMessageIter fields;
++    char *session;
++    char *tty;
++
++    msg = dbus_message_new_method_call("org.freedesktop.login1", "/org/freedesktop/login1",
++                                       "org.freedesktop.login1.Manager", "ListSessions");
++    if (!msg) {
++        LogMessage(X_ERROR, "systemd-logind: out of memory\n");
++        return session;
++    }
++
++    reply = dbus_connection_send_with_reply_and_block(connection, msg,
++                                                      DBUS_TIMEOUT_USE_DEFAULT, error);
++    if (!reply) {
++        LogMessage(X_ERROR, "systemd-logind: failed to list sessions %s\n",
++                   error->message);
++        goto cleanup;
++    }
++
++    if (!dbus_message_iter_init(reply, &args)) {
++        LogMessage(X_ERROR, "systemd-logind: failed to list sessions, reply had no arguments\n");
++        goto cleanup;
++    }
++
++    // Type is a(susso) - We are looking for a session object path that matches vtno
++    if (DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type(&args)) {
++        LogMessage(X_ERROR, "systemd-logind: failed to list sessions, got reply other than an array\n");
++        goto cleanup;
++    }
++
++    dbus_message_iter_recurse(&args, &elems);
++
++    int n_elems = dbus_message_iter_get_element_count(&args);
++
++    for (int elem = 0; elem < n_elems; elem++, dbus_message_iter_next(&elems)) {
++        if (DBUS_TYPE_STRUCT != dbus_message_iter_get_arg_type(&elems)) {
++            LogMessage(X_ERROR, "systemd-logind: org.freedesktop.login1.Manager.ListSessions[%d] was not a struct\n", elem);
++            goto cleanup;
++        }
++
++        dbus_message_iter_recurse(&elems, &fields);
++
++        // struct has type (susso) - want to jump to session object path at end
++        for (; dbus_message_iter_has_next(&fields); dbus_message_iter_next(&fields)) {
++        }
++
++        if (DBUS_TYPE_OBJECT_PATH != dbus_message_iter_get_arg_type(&fields)) {
++            LogMessage(X_ERROR, "systemd-logind: org.freedesktop.login1.Manager.ListSessions[%d].session was not an object path\n", elem);
++            goto cleanup;
++        }
++
++        dbus_message_iter_get_basic(&fields, &session);
++
++        session = XNFstrdup(session);
++
++        tty = systemd_logind_get_session_tty(connection, msg, reply, error, session);
++
++        if (!(tty && strlen(tty) > 0)) {
++            continue;
++        }
++
++        int i = 0;
++        for (; isalpha(tty[i]); i++) {
++        }
++
++        if (atoi(&tty[i]) == xf86Info.vtno) {
++            LogMessage(X_INFO, "systemd-logind: reusing existing session %s\n", session);
++            goto cleanup;
++        }
++
++        LogMessage(X_INFO, "systemd-logind: skipping %s\n", tty);
++    }
++
++ cleanup:
++    dbus_message_unref(reply);
++
++    reply = NULL;
++
++    return session;
++}
++
+ static void
+ connect_hook(DBusConnection *connection, void *data)
+ {
+@@ -494,8 +639,12 @@ connect_hook(DBusConnection *connection, void *data)
+ 
+     dbus_error_init(&error);
+ 
+-    session = systemd_logind_get_session_by_pid(connection, msg, reply,
+-                                                &error, getpid());
++    session = systemd_logind_get_session_by_tty(connection, msg, reply,
++                                                &error);
++    if (!session) {
++        session = systemd_logind_get_session_by_pid(connection, msg, reply,
++                                                    &error, getpid());
++    }
+ 
+     if (!session) {
+         goto cleanup;

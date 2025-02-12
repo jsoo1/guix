@@ -5179,7 +5179,7 @@ by the Xorg server.")
         (base32
          "12g0g9ksswzx1kgn23gvrpa570fnpkdkmw1dfqjjg4422a884744"))
        (patches
-        (list
+        (cons*
          ;; See:
          ;;   https://lists.fedoraproject.org/archives/list/devel@lists.
          ;;      fedoraproject.org/message/JU655YB7AM4OOEQ4MOMCRHJTYJ76VFOK/
@@ -5191,7 +5191,9 @@ by the Xorg server.")
            (sha256
             (base32
              "0mm70y058r8s9y9jiv7q2myv0ycnaw3iqzm7d274410s0ik38w7q"))
-           (file-name "xorg-server-use-intel-only-on-pre-gen4.diff"))))))
+           (file-name "xorg-server-use-intel-only-on-pre-gen4.diff"))
+         (search-patches "xorg-server-logind-integration-0.patch"
+                         "xorg-server-logind-integration-1.patch")))))
     (build-system gnu-build-system)
     (propagated-inputs
      ;; The following libraries are required by xorg-server.pc.

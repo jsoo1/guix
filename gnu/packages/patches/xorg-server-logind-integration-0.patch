@@ -1,0 +1,103 @@
+commit d979c474f29c7af632e9eb6a395172977edfad8a
+Author: John Soo <jsoo1@asu.edu>
+Date:   Wed Feb 12 16:11:14 2025 -0700
+
+    systemd-logind: Move session retrieval to separate function
+    
+    This is to clarify the coming commit which will provide an alternate
+    means of getting the session.
+
+diff --git a/hw/xfree86/os-support/linux/systemd-logind.c b/hw/xfree86/os-support/linux/systemd-logind.c
+index dbb00cd85..d817df5a9 100644
+--- a/hw/xfree86/os-support/linux/systemd-logind.c
++++ b/hw/xfree86/os-support/linux/systemd-logind.c
+@@ -437,53 +437,69 @@ message_filter(DBusConnection * connection, DBusMessage * message, void *data)
+     return DBUS_HANDLER_RESULT_HANDLED;
+ }
+ 
+-static void
+-connect_hook(DBusConnection *connection, void *data)
++static char *
++systemd_logind_get_session_by_pid(DBusConnection *connection, DBusMessage *msg,
++                                  DBusMessage *reply, DBusError *error,
++                                  dbus_int32_t pid)
+ {
+-    struct systemd_logind_info *info = data;
+-    DBusError error;
+-    DBusMessage *msg = NULL;
+-    DBusMessage *reply = NULL;
+-    dbus_int32_t arg;
+-    char *session = NULL;
+-
+-    dbus_error_init(&error);
++    char *session;
+ 
+     msg = dbus_message_new_method_call("org.freedesktop.login1",
+             "/org/freedesktop/login1", "org.freedesktop.login1.Manager",
+             "GetSessionByPID");
+     if (!msg) {
+         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
+-        goto cleanup;
++        return NULL;
+     }
+ 
+-    arg = getpid();
+-    if (!dbus_message_append_args(msg, DBUS_TYPE_UINT32, &arg,
++    if (!dbus_message_append_args(msg, DBUS_TYPE_UINT32, &pid,
+                                   DBUS_TYPE_INVALID)) {
+         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
+-        goto cleanup;
++        return NULL;
+     }
+ 
+     reply = dbus_connection_send_with_reply_and_block(connection, msg,
+-                                                      DBUS_TIMEOUT_USE_DEFAULT, &error);
++                                                      DBUS_TIMEOUT_USE_DEFAULT, error);
+     if (!reply) {
+         LogMessage(X_ERROR, "systemd-logind: failed to get session: %s\n",
+-                   error.message);
+-        goto cleanup;
++                   error->message);
++        return NULL;
+     }
++
+     dbus_message_unref(msg);
+ 
+-    if (!dbus_message_get_args(reply, &error, DBUS_TYPE_OBJECT_PATH, &session,
++    if (!dbus_message_get_args(reply, error, DBUS_TYPE_OBJECT_PATH, &session,
+                                DBUS_TYPE_INVALID)) {
+         LogMessage(X_ERROR, "systemd-logind: GetSessionByPID: %s\n",
+-                   error.message);
+-        goto cleanup;
++                   error->message);
++        return NULL;
+     }
+     session = XNFstrdup(session);
+ 
+     dbus_message_unref(reply);
+     reply = NULL;
+ 
++    return session;
++}
++
++static void
++connect_hook(DBusConnection *connection, void *data)
++{
++    struct systemd_logind_info *info = data;
++    DBusError error;
++    DBusMessage *msg = NULL;
++    DBusMessage *reply = NULL;
++    dbus_int32_t arg;
++    char *session;
++
++    dbus_error_init(&error);
++
++    session = systemd_logind_get_session_by_pid(connection, msg, reply,
++                                                &error, getpid());
++
++    if (!session) {
++        goto cleanup;
++    }
+ 
+     msg = dbus_message_new_method_call("org.freedesktop.login1",
+             session, "org.freedesktop.login1.Session", "TakeControl");

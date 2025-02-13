@@ -1299,11 +1299,6 @@ seats.)"
              (session (cons pam-elogind (pam-service-session pam))))))
          (shepherd-requirements '(elogind)))))
 
-(define (elogind-activation config)
-  #~(begin
-      (use-modules (guix build utils))
-      (mkdir-p "/var/lib/elogind")))
-
 (define (elogind-shepherd-service config)
   "Return a Shepherd service to start elogind according to @var{config}."
   (define config-file
@@ -1351,9 +1346,6 @@ seats.)"
                                             `(("elogind"
                                                ,(elogind-etc-directory config)))))
 
-                       ;; elogind uses /var/lib/elogind
-                       (service-extension activation-service-type
-                                          elogind-activation)
                        ;; We need /run/user, /run/systemd, etc.
                        (service-extension file-system-service-type
                                           (const %elogind-file-systems))))
